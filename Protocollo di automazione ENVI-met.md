@@ -142,12 +142,9 @@ Prima di approfondire l'aspetto dell'assegnazione cromatica e funzionale dei gru
 #### Assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper
 Nell'ambito dei processi implementati mediante Grasshopper, si osserva un'approccio sistematico nell'identificazione delle varie componenti. Questo è realizzato attraverso l'assegnazione di gruppi distinti, ciascuno dei quali è caratterizzato da un colore specifico e una descrizione fornita tramite l'elemento "Scribble". Tale colore non è arbitrario, bensì funge da indicatore dell'appartenenza funzionale della componente all'interno del workflow complessivo. In questo contesto, si distinguono principalmente due categorie di gruppi: quelli che racchiudono funzioni operative specifiche e quelli che sono preposti alla facilitazione dell'interazione con l'interfaccia grafica utente (GUI). Questa metodologia di categorizzazione e identificazione visiva facilita una rapida comprensione del ruolo e della funzione di ciascun elemento all'interno del processo complessivo, contribuendo a un'efficace organizzazione e interpretazione del flusso di lavoro in Grasshopper.
 
-| Colore              | Codice Hex | Anteprima                  |
-|---------------------|------------|----------------------------|
-| Peach               | `#EFC69B`  | ![#EFC69B](https://via.placeholder.com/200/EFC69B?text=+) |
-| Atomic Tangerine    | `#DF9C84`  | ![#DF9C84](https://via.placeholder.com/200/DF9C84?text=+) |
-| Amaranth Purple     | `#AF1B3F`  | ![#AF1B3F](https://via.placeholder.com/200/AF1B3F?text=+) |
-| Cerise              | `#D04E6C`  | ![#D04E6C](https://via.placeholder.com/200/D04E6C?text=+) |
+```palette
+https://coolors.co/palette/efc69b-df9c84-af1b3f-d04e6c
+```
 
 Proseguendo nella descrizione del sistema di assegnazione cromatica, si prevede l'impiego di una palette specifica, composta dai seguenti colori: efc69b, df9c84, af1b3f, e d04e6c. Questa selezione di colori non è casuale, ma segue una logica ben definita per ottimizzare la rappresentazione e la comprensione delle varie componenti del workflow.
 
@@ -189,9 +186,9 @@ Nell'ambito dell'ottimizzazione grafica dei processi in Grasshopper, è stato sv
 Per quanto riguarda gli oggetti "Panel", il sistema automaticamente identifica e seleziona questi elementi, verificando la presenza del nome standard "Panel". Nel caso in cui questo nome sia presente, il processo procede con la sua rimozione, assegnando contemporaneamente al "Panel" un colore distintivo, specificamente il tono F6E073, corrispondente in RGB a (246, 224, 115), e denominato "Jasmine". Questa colorazione specifica serve a rendere immediatamente riconoscibili questi oggetti, facilitando l'identificazione e la gestione dei dati visualizzati all'interno del canvas.
 
 
-| Colore   | Codice Hex | Anteprima                  |
-|----------|------------|----------------------------|
-| Jasmine  | `#F6E073`  | ![#F6E073](https://via.placeholder.com/200/F6E073?text=+) |
+```palette
+https://coolors.co/palette/F6E073
+```
 
 Segue una tabella che elenca e riassume i caratteri del colore utilizzato per i Panel.
 
@@ -496,12 +493,9 @@ Il modulo 1 si concentra sulle ore di soleggiamento registrate a livello del ter
 **Sun hours Terrain level (data) (h)**: Rappresenta il numero totale di ore di soleggiamento a livello del terreno registrato in date specifiche. Questo dato è espressivo dell'irraggiamento solare diretto che incide su un dato piano orizzontale.
 La palette transita dal giallo chiaro al rosso intenso per riflettere l'intensità crescente delle ore di sole. Il giallo chiaro rappresenta ore di sole minime, evocando un senso di calma e freschezza, mentre il rosso intenso denota il massimo dell'irraggiamento solare, suggerendo calore e intensità. Questa scelta cromatica consente una percezione immediata dell'intensità solare e della sua variazione stagionale o giornaliera.
 
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Cornsilk        | `#FCF3CF`  | ![#FCF3CF](https://via.placeholder.com/200/FCF3CF?text=+) |
-| Jasmine         | `#F7DC6F`  | ![#F7DC6F](https://via.placeholder.com/200/F7DC6F?text=+) |
-| Gamboge         | `#F39C12`  | ![#F39C12](https://via.placeholder.com/200/F39C12?text=+) |
-| Persian Red     | `#C0392B`  | ![#C0392B](https://via.placeholder.com/200/C0392B?text=+) |
+```palette
+https://coolors.co/palette/FCF3CF-F7DC6F-F39C12-C0392B
+```
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -514,56 +508,41 @@ Questo modulo dettaglia le caratteristiche fisiche e geometriche dell'ambiente s
 
 **Objects ()**: Elenco e caratterizzazione degli oggetti presenti nella simulazione, quali edifici o vegetazione, senza specificare le loro funzioni o impatti ambientali.
 I toni neutri di grigio sono stati scelti per rappresentare oggetti e costruzioni in modo oggettivo. La gradazione dal grigio chiaro al scuro fornisce una rappresentazione visuale della variazione di densità o presenza di oggetti, permettendo un'interpretazione diretta senza connotazioni emotive.
-| Colore       | Codice Hex | Anteprima                  |
-|--------------|------------|----------------------------|
-| Timberwolf   | `#D3D3D3`  | ![#D3D3D3](https://via.placeholder.com/200/D3D3D3?text=+) |
-| Cadet Gray   | `#A6ACAF`  | ![#A6ACAF](https://via.placeholder.com/200/A6ACAF?text=+) |
-| Davy's Gray  | `#585858`  | ![#585858](https://via.placeholder.com/200/585858?text=+) |
+```palette
+https://coolors.co/palette/D3D3D3-A6ACAF-585858
+```
 **Building Height (m)**: Indica l'altezza degli edifici nel modello, misurata in metri.
 La palette spazia dal beige al marrone scuro per rappresentare l'altitudine degli edifici. Il beige, associato a costruzioni più basse, evoca leggerezza e spazio, mentre il marrone scuro, usato per le strutture più alte, suggerisce solidità e imponenza. Questa progressione cromatica aiuta a distinguere visivamente gli edifici in base alla loro altezza.
-| Colore       | Codice Hex | Anteprima                  |
-|--------------|------------|----------------------------|
-| Beige        | `#F5F5DC`  | ![#F5F5DC](https://via.placeholder.com/200/F5F5DC?text=+) |
-| Rosa Pallido | `#D7B29D`  | ![#D7B29D](https://via.placeholder.com/200/D7B29D?text=+) |
-| Marrone      | `#5D4037`  | ![#5D4037](https://via.placeholder.com/200/5D4037?text=+) |
+```palette
+https://coolors.co/palette/F5F5DC-D7B29D-5D4037
+```
 **z Topo (m)**: Rappresenta l'altitudine topografica del terreno rispetto a un livello di riferimento.
 toni di verde rappresentano le variazioni altimetriche della topografia. Il verde chiaro indica aree più basse, mentre il verde scuro segnala regioni più elevate. Il verde è comunemente associato all'elemento terreno e qui viene utilizzato per fornire una sensazione di flusso e continuità nel paesaggio.
 
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Mindaro         | `#DAF7A6`  | ![#DAF7A6](https://via.placeholder.com/200/DAF7A6?text=+) |
-| Celadon         | `#7DCEA0`  | ![#7DCEA0](https://via.placeholder.com/200/7DCEA0?text=+) |
-| Shamrock Green  | `#229954`  | ![#229954](https://via.placeholder.com/200/229954?text=+) |
+```palette
+https://coolors.co/palette/DAF7A6-7DCEA0-229954
+```
 
 **Soil Profile Type ()**: Classifica il tipo di profilo del suolo in base a caratteristiche fisiche e composizione.
 Questa palette di marroni rappresenta la varietà nei profili del suolo. Il marrone chiaro può indicare suoli più sabbiosi o meno fertili, mentre il marrone scuro può rappresentare suoli più ricchi e densi. Questa gamma cromatica evoca la terra e la varietà dei suoi strati. #daRivedere 
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Bronzo          | `#CD853F`  | ![#CD853F](https://via.placeholder.com/200/CD853F?text=+) |
-| Russet Chiaro   | `#8B572A`  | ![#8B572A](https://via.placeholder.com/200/8B572A?text=+) |
-| Russet Scuro    | `#8B4513`  | ![#8B4513](https://via.placeholder.com/200/8B4513?text=+) |
+```palette
+https://coolors.co/palette/CD853F-8B572A-8B4513
+```
 **Surface Albedo ()**: Misura la riflettività della superficie del terreno, indicando la frazione di radiazione solare riflessa.
 Il bianco al nero rappresenta l'albedo della superficie, dalla riflettività massima alla minima. Il bianco indica una superficie altamente riflettente, come la neve, mentre il nero indica una bassa riflettività, come l'asfalto scuro. Questa scala cromatica fornisce una comprensione intuitiva della capacità di una superficie di riflettere la radiazione solare.
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Bianco          | `#FFFFFF`  | ![#FFFFFF](https://via.placeholder.com/200/FFFFFF?text=+) |
-| Colore       | Codice Hex | Anteprima                  |
-|--------------|------------|----------------------------|
-| Bianco       | `#FFFFFF`  | ![#FFFFFF](https://via.placeholder.com/200/FFFFFF?text=+) |
-| Grigio       | `#BDC3C7`  | ![#BDC3C7](https://via.placeholder.com/200/BDC3C7?text=+) |
-| Nero         | `#000000`  | ![#000000](https://via.placeholder.com/200/000000?text=+) |
+```palette
+https://coolors.co/palette/FFFFFF-BDC3C7-000000
+```
 **SkyViewFaktor ()**: Valuta la frazione di cielo visibile da un punto specifico a livello del suolo, influenzata dalla morfologia urbana circostante.
 L'azzurro al blu navy rappresenta il fattore di visuale del cielo, con colori più chiari che indicano una maggiore apertura e colori più scuri che indicano una visuale più limitata. Questi colori riflettono visivamente la sensazione di apertura o confinamento dello spazio sopra l'osservatore.
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Sky Blue        | `#87CEEB`  | ![#87CEEB](https://via.placeholder.com/200/87CEEB?text=+) |
-| Celestial Blue  | `#3498DB`  | ![#3498DB](https://via.placeholder.com/200/3498DB?text=+) |
-| Charcoal        | `#2C3E50`  | ![#2C3E50](https://via.placeholder.com/200/2C3E50?text=+) |
+```palette
+https://coolors.co/palette/87CEEB-3498DB-2C3E50
+```
 **Receptors ()**: Punti specifici nel modello dove vengono raccolti e analizzati i dati ambientali.
 L'arancione è stato scelto per i receptor per la sua capacità di attirare l'attenzione e indicare punti di interesse o di raccolta dati. Questo colore vivace si distingue nel contesto del report, guidando visivamente l'occhio verso i punti di misurazione chiave.
-| Colore            | Codice Hex | Anteprima                  |
-|-------------------|------------|----------------------------|
-| Atomic Tangerine  | `#FFA07A`  | ![#FFA07A](https://via.placeholder.com/200/FFA07A?text=+) |
+```palette
+https://coolors.co/palette/FFA07A
+```
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -574,76 +553,55 @@ L'arancione è stato scelto per i receptor per la sua capacità di attirare l'at
 | 2 | Surface Albedo |  | FFFFFF (White), BDC3C7 (French gray), 000000 (Black) |
 | 2 | SkyViewFaktor |  | 87CEEB (Sky blue), 3498DB (Celestial Blue), 2C3E50 (Charcoal) |
 | 2 | Receptors |  | FFA07A (Atomic tangerine) |
-
 ### Modulo mappe 3: Parametri atmosferici e di radiazione
 
 Il modulo 3 si immerge nei parametri atmosferici e di radiazione, offrendo una panoramica dettagliata delle condizioni climatiche e ambientali. Voci come "Potential Air Temperature" e "Relative Humidity" forniscono misurazioni fondamentali dell'atmosfera, mentre "Wind Speed" e "Wind Direction" dettagliano le dinamiche del vento. Importanti sono anche le misure di radiazione, che comprendono la radiazione solare diretta, diffusa e riflessa, insieme ai livelli di CO2. Questi dati sono imprescindibili per analisi climatiche, studi di comfort e valutazioni ambientali.
 
 **Potential Air Temperature (°C)**: Temperatura dell'aria potenziale, un indicatore termodinamico che prescinde da influenze locali come radiazione o convezione.
 La palette per la temperatura dell'aria potenziale mostra una transizione dal blu, che evoca sensazioni di freddo, al rosso, che rappresenta il calore. Questa gamma di colori facilita la comprensione istantanea delle variazioni termiche, con sfumature intermedie che permettono di percepire variazioni più sottili.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Celestial Blue   | `#3498DB`  | ![#3498DB](https://via.placeholder.com/200/3498DB?text=+) |
-| Maya Blue        | `#85C1E9`  | ![#85C1E9](https://via.placeholder.com/200/85C1E9?text=+) |
-| Uranian Blue     | `#AED6F1`  | ![#AED6F1](https://via.placeholder.com/200/AED6F1?text=+) |
-| Hunyadi Yellow   | `#F5B041`  | ![#F5B041](https://via.placeholder.com/200/F5B041?text=+) |
-| Vermilion        | `#E74C3C`  | ![#E74C3C](https://via.placeholder.com/200/E74C3C?text=+) |
+```palette
+https://coolors.co/palette/3498DB-85C1E9-AED6F1-F5B041-E74C3C
+```
 **Relative Humidity ()**: Umidità relativa dell'aria, espressa come percentuale, che indica il rapporto tra il contenuto di umidità attuale e la massima umidità possibile all'attuale temperatura.
 Questa palette usa tonalità di azzurro e verde per rappresentare l'umidità relativa, con l'azzurro chiaro che indica condizioni più secche e il verde scuro condizioni più umide. La scelta di questi colori rispecchia la naturale associazione tra freschezza, acqua e umidità.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Azzurro Chiaro   | `#AED6F1`  | ![#AED6F1](https://via.placeholder.com/200/AED6F1?text=+) |
-| Turchese         | `#48C9B0`  | ![#48C9B0](https://via.placeholder.com/200/48C9B0?text=+) |
-| Verde Smeraldo   | `#27AE60`  | ![#27AE60](https://via.placeholder.com/200/27AE60?text=+) |
+```palette
+https://coolors.co/palette/AED6F1-48C9B0-27AE60
+```
 **Wind Speed (m/s)**: Velocità del vento misurata in metri al secondo.
 Il bianco al viola rappresenta la velocità del vento, con il bianco che indica calma e il viola che suggerisce condizioni più tempestose. La progressione verso il viola per velocità più elevate aggiunge una dimensione visiva di allerta e intensità.
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Bianco          | `#FFFFFF`  | ![#FFFFFF](https://via.placeholder.com/200/FFFFFF?text=+) |
-| Azzurro Maya    | `#85C1E9`  | ![#85C1E9](https://via.placeholder.com/200/85C1E9?text=+) |
-| Viola Purpureo  | `#8E44AD`  | ![#8E44AD](https://via.placeholder.com/200/8E44AD?text=+) |
+```palette
+https://coolors.co/palette/FFFFFF-85C1E9-8E44AD
+```
 **Wind Direction (deg)**: Direzione del vento espressa in gradi, indicante da quale direzione soffia il vento.
 I toni di grigio e blu navy sono stati selezionati per rappresentare la direzione del vento in modo neutro e informativo. La gradazione di colore fornisce una rappresentazione visiva chiara della variazione direzionale, senza sovraccaricare l'utente con implicazioni emotive. #daRivedere 
-| Colore          | Codice Hex | Anteprima                  |
-|-----------------|------------|----------------------------|
-| Grigio Chiaro   | `#BDC3C7`  | ![#BDC3C7](https://via.placeholder.com/200/BDC3C7?text=+) |
-| Grigio Medio    | `#7F8C8D`  | ![#7F8C8D](https://via.placeholder.com/200/7F8C8D?text=+) |
-| Blu Navy        | `#34495E`  | ![#34495E](https://via.placeholder.com/200/34495E?text=+) |
+```palette
+https://coolors.co/palette/BDC3C7-7F8C8D-34495E
+```
 **Mean Radiant Temp. (°C)**: Temperatura radiante media, una misura complessiva della radiazione termica che incide su un individuo o oggetto.
 Dal giallo al rosso, questa palette indica l'aumento della temperatura radiante media, con il giallo che rappresenta condizioni più miti e il rosso condizioni più intense. Questi colori caldi sono intuitivamente associati al calore e all'energia radiante.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Jasmine          | `#F7DC6F`  | ![#F7DC6F](https://via.placeholder.com/200/F7DC6F?text=+) |
-| Gamboge          | `#F39C12`  | ![#F39C12](https://via.placeholder.com/200/F39C12?text=+) |
-| Persian Red      | `#C0392B`  | ![#C0392B](https://via.placeholder.com/200/C0392B?text=+) |
+```palette
+https://coolors.co/palette/F7DC6F-F39C12-C0392B
+```
 **Direct SW Radiation (W/m²)**: Radiazione solare diretta misurata in Watt per metro quadrato.
  I toni del giallo al rosso scuro rappresentano l'aumento dell'intensità della radiazione solare diretta. Il giallo pallido suggerisce un'intensità minore, mentre il rosso scuro indica una forte esposizione solare, riflettendo visivamente l'energia e il calore del sole.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Cornsilk         | `#FCF3CF`  | ![#FCF3CF](https://via.placeholder.com/200/FCF3CF?text=+) |
-| Jasmine          | `#F7DC6F`  | ![#F7DC6F](https://via.placeholder.com/200/F7DC6F?text=+) |
-| Persian Red      | `#CB4335`  | ![#CB4335](https://via.placeholder.com/200/CB4335?text=+) |
+ ```palette
+https://coolors.co/palette/FCF3CF-F7DC6F-CB4335
+ ```
 **Diffuse SW Radiation (W/m²)**: Radiazione solare diffusa, indicando quella porzione di radiazione solare che raggiunge il suolo dopo essere stata diffusa e riflessa dall'atmosfera.
 Questa palette utilizza diverse sfumature di giallo per rappresentare l'intensità della radiazione solare diffusa, dal più chiaro al più scuro. La scelta del giallo in tutte le sue sfumature permette di sottolineare la natura solare di questo parametro, mentre le gradazioni aiutano a distinguere l'intensità.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Vanilla          | `#F9E79F`  | ![#F9E79F](https://via.placeholder.com/200/F9E79F?text=+) |
-| Mustard          | `#F4D03F`  | ![#F4D03F](https://via.placeholder.com/200/F4D03F?text=+) |
-| Jonquil          | `#F1C40F`  | ![#F1C40F](https://via.placeholder.com/200/F1C40F?text=+) |
+```palette
+https://coolors.co/palette/F9E79F-F4D03F-F1C40F
+```
 **Reflected SW Radiation (W/m²)**: Radiazione solare riflessa dal suolo e dagli oggetti, misurata in Watt per metro quadrato.
 Dal colore argento al grigio scuro, questa palette rappresenta la radiazione solare riflessa. L'argento e i toni di grigio sono associati alle superfici riflettenti e al concetto di riflessione, con una gradazione che indica l'aumento dell'intensità riflessa.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Argento         | `#C0C0C0`  | ![#C0C0C0](https://via.placeholder.com/200/C0C0C0?text=+) |
-| Grigio Cadetto  | `#95A5A6`  | ![#95A5A6](https://via.placeholder.com/200/95A5A6?text=+) |
-| Grigio         | `#707B7C`  | ![#707B7C](https://via.placeholder.com/200/707B7C?text=+) |
+```palette
+https://coolors.co/palette/C0C0C0-95A5A6-707B7C
+```
 **CO2 (ppm)**: Concentrazione di diossido di carbonio nell'aria, espressa in parti per milione.
 La transizione dal verde al rosso scuro riflette l'aumento dei livelli di CO2, con il verde che rappresenta condizioni più sicure e il rosso scuro che indica livelli preoccupanti. Questa palette visualizza l'impatto e la gravità dell'aumento di CO2, con il rosso scuro che funge da segnale di allerta.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Verde Celadon    | `#ABEBC6`  | ![#ABEBC6](https://via.placeholder.com/200/ABEBC6?text=+) |
-| Verde Smeraldo   | `#58D68D`  | ![#58D68D](https://via.placeholder.com/200/58D68D?text=+) |
-| Rosso Bruciato   | `#922B21`  | ![#922B21](https://via.placeholder.com/200/922B21?text=+) |
+```palette
+https://coolors.co/palette/ABEBC6-58D68D-922B21
+```
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -664,14 +622,9 @@ Il modulo 4 si focalizza sull'indice di comfort termico Universal Thermal Climat
 La palette per l'UTCI varia dall'azzurro, che evoca un senso di freschezza e di bassa temperatura, al rosso scuro, che indica condizioni estremamente calde e potenzialmente pericolose. La progressione attraverso il blu e il viola rappresenta una transizione verso condizioni più calde e meno confortevoli, mentre il rosso e il rosso scuro sono allarmanti e indicano un aumento significativo del disagio termico. #daRivedere 
 
 
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Blu Navy         | `#003866`  | ![#003866](https://via.placeholder.com/200/003866?text=+) |
-| Verde Acqua      | `#018F94`  | ![#018F94](https://via.placeholder.com/200/018F94?text=+) |
-| Verde Lime       | `#33BD5A`  | ![#33BD5A](https://via.placeholder.com/200/33BD5A?text=+) |
-| Giallo          | `#FFBB00`  | ![#FFBB00](https://via.placeholder.com/200/FFBB00?text=+) |
-| Rosso Corallo   | `#D1593B`  | ![#D1593B](https://via.placeholder.com/200/D1593B?text=+) |
-| Magenta         | `#AD177E`  | ![#AD177E](https://via.placeholder.com/200/AD177E?text=+) |
+```palette
+https://coolors.co/palette/003866-018f94-33bd5a-ffbb00-d1593b-ad177e
+```
 **Section UTCI X (+ wind)**: Misura dell'UTCI lungo l'asse X del modello, considerando l'impatto del vento.
 **Section UTCI Y (+ wind)**: Misura dell'UTCI lungo l'asse Y del modello, considerando anch'esso l'impatto del vento.
 
@@ -686,43 +639,30 @@ Il modulo 5 si concentra sul bilancio energetico delle superfici, esplorando tem
 
 **T Surface (°C)**: Temperatura della superficie, che indica la temperatura istantanea dell'elemento superficiale in esame.
 Questa gamma di colori rappresenta la temperatura superficiale da fredda a calda. Il blu chiaro e l'azzurro suggeriscono temperature più basse, ideali per il comfort, mentre il passaggio al giallo, arancione e rosso indica un aumento della temperatura, con il rosso che rappresenta superfici estremamente calde. Questa palette facilita l'identificazione visiva delle zone di calore e di freschezza.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Blu Chiaro       | `#5DADE2`  | ![#5DADE2](https://via.placeholder.com/200/5DADE2?text=+) |
-| Azzurro         | `#85C1E9`  | ![#85C1E9](https://via.placeholder.com/200/85C1E9?text=+) |
-| Giallo Chiaro   | `#F7DC6F`  | ![#F7DC6F](https://via.placeholder.com/200/F7DC6F?text=+) |
-| Arancione       | `#F39C12`  | ![#F39C12](https://via.placeholder.com/200/F39C12?text=+) |
-| Rosso           | `#E74C3C`  | ![#E74C3C](https://via.placeholder.com/200/E74C3C?text=+) |
+```palette
+https://coolors.co/palette/5DADE2-85C1E9-F7DC6F-F39C12-E74C3C
+```
 **Shadow Flag ()**: Indicatore binario o categorico che identifica la presenza o assenza di ombreggiatura in un punto specifico.
 La transizione dal grigio chiaro al nero è stata scelta per rappresentare l'ombreggiatura, con il grigio chiaro che indica aree scarsamente ombreggiate e il nero che indica ombreggiatura completa. Questa scala di grigi comunica efficacemente la presenza e l'intensità dell'ombreggiatura, essenziale per valutare l'impatto dell'irradiazione solare e del comfort termico.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Grigio Platino   | `#D5D8DC`  | ![#D5D8DC](https://via.placeholder.com/200/D5D8DC?text=+) |
-| Grigio Francese  | `#BDC3C7`  | ![#BDC3C7](https://via.placeholder.com/200/BDC3C7?text=+) |
-| Grigio Scuro     | `#626567`  | ![#626567](https://via.placeholder.com/200/626567?text=+) |
-| Nero Intenso     | `#17202A`  | ![#17202A](https://via.placeholder.com/200/17202A?text=+) |
+```palette
+https://coolors.co/palette/D5D8DC-BDC3C7-626567-17202A
+```
 **Sensible Heat Flux H (W/m2)**: Flusso di calore sensibile, rappresentando la quantità di calore trasferito per convezione e conduzione.
 L'arancione al rosso scuro rappresenta l'aumento del flusso di calore sensibile, con l'arancione chiaro che indica flussi più deboli e il rosso scuro che indica flussi intensi. Questi colori caldi sono intuitivamente legati al concetto di calore e trasferimento energetico, evidenziando le aree di maggiore attività termica.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Giallo Dorato   | `#F5B041`  | ![#F5B041](https://via.placeholder.com/200/F5B041?text=+) |
-| Arancione       | `#F39C12`  | ![#F39C12](https://via.placeholder.com/200/F39C12?text=+) |
-| Rosso Scuro     | `#78281F`  | ![#78281F](https://via.placeholder.com/200/78281F?text=+) |
+```palette
+https://coolors.co/palette/F5B041-F39C12-78281F
+```
 **Latent Heat Flux LE (W/m2)**: Flusso di calore latente, associato alla fase di evaporazione e traspirazione.
 I toni di verde rappresentano il flusso di calore latente associato all'evaporazione e alla traspirazione. Il verde chiaro indica flussi più bassi, mentre il verde scuro indica flussi più elevati. Questa scelta cromatica riflette il legame tra umidità, vegetazione e trasferimento di calore latente, con una gradazione che facilita la distinzione visiva delle variazioni.
 
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Verde Celadon    | `#ABEBC6`  | ![#ABEBC6](https://via.placeholder.com/200/ABEBC6?text=+) |
-| Verde Smeraldo   | `#2ECC71`  | ![#2ECC71](https://via.placeholder.com/200/2ECC71?text=+) |
-| Verde Mare       | `#1E8449`  | ![#1E8449](https://via.placeholder.com/200/1E8449?text=+) |
+```palette
+https://coolors.co/palette/ABEBC6-2ECC71-1E8449
+```
 **Soil Heat Flux G (W/m2)**: Flusso di calore nel suolo, rappresentando il trasferimento di calore tra il suolo e l'atmosfera.
 Dal grigio chiaro al marrone scuro, questa palette visualizza il flusso di calore nel suolo. Il grigio chiaro indica flussi minimi, mentre il marrone scuro indica flussi significativi di calore nel suolo. Questi colori sono stati scelti per la loro associazione con la terra e il suolo, con una progressione cromatica che riflette l'aumento dell'attività termica sotterranea.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Grigio Chiaro    | `#D7DBDD`  | ![#D7DBDD](https://via.placeholder.com/200/D7DBDD?text=+) |
-| Marrone Ruggine  | `#A04000`  | ![#A04000](https://via.placeholder.com/200/A04000?text=+) |
-| Marrone Scuro    | `#784212`  | ![#784212](https://via.placeholder.com/200/784212?text=+) |
+```palette
+https://coolors.co/palette/D7DBDD-A04000-784212
+```
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -734,29 +674,29 @@ Dal grigio chiaro al marrone scuro, questa palette visualizza il flusso di calor
 ### Modulo grafici dei receptors
 **wSpeed (m/s)**: 85C1E9 (Maya blue)
 **Descrizione**: L'azzurro, associato al cielo e all'aria, rappresenta visivamente la velocità del vento. Questo colore chiaro e fresco suggerisce movimento e fluidità, facilitando la comprensione intuitiva della velocità e della presenza del vento nell'ambiente.
-| Colore      | Codice Hex | Anteprima                  |
-|-------------|------------|----------------------------|
-| Maya blue   | `#85C1E9`  | ![#85C1E9](https://via.placeholder.com/200/85C1E9?text=+) |
+```palette
+https://coolors.co/palette/85C1E9
+```
 **Potential Air Temperature (°C)**: E74C3C (Vermilion)
 **Descrizione**: Il rosso è stato scelto per la temperatura dell'aria potenziale per la sua immediata associazione con il calore. Questo colore intenso comunica rapidamente la presenza di temperature elevate, servendo come un segnale visivo dell'importanza di monitorare e comprendere le variazioni termiche.
-| Colore      | Codice Hex | Anteprima                  |
-|-------------|------------|----------------------------|
-| Vermilion   | `#E74C3C`  | ![#E74C3C](https://via.placeholder.com/200/E74C3C?text=+) |
+```palette
+https://coolors.co/palette/E74C3C
+```
 **Relative Humidity (%)**: 48C9B0 (Turquoise)
 **Descrizione**: Il verde acqua, simbolo di freschezza e vitalità, rappresenta l'umidità relativa, suggerendo equilibrio e benessere ambientale.
-| Colore      | Codice Hex | Anteprima                  |
-|-------------|------------|----------------------------|
-| Turquoise   | `#48C9B0`  | ![#48C9B0](https://via.placeholder.com/200/48C9B0?text=+) |
+```palette
+https://coolors.co/palette/48C9B0
+```
 **Mean Radiant Temperature (°C)**: F5B041 (Hunyadi yellow)
 **Descrizione**: L'arancione, un colore caldo e vivace, rappresenta la temperatura radiante media. Questo colore è stato scelto per la sua capacità di suggerire energia e calore radiante, fornendo una rappresentazione visiva immediata dell'influenza della radiazione termica sull'ambiente.
-| Colore           | Codice Hex | Anteprima                  |
-|------------------|------------|----------------------------|
-| Hunyadi yellow   | `#F5B041`  | ![#F5B041](https://via.placeholder.com/200/F5B041?text=+) |
+```palette
+https://coolors.co/palette/F5B041
+```
 **Pressure Perturbation (dPa)**: 58D68D (Emerald)
 **Descrizione**: Il verde chiaro per la perturbazione della pressione comunica una sensazione di variazione e cambiamento. Questo colore, leggero e rinfrescante, è stato scelto per rappresentare le fluttuazioni e le dinamiche della pressione atmosferica, con una tonalità che evoca equilibrio e naturalezza.
-| Colore      | Codice Hex | Anteprima                  |
-|-------------|------------|----------------------------|
-| Emerald     | `#58D68D`  | ![#58D68D](https://via.placeholder.com/200/58D68D?text=+) |
+```palette
+https://coolors.co/palette/58D68D
+```
 
 | Campo | Descrizione | Unità di misura | Colore (Esadecimale) |
 | ---- | ---- | ---- | ---- |
