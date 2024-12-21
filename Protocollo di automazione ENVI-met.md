@@ -49,8 +49,9 @@ Di seguito, le caratteristiche dettagliate degli elementi inseribili per ogni ti
 
 - **Terreno**: Il terreno, qualora inserito, può consistere in una o più superfici Mesh o Brep. È fondamentale che eventuali discontinuità nel terreno nonpresentino pareti verticali perfette, in quanto ciò comprometterebbe la funzionalità del modello. Sarà implementata una verifica preliminare per assicurarsi che queste condizioni siano rispettate. Importante anche verificare che la superficie del terreno sia quanto più vicina al piano 0 e che non risulti mai più bassa di esso per non compromettere la validità del modello.
 
-![Casi comuni di geometrie del terreno valide e non](attachment/1.2.1%20img1.jpg)
+[[1.2.1 img1.afdesign]]
 
+![[1.2.1 img1.jpg | Casi comuni di geometrie del terreno valide e non ]]
 - **Materiali del Terreno**: Questi elementi possono essere rappresentati attraverso curve planari chiuse o superfici planari. Devono essere posizionati appena sopra il piano zero. Un vantaggio nell'utilizzo di superfici è la possibilità di creare zone vuote, o "fori", al loro interno, permettendo una maggiore flessibilità nella modellazione.
 
 - **Piante 2D**: Analogamente ai Materiali del Terreno, le Piante 2D devono essere posizionate appena sopra il piano zero. #insert_image
@@ -170,7 +171,7 @@ Quando un gruppo contenente una di queste stringhe viene identificato, il meccan
 
 Questo sistema di colorazione automatizzato non solo migliora l'efficienza del processo di organizzazione del workflow, ma contribuisce anche a una maggiore chiarezza visiva. Permettendo una rapida identificazione delle funzioni dei vari gruppi, facilita la comprensione e la navigazione all'interno di strutture workflow complesse. L'implementazione di questo sistema automatizzato rappresenta un significativo passo avanti nell'ottimizzazione dei processi di design e di gestione in Grasshopper, con implicazioni positive sia per la produttività che per l'accessibilità del software.
 
-![Rappresentazione grafica dell'assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper. L'immagine mostra l'implementazione del sistema di colorazione basato sui nomi dei gruppi, evidenziando come i gruppi etichettati con ':logics' e ':gui' vengano automaticamente colorati secondo la palette predefinita. I colori specifici, Peach (efc69b) e Atomic Tangerine (df9c84), sono utilizzati per i gruppi di logica, mentre Amaranth Purple (af1b3f) e Cerise (d04e6c) sono assegnati ai gruppi relativi alla GUI. La visualizzazione chiarisce la differenziazione funzionale e la gerarchia all'interno del workflow, migliorando la leggibilità e l'organizzazione complessiva del progetto](/attachment/Chromatic%20and%20Functional%20Assignment%20of%20Groups%20in%20Grasshopper%20Workflows.png)
+![[Chromatic and Functional Assignment of Groups in Grasshopper Workflows.png|Rappresentazione grafica dell'assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper. L'immagine mostra l'implementazione del sistema di colorazione basato sui nomi dei gruppi, evidenziando come i gruppi etichettati con ':logics' e ':gui' vengano automaticamente colorati secondo la palette predefinita. I colori specifici, Peach (efc69b) e Atomic Tangerine (df9c84), sono utilizzati per i gruppi di logica, mentre Amaranth Purple (af1b3f) e Cerise (d04e6c) sono assegnati ai gruppi relativi alla GUI. La visualizzazione chiarisce la differenziazione funzionale e la gerarchia all'interno del workflow, migliorando la leggibilità e l'organizzazione complessiva del progetto]]
 
 Proseguendo nell'analisi del meccanismo di automatizzazione della colorazione, si evidenzia che l'algoritmo visuale illustrato in #figuradanumerare si avvale di componenti specifici del plugin Metahopper. Questi componenti sono strategicamente impiegati per selezionare i gruppi presenti all'interno del canvas di Grasshopper. Il sistema è programmato per riconoscere le stringhe chiave, come ':logics' e ':gui', nei nomi dei gruppi. Quando tali stringhe vengono identificate, l'algoritmo attiva il processo di colorazione, assegnando i colori come precedentemente descritto in base alla funzione specifica del gruppo.
 
@@ -199,7 +200,7 @@ In parallelo, il processo esegue una verifica simile sugli oggetti "Slider", foc
 
 Come per le precedenti ottimizzazioni, anche questo processo è implementato attraverso l'uso del plugin Metahopper, confermando l'efficacia di questo strumento nel facilitare un'organizzazione visiva coerente e funzionale. Le considerazioni precedentemente espresse riguardo all'utilizzo di Metahopper durante le fasi di sviluppo e manutenzione, e alla sua eventuale rimozione nelle fasi finali di utilizzo del prodotto, rimangono valide anche per questo nuovo processo di automatizzazione.
 
-![Visualizzazione del processo di ottimizzazione grafica in Grasshopper. L'immagine illustra l'implementazione del meccanismo automatizzato per la gestione degli oggetti 'Panel' e 'Slider'. Si osserva come gli oggetti 'Panel' vengono identificati e colorati nel tono 'Jasmine' (F6E073), per una maggiore distinzione visiva. Parallelamente, viene mostrata la rimozione del nome standard dai 'Number Slider'](/attachment/Graphical%20components%20optimization%201.png)
+![[Graphical components optimization 1.png|Visualizzazione del processo di ottimizzazione grafica in Grasshopper. L'immagine illustra l'implementazione del meccanismo automatizzato per la gestione degli oggetti 'Panel' e 'Slider'. Si osserva come gli oggetti 'Panel' vengono identificati e colorati nel tono 'Jasmine' (F6E073), per una maggiore distinzione visiva. Parallelamente, viene mostrata la rimozione del nome standard dai 'Number Slider']]
 
 L'adozione di queste tecniche di ottimizzazione grafica mostrate in #figuradanumerare riflette un impegno costante nel migliorare l'efficienza e l'usabilità dei workflow in Grasshopper. Questi processi automatizzati non solo semplificano la gestione dei componenti all'interno del canvas, ma contribuiscono anche a rendere il processo di progettazione più intuitivo e accessibile, sia per gli sviluppatori che per gli utenti finali.
 
@@ -259,7 +260,7 @@ Come illustrato nell'immagine #figuradanumerare , l'uso del componente 'Morpho L
 Nel quadro dell'integrazione avanzata tra Grasshopper e Envi-met, rivestono un ruolo cruciale i componenti 'Morpho Library' e 'Morpho Workspace'. Il primo funge da ponte diretto verso la vasta libreria di Envi-met, permettendo agli utenti di estrarre e manipolare specifici elementi ambientali e materiali per i loro progetti.
 
 In parallelo, 'Morpho Workspace' gioca un ruolo strategico nel definire la posizione della cartella di workspace di Envi-met e specificare il nome del progetto Envi-met attivo. Essenziale per contenere tutte le informazioni e i dati configurati per uno specifico progetto ambientale, il workspace di Envi-met include simulazioni, materiali, configurazioni vegetative e altro. 'Morpho Workspace' non solo indica il percorso fisico dei dati, ma serve anche come riferimento contestuale per l'intero progetto, assicurando che tutte le operazioni in Grasshopper siano allineate con il progetto Envi-met specifico. Questa sincronizzazione garantisce che le modifiche, le selezioni e le analisi siano sempre pertinenti e aggiornate.
-![[attachment/readLibrary.png]]
+![[readLibrary.png]]
 Inserendo la parola chiave 'wall' nell'input `_type_` di 'Morpho Library', si possono ottenere immediatamente i codici Envi-met e le descrizioni di ogni costruzione muraria presente nella libreria. Questo consente una selezione e un'esplorazione rapide delle varie opzioni di costruzione muraria disponibili, fondamentali per la modellazione di ambienti urbani e naturali.
 
 Per una disamina più approfondita, in particolare per ottenere dettagli sui 'Materials' (ovvero i codici dei materiali che compongono la costruzione) e il 'Color', si utilizza il componente 'morpho_decompose_xml'. Questo componente analizza il codice XML fornito in output da 'Morpho Library', estraendo le informazioni pertinenti attraverso le opportune parole chiave. La capacità di decomporre e interpretare questi dati è cruciale per comprendere e utilizzare efficacemente le risorse della libreria Envi-met.
@@ -273,7 +274,7 @@ red = int(hex_color[0:2], 16)
 green = int(hex_color[2:4], 16)
 blue = int(hex_color[4:6], 16)`
 ```
-![[attachment/decimalToRGB.png]]
+![[decimalToRGB.png]]
 L'output di questo script viene poi convertito in un parametro 'Color' dal componente 'Colour RGB', come mostrato nell'immagine #figuradanumerare . Questo processo non solo assicura che i colori siano interpretati correttamente, ma consente anche una visualizzazione intuitiva e coerente all'interno del workflow di Grasshopper.
 
 Gli output del ramo 'Wall' in Grasshopper sono specificamente delineati per fornire una comprensione completa delle caratteristiche di ogni costruzione muraria. Gli output includono:
@@ -391,8 +392,7 @@ Una volta che si ritiene conclusa la fase di selezione dei materiali, l'utente p
 Con l'avanzamento delle operazioni, i risultati vengono progressivamente aggregati e visualizzati in uno specchietto tridimensionale, che funge da collettore di tutti gli edifici impostati finora. Questa rappresentazione tridimensionale non solo fornisce un feedback immediato sull'andamento del progetto, ma facilita anche ulteriori riflessioni e modifiche. Il processo culmina con una tabella riassuntiva che elenca tutti i gruppi generati, fornendo un'analisi dettagliata dei materiali utilizzati e un conteggio degli edifici per ciascun gruppo.
 
 #insert_image #figuradanumerare 
-![Interfaccia grafica che mostra il processo di selezione e gestione delle geometrie in Rhino](/attachment/Pasted%20image%2020240103122159.png)
-
+![[Pasted image 20240103122159.png | immagine dell'interfaccia da migliorare!]]
 
 è importante sottolineare che, a causa della complessità intrinseca del processo utilizzato, non è possibile presentare l'immagine originale del processo Grasshopper. Al suo posto, è stato elaborato uno schema semplificato che illustra i passaggi chiave coinvolti nella creazione di questa parte dell'interfaccia e del suo comportamento logico.
 
@@ -452,7 +452,7 @@ L'obiettivo di questo capitolo è fornire un framework chiaro e dettagliato che 
 
 ## limiti nel sistema automatizzato #daRivedere
 Non è attualmente è possibile automatizzare il calcolo degli indici tramite biomet. Sarà necessario compiere questa azione manualmente o ricorrere all'utilizzo di un calcolo tramite i componenti di ladybug
-
+ 
 # Dinamismo e innovazione nei report automatizzati #daRivedere 
 
 ## Data Management Workflow and Map Generation #daRivedere la parte iniziale
