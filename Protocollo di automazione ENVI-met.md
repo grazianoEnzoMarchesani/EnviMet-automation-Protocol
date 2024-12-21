@@ -493,9 +493,12 @@ Il modulo 1 si concentra sulle ore di soleggiamento registrate a livello del ter
 **Sun hours Terrain level (data) (h)**: Rappresenta il numero totale di ore di soleggiamento a livello del terreno registrato in date specifiche. Questo dato è espressivo dell'irraggiamento solare diretto che incide su un dato piano orizzontale.
 La palette transita dal giallo chiaro al rosso intenso per riflettere l'intensità crescente delle ore di sole. Il giallo chiaro rappresenta ore di sole minime, evocando un senso di calma e freschezza, mentre il rosso intenso denota il massimo dell'irraggiamento solare, suggerendo calore e intensità. Questa scelta cromatica consente una percezione immediata dell'intensità solare e della sua variazione stagionale o giornaliera.
 
-```palette
-https://coolors.co/palette/FCF3CF-F7DC6F-F39C12-C0392B
-```
+| Colore          | Codice Hex | Anteprima                  |
+|-----------------|------------|----------------------------|
+| Cornsilk        | `#FCF3CF`  | ![#FCF3CF](https://via.placeholder.com/200/FCF3CF?text=+) |
+| Jasmine         | `#F7DC6F`  | ![#F7DC6F](https://via.placeholder.com/200/F7DC6F?text=+) |
+| Gamboge         | `#F39C12`  | ![#F39C12](https://via.placeholder.com/200/F39C12?text=+) |
+| Persian Red     | `#C0392B`  | ![#C0392B](https://via.placeholder.com/200/C0392B?text=+) |
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -513,36 +516,47 @@ https://coolors.co/palette/D3D3D3-A6ACAF-585858
 ```
 **Building Height (m)**: Indica l'altezza degli edifici nel modello, misurata in metri.
 La palette spazia dal beige al marrone scuro per rappresentare l'altitudine degli edifici. Il beige, associato a costruzioni più basse, evoca leggerezza e spazio, mentre il marrone scuro, usato per le strutture più alte, suggerisce solidità e imponenza. Questa progressione cromatica aiuta a distinguere visivamente gli edifici in base alla loro altezza.
-```palette
-https://coolors.co/palette/F5F5DC-D7B29D-5D4037
-```
+| Colore       | Codice Hex | Anteprima                  |
+|--------------|------------|----------------------------|
+| Beige        | `#F5F5DC`  | ![#F5F5DC](https://via.placeholder.com/200/F5F5DC?text=+) |
+| Rosa Pallido | `#D7B29D`  | ![#D7B29D](https://via.placeholder.com/200/D7B29D?text=+) |
+| Marrone      | `#5D4037`  | ![#5D4037](https://via.placeholder.com/200/5D4037?text=+) |
 **z Topo (m)**: Rappresenta l'altitudine topografica del terreno rispetto a un livello di riferimento.
 toni di verde rappresentano le variazioni altimetriche della topografia. Il verde chiaro indica aree più basse, mentre il verde scuro segnala regioni più elevate. Il verde è comunemente associato all'elemento terreno e qui viene utilizzato per fornire una sensazione di flusso e continuità nel paesaggio.
 
-```palette
-https://coolors.co/palette/DAF7A6-7DCEA0-229954
-```
+| Colore          | Codice Hex | Anteprima                  |
+|-----------------|------------|----------------------------|
+| Mindaro         | `#DAF7A6`  | ![#DAF7A6](https://via.placeholder.com/200/DAF7A6?text=+) |
+| Celadon         | `#7DCEA0`  | ![#7DCEA0](https://via.placeholder.com/200/7DCEA0?text=+) |
+| Shamrock Green  | `#229954`  | ![#229954](https://via.placeholder.com/200/229954?text=+) |
 
 **Soil Profile Type ()**: Classifica il tipo di profilo del suolo in base a caratteristiche fisiche e composizione.
 Questa palette di marroni rappresenta la varietà nei profili del suolo. Il marrone chiaro può indicare suoli più sabbiosi o meno fertili, mentre il marrone scuro può rappresentare suoli più ricchi e densi. Questa gamma cromatica evoca la terra e la varietà dei suoi strati. #daRivedere 
-```palette
-https://coolors.co/palette/CD853F-8B572A-8B4513
-```
+| Colore          | Codice Hex | Anteprima                  |
+|-----------------|------------|----------------------------|
+| Bronzo          | `#CD853F`  | ![#CD853F](https://via.placeholder.com/200/CD853F?text=+) |
+| Russet Chiaro   | `#8B572A`  | ![#8B572A](https://via.placeholder.com/200/8B572A?text=+) |
+| Russet Scuro    | `#8B4513`  | ![#8B4513](https://via.placeholder.com/200/8B4513?text=+) |
 **Surface Albedo ()**: Misura la riflettività della superficie del terreno, indicando la frazione di radiazione solare riflessa.
 Il bianco al nero rappresenta l'albedo della superficie, dalla riflettività massima alla minima. Il bianco indica una superficie altamente riflettente, come la neve, mentre il nero indica una bassa riflettività, come l'asfalto scuro. Questa scala cromatica fornisce una comprensione intuitiva della capacità di una superficie di riflettere la radiazione solare.
+| Colore          | Codice Hex | Anteprima                  |
+|-----------------|------------|----------------------------|
+| Bianco          | `#FFFFFF`  | ![#FFFFFF](https://via.placeholder.com/200/FFFFFF?text=+) |
 ```palette
 https://coolors.co/palette/FFFFFF-BDC3C7-000000
 ```
 **SkyViewFaktor ()**: Valuta la frazione di cielo visibile da un punto specifico a livello del suolo, influenzata dalla morfologia urbana circostante.
 L'azzurro al blu navy rappresenta il fattore di visuale del cielo, con colori più chiari che indicano una maggiore apertura e colori più scuri che indicano una visuale più limitata. Questi colori riflettono visivamente la sensazione di apertura o confinamento dello spazio sopra l'osservatore.
-```palette
-https://coolors.co/palette/87CEEB-3498DB-2C3E50
-```
+| Colore          | Codice Hex | Anteprima                  |
+|-----------------|------------|----------------------------|
+| Sky Blue        | `#87CEEB`  | ![#87CEEB](https://via.placeholder.com/200/87CEEB?text=+) |
+| Celestial Blue  | `#3498DB`  | ![#3498DB](https://via.placeholder.com/200/3498DB?text=+) |
+| Charcoal        | `#2C3E50`  | ![#2C3E50](https://via.placeholder.com/200/2C3E50?text=+) |
 **Receptors ()**: Punti specifici nel modello dove vengono raccolti e analizzati i dati ambientali.
 L'arancione è stato scelto per i receptor per la sua capacità di attirare l'attenzione e indicare punti di interesse o di raccolta dati. Questo colore vivace si distingue nel contesto del report, guidando visivamente l'occhio verso i punti di misurazione chiave.
-```palette
-https://coolors.co/palette/FFA07A
-```
+| Colore            | Codice Hex | Anteprima                  |
+|-------------------|------------|----------------------------|
+| Atomic Tangerine  | `#FFA07A`  | ![#FFA07A](https://via.placeholder.com/200/FFA07A?text=+) |
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -553,15 +567,20 @@ https://coolors.co/palette/FFA07A
 | 2 | Surface Albedo |  | FFFFFF (White), BDC3C7 (French gray), 000000 (Black) |
 | 2 | SkyViewFaktor |  | 87CEEB (Sky blue), 3498DB (Celestial Blue), 2C3E50 (Charcoal) |
 | 2 | Receptors |  | FFA07A (Atomic tangerine) |
+
 ### Modulo mappe 3: Parametri atmosferici e di radiazione
 
 Il modulo 3 si immerge nei parametri atmosferici e di radiazione, offrendo una panoramica dettagliata delle condizioni climatiche e ambientali. Voci come "Potential Air Temperature" e "Relative Humidity" forniscono misurazioni fondamentali dell'atmosfera, mentre "Wind Speed" e "Wind Direction" dettagliano le dinamiche del vento. Importanti sono anche le misure di radiazione, che comprendono la radiazione solare diretta, diffusa e riflessa, insieme ai livelli di CO2. Questi dati sono imprescindibili per analisi climatiche, studi di comfort e valutazioni ambientali.
 
 **Potential Air Temperature (°C)**: Temperatura dell'aria potenziale, un indicatore termodinamico che prescinde da influenze locali come radiazione o convezione.
 La palette per la temperatura dell'aria potenziale mostra una transizione dal blu, che evoca sensazioni di freddo, al rosso, che rappresenta il calore. Questa gamma di colori facilita la comprensione istantanea delle variazioni termiche, con sfumature intermedie che permettono di percepire variazioni più sottili.
-```palette
-https://coolors.co/palette/3498DB-85C1E9-AED6F1-F5B041-E74C3C
-```
+| Colore           | Codice Hex | Anteprima                  |
+|------------------|------------|----------------------------|
+| Celestial Blue   | `#3498DB`  | ![#3498DB](https://via.placeholder.com/200/3498DB?text=+) |
+| Maya Blue        | `#85C1E9`  | ![#85C1E9](https://via.placeholder.com/200/85C1E9?text=+) |
+| Uranian Blue     | `#AED6F1`  | ![#AED6F1](https://via.placeholder.com/200/AED6F1?text=+) |
+| Hunyadi Yellow   | `#F5B041`  | ![#F5B041](https://via.placeholder.com/200/F5B041?text=+) |
+| Vermilion        | `#E74C3C`  | ![#E74C3C](https://via.placeholder.com/200/E74C3C?text=+) |
 **Relative Humidity ()**: Umidità relativa dell'aria, espressa come percentuale, che indica il rapporto tra il contenuto di umidità attuale e la massima umidità possibile all'attuale temperatura.
 Questa palette usa tonalità di azzurro e verde per rappresentare l'umidità relativa, con l'azzurro chiaro che indica condizioni più secche e il verde scuro condizioni più umide. La scelta di questi colori rispecchia la naturale associazione tra freschezza, acqua e umidità.
 ```palette
