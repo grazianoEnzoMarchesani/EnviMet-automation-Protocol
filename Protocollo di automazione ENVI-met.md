@@ -391,7 +391,7 @@ Una volta che si ritiene conclusa la fase di selezione dei materiali, l'utente p
 Con l'avanzamento delle operazioni, i risultati vengono progressivamente aggregati e visualizzati in uno specchietto tridimensionale, che funge da collettore di tutti gli edifici impostati finora. Questa rappresentazione tridimensionale non solo fornisce un feedback immediato sull'andamento del progetto, ma facilita anche ulteriori riflessioni e modifiche. Il processo culmina con una tabella riassuntiva che elenca tutti i gruppi generati, fornendo un'analisi dettagliata dei materiali utilizzati e un conteggio degli edifici per ciascun gruppo.
 
 #insert_image #figuradanumerare 
-<img src="images/interface_selection_management.png" alt="Interfaccia grafica che mostra il processo di selezione e gestione delle geometrie in Rhino"/>
+![Interfaccia grafica che mostra il processo di selezione e gestione delle geometrie in Rhino](/attachment/Pasted%20image%2020240103122159.png)
 
 
 è importante sottolineare che, a causa della complessità intrinseca del processo utilizzato, non è possibile presentare l'immagine originale del processo Grasshopper. Al suo posto, è stato elaborato uno schema semplificato che illustra i passaggi chiave coinvolti nella creazione di questa parte dell'interfaccia e del suo comportamento logico.
