@@ -1,5 +1,5 @@
 # Abstract
-![[logo.png]]
+![[attachment/logo.png]]
 
 Il documento è delineato come una traccia metodologica pionieristica nel campo della modellazione ambientale, esplorando le nuove frontiere del progetto LIFE A_GreeNET con l'ausilio di ENVI-met. La ricerca è radicata nella necessità urgente di affrontare la crescente complessità e la scala delle sfide ambientali urbane, tracciando un percorso verso soluzioni sostenibili attraverso l'innovazione tecnologica e l'automazione.
 
