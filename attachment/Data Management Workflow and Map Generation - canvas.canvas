@@ -1,0 +1,25 @@
+{
+	"nodes":[
+		{"id":"e166b24fe46f0bf3","type":"text","text":"Temperature\nHumidty\nMean Radiant Teemperature\nWind\nUTCI\nSurface Temperature","x":246,"y":-240,"width":338,"height":160,"color":"1"},
+		{"id":"6c7e0957d6078bea","type":"text","text":"Temperature\nHumidty\nMean Radiant Teemperature\nWind\nUTCI\nSurface Temperature","x":246,"y":105,"width":338,"height":160,"color":"5"},
+		{"id":"8557e9e20c1e7b37","type":"text","text":"Model B","x":-40,"y":160,"width":140,"height":50,"color":"5"},
+		{"id":"bfd8d9cfc4b8fde5","type":"text","text":"Model A","x":-40,"y":-185,"width":140,"height":50,"color":"1"},
+		{"id":"b34ee2118ceff7b0","type":"text","text":"hour 14","x":880,"y":-52,"width":120,"height":88,"color":"2"},
+		{"id":"72aee35b9d769d16","type":"text","text":"hour 10","x":880,"y":-160,"width":120,"height":88,"color":"2"},
+		{"id":"51ac3c9ef8db2798","type":"text","text":"DELTA comparison A-B","x":1200,"y":-33,"width":240,"height":50,"color":"3"},
+		{"id":"b24ea089f486c8ad","type":"text","text":"hour 18","x":880,"y":56,"width":120,"height":88,"color":"2"}
+	],
+	"edges":[
+		{"id":"9e928dbd677fb7af","fromNode":"bfd8d9cfc4b8fde5","fromSide":"right","toNode":"e166b24fe46f0bf3","toSide":"left"},
+		{"id":"23c2b38c0855b7fa","fromNode":"8557e9e20c1e7b37","fromSide":"right","toNode":"6c7e0957d6078bea","toSide":"left"},
+		{"id":"051405e49e48c183","fromNode":"e166b24fe46f0bf3","fromSide":"right","toNode":"72aee35b9d769d16","toSide":"left"},
+		{"id":"6590cec042aa88cd","fromNode":"e166b24fe46f0bf3","fromSide":"right","toNode":"b34ee2118ceff7b0","toSide":"left"},
+		{"id":"1e089e92dde967f3","fromNode":"e166b24fe46f0bf3","fromSide":"right","toNode":"b24ea089f486c8ad","toSide":"left"},
+		{"id":"668059c50f5feac6","fromNode":"6c7e0957d6078bea","fromSide":"right","toNode":"b24ea089f486c8ad","toSide":"left"},
+		{"id":"fd6719832b5040c0","fromNode":"6c7e0957d6078bea","fromSide":"right","toNode":"b34ee2118ceff7b0","toSide":"left"},
+		{"id":"15852ec25b08f648","fromNode":"6c7e0957d6078bea","fromSide":"right","toNode":"72aee35b9d769d16","toSide":"left"},
+		{"id":"9b1f3737a2a2474a","fromNode":"72aee35b9d769d16","fromSide":"right","toNode":"51ac3c9ef8db2798","toSide":"left"},
+		{"id":"9e0c539d4664ea18","fromNode":"b34ee2118ceff7b0","fromSide":"right","toNode":"51ac3c9ef8db2798","toSide":"left"},
+		{"id":"1762366abdaf4359","fromNode":"b24ea089f486c8ad","fromSide":"right","toNode":"51ac3c9ef8db2798","toSide":"left"}
+	]
+}
