@@ -5,6 +5,3 @@ The integration of environmental modeling with ENVI-met in the context of the LI
 ![logo](attachment/logo.png)
 
 
-![#F5F5DC](https://via.placeholder.com/15/F5F5DC/F5F5DC.png) `#F5F5DC`
-![#D7B29D](https://via.placeholder.com/15/D7B29D/D7B29D.png) `#D7B29D`
-![#5D4037](https://via.placeholder.com/15/5D4037/5D4037.png) `#5D4037`
