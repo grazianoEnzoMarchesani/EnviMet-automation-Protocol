@@ -1,5 +1,4 @@
 # Abstract
-![logo](attachment/logo.png)
 
 Il documento è delineato come una traccia metodologica pionieristica nel campo della modellazione ambientale, esplorando le nuove frontiere del progetto LIFE A_GreeNET con l'ausilio di ENVI-met. La ricerca è radicata nella necessità urgente di affrontare la crescente complessità e la scala delle sfide ambientali urbane, tracciando un percorso verso soluzioni sostenibili attraverso l'innovazione tecnologica e l'automazione.
 
@@ -50,9 +49,8 @@ Di seguito, le caratteristiche dettagliate degli elementi inseribili per ogni ti
 
 - **Terreno**: Il terreno, qualora inserito, può consistere in una o più superfici Mesh o Brep. È fondamentale che eventuali discontinuità nel terreno nonpresentino pareti verticali perfette, in quanto ciò comprometterebbe la funzionalità del modello. Sarà implementata una verifica preliminare per assicurarsi che queste condizioni siano rispettate. Importante anche verificare che la superficie del terreno sia quanto più vicina al piano 0 e che non risulti mai più bassa di esso per non compromettere la validità del modello.
 
-[[1.2.1 img1.afdesign]]
+![Casi comuni di geometrie del terreno valide e non](attachment/1.2.1%20img1.jpg)
 
-![[1.2.1 img1.jpg | Casi comuni di geometrie del terreno valide e non ]]
 - **Materiali del Terreno**: Questi elementi possono essere rappresentati attraverso curve planari chiuse o superfici planari. Devono essere posizionati appena sopra il piano zero. Un vantaggio nell'utilizzo di superfici è la possibilità di creare zone vuote, o "fori", al loro interno, permettendo una maggiore flessibilità nella modellazione.
 
 - **Piante 2D**: Analogamente ai Materiali del Terreno, le Piante 2D devono essere posizionate appena sopra il piano zero. #insert_image
@@ -453,7 +451,7 @@ L'obiettivo di questo capitolo è fornire un framework chiaro e dettagliato che 
 
 ## limiti nel sistema automatizzato #daRivedere
 Non è attualmente è possibile automatizzare il calcolo degli indici tramite biomet. Sarà necessario compiere questa azione manualmente o ricorrere all'utilizzo di un calcolo tramite i componenti di ladybug
- 
+
 # Dinamismo e innovazione nei report automatizzati #daRivedere 
 
 ## Data Management Workflow and Map Generation #daRivedere la parte iniziale
