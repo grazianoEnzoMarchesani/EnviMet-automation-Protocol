@@ -142,7 +142,7 @@ Prima di approfondire l'aspetto dell'assegnazione cromatica e funzionale dei gru
 #### Assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper
 Nell'ambito dei processi implementati mediante Grasshopper, si osserva un'approccio sistematico nell'identificazione delle varie componenti. Questo è realizzato attraverso l'assegnazione di gruppi distinti, ciascuno dei quali è caratterizzato da un colore specifico e una descrizione fornita tramite l'elemento "Scribble". Tale colore non è arbitrario, bensì funge da indicatore dell'appartenenza funzionale della componente all'interno del workflow complessivo. In questo contesto, si distinguono principalmente due categorie di gruppi: quelli che racchiudono funzioni operative specifiche e quelli che sono preposti alla facilitazione dell'interazione con l'interfaccia grafica utente (GUI). Questa metodologia di categorizzazione e identificazione visiva facilita una rapida comprensione del ruolo e della funzione di ciascun elemento all'interno del processo complessivo, contribuendo a un'efficace organizzazione e interpretazione del flusso di lavoro in Grasshopper.
 
-![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+<img src="https://placehold.co/200x200/efc69b/efc69b.png" alt="efc69b" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/df9c84/df9c84.png" alt="df9c84" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/af1b3f/af1b3f.png" alt="af1b3f" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/d04e6c/d04e6c.png" alt="d04e6c" width="200" height="200" style="display: inline-block" />
 
 Proseguendo nella descrizione del sistema di assegnazione cromatica, si prevede l'impiego di una palette specifica, composta dai seguenti colori: efc69b, df9c84, af1b3f, e d04e6c. Questa selezione di colori non è casuale, ma segue una logica ben definita per ottimizzare la rappresentazione e la comprensione delle varie componenti del workflow.
 
@@ -184,7 +184,7 @@ Nell'ambito dell'ottimizzazione grafica dei processi in Grasshopper, è stato sv
 Per quanto riguarda gli oggetti "Panel", il sistema automaticamente identifica e seleziona questi elementi, verificando la presenza del nome standard "Panel". Nel caso in cui questo nome sia presente, il processo procede con la sua rimozione, assegnando contemporaneamente al "Panel" un colore distintivo, specificamente il tono F6E073, corrispondente in RGB a (246, 224, 115), e denominato "Jasmine". Questa colorazione specifica serve a rendere immediatamente riconoscibili questi oggetti, facilitando l'identificazione e la gestione dei dati visualizzati all'interno del canvas.
 
 
-![F6E073](https://img.shields.io/badge/F6E073-%23F6E073.svg?style=for-the-badge&labelColor=F6E073)
+<img src="https://placehold.co/200x200/F6E073/F6E073.png" alt="F6E073" width="200" height="200" style="display: inline-block" />
 
 Segue una tabella che elenca e riassume i caratteri del colore utilizzato per i Panel.
 
@@ -489,7 +489,7 @@ Il modulo 1 si concentra sulle ore di soleggiamento registrate a livello del ter
 **Sun hours Terrain level (data) (h)**: Rappresenta il numero totale di ore di soleggiamento a livello del terreno registrato in date specifiche. Questo dato è espressivo dell'irraggiamento solare diretto che incide su un dato piano orizzontale.
 La palette transita dal giallo chiaro al rosso intenso per riflettere l'intensità crescente delle ore di sole. Il giallo chiaro rappresenta ore di sole minime, evocando un senso di calma e freschezza, mentre il rosso intenso denota il massimo dell'irraggiamento solare, suggerendo calore e intensità. Questa scelta cromatica consente una percezione immediata dell'intensità solare e della sua variazione stagionale o giornaliera.
 
-![FCF3CF](https://img.shields.io/badge/FCF3CF-%23FCF3CF.svg?style=for-the-badge&labelColor=FCF3CF)![F7DC6F](https://img.shields.io/badge/F7DC6F-%23F7DC6F.svg?style=for-the-badge&labelColor=F7DC6F)![F39C12](https://img.shields.io/badge/F39C12-%23F39C12.svg?style=for-the-badge&labelColor=F39C12)![C0392B](https://img.shields.io/badge/C0392B-%23C0392B.svg?style=for-the-badge&labelColor=C0392B)
+<img src="https://placehold.co/200x200/FCF3CF/FCF3CF.png" alt="FCF3CF" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F7DC6F/F7DC6F.png" alt="F7DC6F" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F39C12/F39C12.png" alt="F39C12" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/C0392B/C0392B.png" alt="C0392B" width="200" height="200" style="display: inline-block" />
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -503,37 +503,37 @@ Questo modulo dettaglia le caratteristiche fisiche e geometriche dell'ambiente s
 **Objects ()**: Elenco e caratterizzazione degli oggetti presenti nella simulazione, quali edifici o vegetazione, senza specificare le loro funzioni o impatti ambientali.
 I toni neutri di grigio sono stati scelti per rappresentare oggetti e costruzioni in modo oggettivo. La gradazione dal grigio chiaro al scuro fornisce una rappresentazione visuale della variazione di densità o presenza di oggetti, permettendo un'interpretazione diretta senza connotazioni emotive.
 
-![D3D3D3](https://img.shields.io/badge/D3D3D3-%23D3D3D3.svg?style=for-the-badge&labelColor=D3D3D3)![A6ACAF](https://img.shields.io/badge/A6ACAF-%23A6ACAF.svg?style=for-the-badge&labelColor=A6ACAF)![585858](https://img.shields.io/badge/585858-%23585858.svg?style=for-the-badge&labelColor=585858)
+<img src="https://placehold.co/200x200/D3D3D3/D3D3D3.png" alt="D3D3D3" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/A6ACAF/A6ACAF.png" alt="A6ACAF" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/585858/585858.png" alt="585858" width="200" height="200" style="display: inline-block" />
 
 **Building Height (m)**: Indica l'altezza degli edifici nel modello, misurata in metri.
 La palette spazia dal beige al marrone scuro per rappresentare l'altitudine degli edifici. Il beige, associato a costruzioni più basse, evoca leggerezza e spazio, mentre il marrone scuro, usato per le strutture più alte, suggerisce solidità e imponenza. Questa progressione cromatica aiuta a distinguere visivamente gli edifici in base alla loro altezza.
 
-![F5F5DC](https://img.shields.io/badge/F5F5DC-%23F5F5DC.svg?style=for-the-badge&labelColor=F5F5DC)![D7B29D](https://img.shields.io/badge/D7B29D-%23D7B29D.svg?style=for-the-badge&labelColor=D7B29D)![5D4037](https://img.shields.io/badge/5D4037-%235D4037.svg?style=for-the-badge&labelColor=5D4037)
+<img src="https://placehold.co/200x200/F5F5DC/F5F5DC.png" alt="F5F5DC" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/D7B29D/D7B29D.png" alt="D7B29D" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/5D4037/5D4037.png" alt="5D4037" width="200" height="200" style="display: inline-block" />
 
 **z Topo (m)**: Rappresenta l'altitudine topografica del terreno rispetto a un livello di riferimento.
 toni di verde rappresentano le variazioni altimetriche della topografia. Il verde chiaro indica aree più basse, mentre il verde scuro segnala regioni più elevate. Il verde è comunemente associato all'elemento terreno e qui viene utilizzato per fornire una sensazione di flusso e continuità nel paesaggio.
 
-![DAF7A6](https://img.shields.io/badge/DAF7A6-%23DAF7A6.svg?style=for-the-badge&labelColor=DAF7A6)![7DCEA0](https://img.shields.io/badge/7DCEA0-%237DCEA0.svg?style=for-the-badge&labelColor=7DCEA0)![229954](https://img.shields.io/badge/229954-%23229954.svg?style=for-the-badge&labelColor=229954)
+<img src="https://placehold.co/200x200/DAF7A6/DAF7A6.png" alt="DAF7A6" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/7DCEA0/7DCEA0.png" alt="7DCEA0" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/229954/229954.png" alt="229954" width="200" height="200" style="display: inline-block" />
 
 **Soil Profile Type ()**: Classifica il tipo di profilo del suolo in base a caratteristiche fisiche e composizione.
 Questa palette di marroni rappresenta la varietà nei profili del suolo. Il marrone chiaro può indicare suoli più sabbiosi o meno fertili, mentre il marrone scuro può rappresentare suoli più ricchi e densi. Questa gamma cromatica evoca la terra e la varietà dei suoi strati. #daRivedere 
 
-![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+<img src="https://placehold.co/200x200/efc69b/efc69b.png" alt="efc69b" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/df9c84/df9c84.png" alt="df9c84" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/af1b3f/af1b3f.png" alt="af1b3f" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/d04e6c/d04e6c.png" alt="d04e6c" width="200" height="200" style="display: inline-block" />
 
 **Surface Albedo ()**: Misura la riflettività della superficie del terreno, indicando la frazione di radiazione solare riflessa.
 Il bianco al nero rappresenta l'albedo della superficie, dalla riflettività massima alla minima. Il bianco indica una superficie altamente riflettente, come la neve, mentre il nero indica una bassa riflettività, come l'asfalto scuro. Questa scala cromatica fornisce una comprensione intuitiva della capacità di una superficie di riflettere la radiazione solare.
 
-![FFFFFF](https://img.shields.io/badge/FFFFFF-%23FFFFFF.svg?style=for-the-badge&labelColor=FFFFFF)![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![000000](https://img.shields.io/badge/000000-%23000000.svg?style=for-the-badge&labelColor=000000)
+<img src="https://placehold.co/200x200/FFFFFF/FFFFFF.png" alt="FFFFFF" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/BDC3C7/BDC3C7.png" alt="BDC3C7" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/000000/000000.png" alt="000000" width="200" height="200" style="display: inline-block; margin-right: 0px" />
 
 **SkyViewFaktor ()**: Valuta la frazione di cielo visibile da un punto specifico a livello del suolo, influenzata dalla morfologia urbana circostante.
 L'azzurro al blu navy rappresenta il fattore di visuale del cielo, con colori più chiari che indicano una maggiore apertura e colori più scuri che indicano una visuale più limitata. Questi colori riflettono visivamente la sensazione di apertura o confinamento dello spazio sopra l'osservatore.
 
-![87CEEB](https://img.shields.io/badge/87CEEB-%2387CEEB.svg?style=for-the-badge&labelColor=87CEEB)![3498DB](https://img.shields.io/badge/3498DB-%233498DB.svg?style=for-the-badge&labelColor=3498DB)![2C3E50](https://img.shields.io/badge/2C3E50-%232C3E50.svg?style=for-the-badge&labelColor=2C3E50)
+<img src="https://placehold.co/200x200/87CEEB/87CEEB.png" alt="87CEEB" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/3498DB/3498DB.png" alt="3498DB" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/2C3E50/2C3E50.png" alt="2C3E50" width="200" height="200" style="display: inline-block" />
 
 **Receptors ()**: Punti specifici nel modello dove vengono raccolti e analizzati i dati ambientali.
 L'arancione è stato scelto per i receptor per la sua capacità di attirare l'attenzione e indicare punti di interesse o di raccolta dati. Questo colore vivace si distingue nel contesto del report, guidando visivamente l'occhio verso i punti di misurazione chiave.
 
-![FFA07A](https://img.shields.io/badge/FFA07A-%23FFA07A.svg?style=for-the-badge&labelColor=FFA07A)
+<img src="https://placehold.co/200x200/FFA07A/FFA07A.png" alt="FFA07A" width="200" height="200" style="display: inline-block" />
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -551,47 +551,47 @@ Il modulo 3 si immerge nei parametri atmosferici e di radiazione, offrendo una p
 **Potential Air Temperature (°C)**: Temperatura dell'aria potenziale, un indicatore termodinamico che prescinde da influenze locali come radiazione o convezione.
 La palette per la temperatura dell'aria potenziale mostra una transizione dal blu, che evoca sensazioni di freddo, al rosso, che rappresenta il calore. Questa gamma di colori facilita la comprensione istantanea delle variazioni termiche, con sfumature intermedie che permettono di percepire variazioni più sottili.
 
-![3498DB](https://img.shields.io/badge/3498DB-%233498DB.svg?style=for-the-badge&labelColor=3498DB)![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)![AED6F1](https://img.shields.io/badge/AED6F1-%23AED6F1.svg?style=for-the-badge&labelColor=AED6F1)![F5B041](https://img.shields.io/badge/F5B041-%23F5B041.svg?style=for-the-badge&labelColor=F5B041)![E74C3C](https://img.shields.io/badge/E74C3C-%23E74C3C.svg?style=for-the-badge&labelColor=E74C3C)
+<img src="https://placehold.co/200x200/3498DB/3498DB.png" alt="3498DB" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/85C1E9/85C1E9.png" alt="85C1E9" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/AED6F1/AED6F1.png" alt="AED6F1" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F5B041/F5B041.png" alt="F5B041" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/E74C3C/E74C3C.png" alt="E74C3C" width="200" height="200" style="display: inline-block" />
 
 **Relative Humidity ()**: Umidità relativa dell'aria, espressa come percentuale, che indica il rapporto tra il contenuto di umidità attuale e la massima umidità possibile all'attuale temperatura.
 Questa palette usa tonalità di azzurro e verde per rappresentare l'umidità relativa, con l'azzurro chiaro che indica condizioni più secche e il verde scuro condizioni più umide. La scelta di questi colori rispecchia la naturale associazione tra freschezza, acqua e umidità.
 
-![AED6F1](https://img.shields.io/badge/AED6F1-%23AED6F1.svg?style=for-the-badge&labelColor=AED6F1)![48C9B0](https://img.shields.io/badge/48C9B0-%2348C9B0.svg?style=for-the-badge&labelColor=48C9B0)![27AE60](https://img.shields.io/badge/27AE60-%2327AE60.svg?style=for-the-badge&labelColor=27AE60)
+<img src="https://placehold.co/200x200/AED6F1/AED6F1.png" alt="AED6F1" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/48C9B0/48C9B0.png" alt="48C9B0" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/27AE60/27AE60.png" alt="27AE60" width="200" height="200" style="display: inline-block" />
 
 **Wind Speed (m/s)**: Velocità del vento misurata in metri al secondo.
 Il bianco al viola rappresenta la velocità del vento, con il bianco che indica calma e il viola che suggerisce condizioni più tempestose. La progressione verso il viola per velocità più elevate aggiunge una dimensione visiva di allerta e intensità.
 
-![FFFFFF](https://img.shields.io/badge/FFFFFF-%23FFFFFF.svg?style=for-the-badge&labelColor=FFFFFF)![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)![8E44AD](https://img.shields.io/badge/8E44AD-%238E44AD.svg?style=for-the-badge&labelColor=8E44AD)
+<img src="https://placehold.co/200x200/FFFFFF/FFFFFF.png" alt="FFFFFF" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/85C1E9/85C1E9.png" alt="85C1E9" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/8E44AD/8E44AD.png" alt="8E44AD" width="200" height="200" style="display: inline-block" />
 
 **Wind Direction (deg)**: Direzione del vento espressa in gradi, indicante da quale direzione soffia il vento.
 I toni di grigio e blu navy sono stati selezionati per rappresentare la direzione del vento in modo neutro e informativo. La gradazione di colore fornisce una rappresentazione visiva chiara della variazione direzionale, senza sovraccaricare l'utente con implicazioni emotive. #daRivedere 
 
-![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![7F8C8D](https://img.shields.io/badge/7F8C8D-%237F8C8D.svg?style=for-the-badge&labelColor=7F8C8D)![34495E](https://img.shields.io/badge/34495E-%2334495E.svg?style=for-the-badge&labelColor=34495E)
+<img src="https://placehold.co/200x200/BDC3C7/BDC3C7.png" alt="BDC3C7" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/7F8C8D/7F8C8D.png" alt="7F8C8D" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/34495E/34495E.png" alt="34495E" width="200" height="200" style="display: inline-block" />
 
 **Mean Radiant Temp. (°C)**: Temperatura radiante media, una misura complessiva della radiazione termica che incide su un individuo o oggetto.
 Dal giallo al rosso, questa palette indica l'aumento della temperatura radiante media, con il giallo che rappresenta condizioni più miti e il rosso condizioni più intense. Questi colori caldi sono intuitivamente associati al calore e all'energia radiante.
 
-![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+<img src="https://placehold.co/200x200/efc69b/efc69b.png" alt="efc69b" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/df9c84/df9c84.png" alt="df9c84" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/af1b3f/af1b3f.png" alt="af1b3f" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/d04e6c/d04e6c.png" alt="d04e6c" width="200" height="200" style="display: inline-block" />
 
 **Direct SW Radiation (W/m²)**: Radiazione solare diretta misurata in Watt per metro quadrato.
  I toni del giallo al rosso scuro rappresentano l'aumento dell'intensità della radiazione solare diretta. Il giallo pallido suggerisce un'intensità minore, mentre il rosso scuro indica una forte esposizione solare, riflettendo visivamente l'energia e il calore del sole.
 
-![FCF3CF](https://img.shields.io/badge/FCF3CF-%23FCF3CF.svg?style=for-the-badge&labelColor=FCF3CF)![F7DC6F](https://img.shields.io/badge/F7DC6F-%23F7DC6F.svg?style=for-the-badge&labelColor=F7DC6F)![CB4335](https://img.shields.io/badge/CB4335-%23CB4335.svg?style=for-the-badge&labelColor=CB4335)
+<img src="https://placehold.co/200x200/FCF3CF/FCF3CF.png" alt="FCF3CF" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F7DC6F/F7DC6F.png" alt="F7DC6F" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/CB4335/CB4335.png" alt="CB4335" width="200" height="200" style="display: inline-block" />
  
 **Diffuse SW Radiation (W/m²)**: Radiazione solare diffusa, indicando quella porzione di radiazione solare che raggiunge il suolo dopo essere stata diffusa e riflessa dall'atmosfera.
 Questa palette utilizza diverse sfumature di giallo per rappresentare l'intensità della radiazione solare diffusa, dal più chiaro al più scuro. La scelta del giallo in tutte le sue sfumature permette di sottolineare la natura solare di questo parametro, mentre le gradazioni aiutano a distinguere l'intensità.
 
-![F9E79F](https://img.shields.io/badge/F9E79F-%23F9E79F.svg?style=for-the-badge&labelColor=F9E79F)![F4D03F](https://img.shields.io/badge/F4D03F-%23F4D03F.svg?style=for-the-badge&labelColor=F4D03F)![F1C40F](https://img.shields.io/badge/F1C40F-%23F1C40F.svg?style=for-the-badge&labelColor=F1C40F)
+<img src="https://placehold.co/200x200/F9E79F/F9E79F.png" alt="F9E79F" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F4D03F/F4D03F.png" alt="F4D03F" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/F1C40F/F1C40F.png" alt="F1C40F" width="200" height="200" style="display: inline-block" />
 
 **Reflected SW Radiation (W/m²)**: Radiazione solare riflessa dal suolo e dagli oggetti, misurata in Watt per metro quadrato.
 Dal colore argento al grigio scuro, questa palette rappresenta la radiazione solare riflessa. L'argento e i toni di grigio sono associati alle superfici riflettenti e al concetto di riflessione, con una gradazione che indica l'aumento dell'intensità riflessa.
 
-![C0C0C0](https://img.shields.io/badge/C0C0C0-%23C0C0C0.svg?style=for-the-badge&labelColor=C0C0C0)![95A5A6](https://img.shields.io/badge/95A5A6-%2395A5A6.svg?style=for-the-badge&labelColor=95A5A6)![707B7C](https://img.shields.io/badge/707B7C-%23707B7C.svg?style=for-the-badge&labelColor=707B7C)
+<img src="https://placehold.co/200x200/C0C0C0/C0C0C0.png" alt="C0C0C0" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/95A5A6/95A5A6.png" alt="95A5A6" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/707B7C/707B7C.png" alt="707B7C" width="200" height="200" style="display: inline-block" />
 
 **CO2 (ppm)**: Concentrazione di diossido di carbonio nell'aria, espressa in parti per milione.
 La transizione dal verde al rosso scuro riflette l'aumento dei livelli di CO2, con il verde che rappresenta condizioni più sicure e il rosso scuro che indica livelli preoccupanti. Questa palette visualizza l'impatto e la gravità dell'aumento di CO2, con il rosso scuro che funge da segnale di allerta.
 
-![ABEBC6](https://img.shields.io/badge/ABEBC6-%23ABEBC6.svg?style=for-the-badge&labelColor=ABEBC6)![58D68D](https://img.shields.io/badge/58D68D-%2358D68D.svg?style=for-the-badge&labelColor=58D68D)![922B21](https://img.shields.io/badge/922B21-%23922B21.svg?style=for-the-badge&labelColor=922B21)
+<img src="https://placehold.co/200x200/ABEBC6/ABEBC6.png" alt="ABEBC6" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/58D68D/58D68D.png" alt="58D68D" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/922B21/922B21.png" alt="922B21" width="200" height="200" style="display: inline-block" />
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -611,7 +611,7 @@ Il modulo 4 si focalizza sull'indice di comfort termico Universal Thermal Climat
 **UTCI (°C) (+ wind)**: Indice Climatico Termico Universale, una misura che sintetizza l'effetto combinato di temperatura, vento, radiazione e umidità sul comfort termico umano.
 La palette per l'UTCI varia dall'azzurro, che evoca un senso di freschezza e di bassa temperatura, al rosso scuro, che indica condizioni estremamente calde e potenzialmente pericolose. La progressione attraverso il blu e il viola rappresenta una transizione verso condizioni più calde e meno confortevoli, mentre il rosso e il rosso scuro sono allarmanti e indicano un aumento significativo del disagio termico. #daRivedere 
 
-![003866](https://img.shields.io/badge/003866-%23003866.svg?style=for-the-badge&labelColor=003866)![018f94](https://img.shields.io/badge/018f94-%23018f94.svg?style=for-the-badge&labelColor=018f94)![33bd5a](https://img.shields.io/badge/33bd5a-%2333bd5a.svg?style=for-the-badge&labelColor=33bd5a)![ffbb00](https://img.shields.io/badge/ffbb00-%23ffbb00.svg?style=for-the-badge&labelColor=ffbb00)![d1593b](https://img.shields.io/badge/d1593b-%23d1593b.svg?style=for-the-badge&labelColor=d1593b)![ad177e](https://img.shields.io/badge/ad177e-%23ad177e.svg?style=for-the-badge&labelColor=ad177e)
+<img src="https://placehold.co/200x200/003866/003866.png" alt="003866" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/018f94/018f94.png" alt="018f94" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/33bd5a/33bd5a.png" alt="33bd5a" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/ffbb00/ffbb00.png" alt="ffbb00" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/d1593b/d1593b.png" alt="d1593b" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/ad177e/ad177e.png" alt="ad177e" width="200" height="200" style="display: inline-block" />
 
 **Section UTCI X (+ wind)**: Misura dell'UTCI lungo l'asse X del modello, considerando l'impatto del vento.
 **Section UTCI Y (+ wind)**: Misura dell'UTCI lungo l'asse Y del modello, considerando anch'esso l'impatto del vento.
@@ -628,13 +628,13 @@ Il modulo 5 si concentra sul bilancio energetico delle superfici, esplorando tem
 **T Surface (°C)**: Temperatura della superficie, che indica la temperatura istantanea dell'elemento superficiale in esame.
 Questa gamma di colori rappresenta la temperatura superficiale da fredda a calda. Il blu chiaro e l'azzurro suggeriscono temperature più basse, ideali per il comfort, mentre il passaggio al giallo, arancione e rosso indica un aumento della temperatura, con il rosso che rappresenta superfici estremamente calde. Questa palette facilita l'identificazione visiva delle zone di calore e di freschezza.
 
-![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+<img src="https://placehold.co/200x200/efc69b/efc69b.png" alt="efc69b" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/df9c84/df9c84.png" alt="df9c84" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/af1b3f/af1b3f.png" alt="af1b3f" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/d04e6c/d04e6c.png" alt="d04e6c" width="200" height="200" style="display: inline-block" />
 
 
 **Shadow Flag ()**: Indicatore binario o categorico che identifica la presenza o assenza di ombreggiatura in un punto specifico.
 La transizione dal grigio chiaro al nero è stata scelta per rappresentare l'ombreggiatura, con il grigio chiaro che indica aree scarsamente ombreggiate e il nero che indica ombreggiatura completa. Questa scala di grigi comunica efficacemente la presenza e l'intensità dell'ombreggiatura, essenziale per valutare l'impatto dell'irradiazione solare e del comfort termico.
 
-![D5D8DC](https://img.shields.io/badge/D5D8DC-%23D5D8DC.svg?style=for-the-badge&labelColor=D5D8DC)![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![626567](https://img.shields.io/badge/626567-%23626567.svg?style=for-the-badge&labelColor=626567)![17202A](https://img.shields.io/badge/17202A-%2317202A.svg?style=for-the-badge&labelColor=17202A)
+<img src="https://placehold.co/200x200/D5D8DC/D5D8DC.png" alt="D5D8DC" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/BDC3C7/BDC3C7.png" alt="BDC3C7" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/626567/626567.png" alt="626567" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/17202A/17202A.png" alt="17202A" width="200" height="200" style="display: inline-block" />
 
 **Sensible Heat Flux H (W/m2)**: Flusso di calore sensibile, rappresentando la quantità di calore trasferito per convezione e conduzione.
 L'arancione al rosso scuro rappresenta l'aumento del flusso di calore sensibile, con l'arancione chiaro che indica flussi più deboli e il rosso scuro che indica flussi intensi. Questi colori caldi sono intuitivamente legati al concetto di calore e trasferimento energetico, evidenziando le aree di maggiore attività termica.
@@ -642,12 +642,12 @@ L'arancione al rosso scuro rappresenta l'aumento del flusso di calore sensibile,
 **Latent Heat Flux LE (W/m2)**: Flusso di calore latente, associato alla fase di evaporazione e traspirazione.
 I toni di verde rappresentano il flusso di calore latente associato all'evaporazione e alla traspirazione. Il verde chiaro indica flussi più bassi, mentre il verde scuro indica flussi più elevati. Questa scelta cromatica riflette il legame tra umidità, vegetazione e trasferimento di calore latente, con una gradazione che facilita la distinzione visiva delle variazioni.
 
-![ABEBC6](https://img.shields.io/badge/ABEBC6-%23ABEBC6.svg?style=for-the-badge&labelColor=ABEBC6)![2ECC71](https://img.shields.io/badge/2ECC71-%232ECC71.svg?style=for-the-badge&labelColor=2ECC71)![1E8449](https://img.shields.io/badge/1E8449-%231E8449.svg?style=for-the-badge&labelColor=1E8449)
+<img src="https://placehold.co/200x200/ABEBC6/ABEBC6.png" alt="ABEBC6" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/2ECC71/2ECC71.png" alt="2ECC71" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/1E8449/1E8449.png" alt="1E8449" width="200" height="200" style="display: inline-block" />
 
 **Soil Heat Flux G (W/m2)**: Flusso di calore nel suolo, rappresentando il trasferimento di calore tra il suolo e l'atmosfera.
 Dal grigio chiaro al marrone scuro, questa palette visualizza il flusso di calore nel suolo. Il grigio chiaro indica flussi minimi, mentre il marrone scuro indica flussi significativi di calore nel suolo. Questi colori sono stati scelti per la loro associazione con la terra e il suolo, con una progressione cromatica che riflette l'aumento dell'attività termica sotterranea.
 
-![D7DBDD](https://img.shields.io/badge/D7DBDD-%23D7DBDD.svg?style=for-the-badge&labelColor=D7DBDD)![A04000](https://img.shields.io/badge/A04000-%23A04000.svg?style=for-the-badge&labelColor=A04000)![784212](https://img.shields.io/badge/784212-%23784212.svg?style=for-the-badge&labelColor=784212)
+<img src="https://placehold.co/200x200/D7DBDD/D7DBDD.png" alt="D7DBDD" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/A04000/A04000.png" alt="A04000" width="200" height="200" style="display: inline-block; margin-right: 0px" /><img src="https://placehold.co/200x200/784212/784212.png" alt="784212" width="200" height="200" style="display: inline-block" />
 
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
@@ -661,24 +661,24 @@ Dal grigio chiaro al marrone scuro, questa palette visualizza il flusso di calor
 **wSpeed (m/s)**: 85C1E9 (Maya blue)
 **Descrizione**: L'azzurro, associato al cielo e all'aria, rappresenta visivamente la velocità del vento. Questo colore chiaro e fresco suggerisce movimento e fluidità, facilitando la comprensione intuitiva della velocità e della presenza del vento nell'ambiente.
 
-![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)
+<img src="https://placehold.co/200x200/85C1E9/85C1E9.png" alt="85C1E9" width="200" height="200" style="display: inline-block" />
 
 **Potential Air Temperature (°C)**: E74C3C (Vermilion)
 **Descrizione**: Il rosso è stato scelto per la temperatura dell'aria potenziale per la sua immediata associazione con il calore. Questo colore intenso comunica rapidamente la presenza di temperature elevate, servendo come un segnale visivo dell'importanza di monitorare e comprendere le variazioni termiche.
 
-![E74C3C](https://img.shields.io/badge/E74C3C-%23E74C3C.svg?style=for-the-badge&labelColor=E74C3C)
+<img src="https://placehold.co/200x200/E74C3C/E74C3C.png" alt="E74C3C" width="200" height="200" style="display: inline-block" />
 
 **Relative Humidity (%)**: 48C9B0 (Turquoise)
 **Descrizione**: Il verde acqua, simbolo di freschezza e vitalità, rappresenta l'umidità relativa, suggerendo equilibrio e benessere ambientale.
 
-![48C9B0](https://img.shields.io/badge/48C9B0-%2348C9B0.svg?style=for-the-badge&labelColor=48C9B0)
+<img src="https://placehold.co/200x200/48C9B0/48C9B0.png" alt="48C9B0" width="200" height="200" style="display: inline-block" />
 
 **Mean Radiant Temperature (°C)**: F5B041 (Hunyadi yellow)
 **Descrizione**: L'arancione, un colore caldo e vivace, rappresenta la temperatura radiante media. Questo colore è stato scelto per la sua capacità di suggerire energia e calore radiante, fornendo una rappresentazione visiva immediata dell'influenza della radiazione termica sull'ambiente.
 
 
 
-![F5B041](https://img.shields.io/badge/F5B041-%23F5B041.svg?style=for-the-badge&labelColor=F5B041)
+<img src="https://placehold.co/200x200/F5B041/F5B041.png" alt="F5B041" width="200" height="200" style="display: inline-block" />
 
 **Pressure Perturbation (dPa)**: 58D68D (Emerald)
 **Descrizione**: Il verde chiaro per la perturbazione della pressione comunica una sensazione di variazione e cambiamento. Questo colore, leggero e rinfrescante, è stato scelto per rappresentare le fluttuazioni e le dinamiche della pressione atmosferica, con una tonalità che evoca equilibrio e naturalezza.
@@ -987,3 +987,7 @@ app.plugins.plugins['obsidian-echarts'].render(option, this.container);
   </tr>
 </table> 
 ccc
+
+
+
+
