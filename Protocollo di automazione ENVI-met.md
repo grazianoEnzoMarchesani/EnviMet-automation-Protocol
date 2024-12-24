@@ -142,9 +142,7 @@ Prima di approfondire l'aspetto dell'assegnazione cromatica e funzionale dei gru
 #### Assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper
 Nell'ambito dei processi implementati mediante Grasshopper, si osserva un'approccio sistematico nell'identificazione delle varie componenti. Questo è realizzato attraverso l'assegnazione di gruppi distinti, ciascuno dei quali è caratterizzato da un colore specifico e una descrizione fornita tramite l'elemento "Scribble". Tale colore non è arbitrario, bensì funge da indicatore dell'appartenenza funzionale della componente all'interno del workflow complessivo. In questo contesto, si distinguono principalmente due categorie di gruppi: quelli che racchiudono funzioni operative specifiche e quelli che sono preposti alla facilitazione dell'interazione con l'interfaccia grafica utente (GUI). Questa metodologia di categorizzazione e identificazione visiva facilita una rapida comprensione del ruolo e della funzione di ciascun elemento all'interno del processo complessivo, contribuendo a un'efficace organizzazione e interpretazione del flusso di lavoro in Grasshopper.
 
-```palette
-https://coolors.co/palette/efc69b-df9c84-af1b3f-d04e6c
-```
+![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
 
 Proseguendo nella descrizione del sistema di assegnazione cromatica, si prevede l'impiego di una palette specifica, composta dai seguenti colori: efc69b, df9c84, af1b3f, e d04e6c. Questa selezione di colori non è casuale, ma segue una logica ben definita per ottimizzare la rappresentazione e la comprensione delle varie componenti del workflow.
 
@@ -171,7 +169,7 @@ Quando un gruppo contenente una di queste stringhe viene identificato, il meccan
 
 Questo sistema di colorazione automatizzato non solo migliora l'efficienza del processo di organizzazione del workflow, ma contribuisce anche a una maggiore chiarezza visiva. Permettendo una rapida identificazione delle funzioni dei vari gruppi, facilita la comprensione e la navigazione all'interno di strutture workflow complesse. L'implementazione di questo sistema automatizzato rappresenta un significativo passo avanti nell'ottimizzazione dei processi di design e di gestione in Grasshopper, con implicazioni positive sia per la produttività che per l'accessibilità del software.
 
-![[Chromatic and Functional Assignment of Groups in Grasshopper Workflows.png|Rappresentazione grafica dell'assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper. L'immagine mostra l'implementazione del sistema di colorazione basato sui nomi dei gruppi, evidenziando come i gruppi etichettati con ':logics' e ':gui' vengano automaticamente colorati secondo la palette predefinita. I colori specifici, Peach (efc69b) e Atomic Tangerine (df9c84), sono utilizzati per i gruppi di logica, mentre Amaranth Purple (af1b3f) e Cerise (d04e6c) sono assegnati ai gruppi relativi alla GUI. La visualizzazione chiarisce la differenziazione funzionale e la gerarchia all'interno del workflow, migliorando la leggibilità e l'organizzazione complessiva del progetto]]
+![Chromatic and Functional Assignment of Groups in Grasshopper Workflows](attachment/Chromatic%20and%20Functional%20Assignment%20of%20Groups%20in%20Grasshopper%20Workflows.png "Rappresentazione grafica dell'assegnazione cromatica e funzionale dei gruppi nei workflow Grasshopper. L'immagine mostra l'implementazione del sistema di colorazione basato sui nomi dei gruppi, evidenziando come i gruppi etichettati con ':logics' e ':gui' vengano automaticamente colorati secondo la palette predefinita. I colori specifici, Peach (efc69b) e Atomic Tangerine (df9c84), sono utilizzati per i gruppi di logica, mentre Amaranth Purple (af1b3f) e Cerise (d04e6c) sono assegnati ai gruppi relativi alla GUI. La visualizzazione chiarisce la differenziazione funzionale e la gerarchia all'interno del workflow, migliorando la leggibilità e l'organizzazione complessiva del progetto")
 
 Proseguendo nell'analisi del meccanismo di automatizzazione della colorazione, si evidenzia che l'algoritmo visuale illustrato in #figuradanumerare si avvale di componenti specifici del plugin Metahopper. Questi componenti sono strategicamente impiegati per selezionare i gruppi presenti all'interno del canvas di Grasshopper. Il sistema è programmato per riconoscere le stringhe chiave, come ':logics' e ':gui', nei nomi dei gruppi. Quando tali stringhe vengono identificate, l'algoritmo attiva il processo di colorazione, assegnando i colori come precedentemente descritto in base alla funzione specifica del gruppo.
 
@@ -186,9 +184,7 @@ Nell'ambito dell'ottimizzazione grafica dei processi in Grasshopper, è stato sv
 Per quanto riguarda gli oggetti "Panel", il sistema automaticamente identifica e seleziona questi elementi, verificando la presenza del nome standard "Panel". Nel caso in cui questo nome sia presente, il processo procede con la sua rimozione, assegnando contemporaneamente al "Panel" un colore distintivo, specificamente il tono F6E073, corrispondente in RGB a (246, 224, 115), e denominato "Jasmine". Questa colorazione specifica serve a rendere immediatamente riconoscibili questi oggetti, facilitando l'identificazione e la gestione dei dati visualizzati all'interno del canvas.
 
 
-```palette
-https://coolors.co/palette/F6E073
-```
+![F6E073](https://img.shields.io/badge/F6E073-%23F6E073.svg?style=for-the-badge&labelColor=F6E073)
 
 Segue una tabella che elenca e riassume i caratteri del colore utilizzato per i Panel.
 
@@ -200,7 +196,7 @@ In parallelo, il processo esegue una verifica simile sugli oggetti "Slider", foc
 
 Come per le precedenti ottimizzazioni, anche questo processo è implementato attraverso l'uso del plugin Metahopper, confermando l'efficacia di questo strumento nel facilitare un'organizzazione visiva coerente e funzionale. Le considerazioni precedentemente espresse riguardo all'utilizzo di Metahopper durante le fasi di sviluppo e manutenzione, e alla sua eventuale rimozione nelle fasi finali di utilizzo del prodotto, rimangono valide anche per questo nuovo processo di automatizzazione.
 
-![[Graphical components optimization 1.png|Visualizzazione del processo di ottimizzazione grafica in Grasshopper. L'immagine illustra l'implementazione del meccanismo automatizzato per la gestione degli oggetti 'Panel' e 'Slider'. Si osserva come gli oggetti 'Panel' vengono identificati e colorati nel tono 'Jasmine' (F6E073), per una maggiore distinzione visiva. Parallelamente, viene mostrata la rimozione del nome standard dai 'Number Slider']]
+![Visualizzazione del processo di ottimizzazione grafica in Grasshopper. L'immagine illustra l'implementazione del meccanismo automatizzato per la gestione degli oggetti 'Panel' e 'Slider'. Si osserva come gli oggetti 'Panel' vengono identificati e colorati nel tono 'Jasmine' (F6E073), per una maggiore distinzione visiva. Parallelamente, viene mostrata la rimozione del nome standard dai 'Number Slider'](attachment/Graphical%20components%20optimization%201.png)
 
 L'adozione di queste tecniche di ottimizzazione grafica mostrate in #figuradanumerare riflette un impegno costante nel migliorare l'efficienza e l'usabilità dei workflow in Grasshopper. Questi processi automatizzati non solo semplificano la gestione dei componenti all'interno del canvas, ma contribuiscono anche a rendere il processo di progettazione più intuitivo e accessibile, sia per gli sviluppatori che per gli utenti finali.
 
@@ -260,7 +256,7 @@ Come illustrato nell'immagine #figuradanumerare , l'uso del componente 'Morpho L
 Nel quadro dell'integrazione avanzata tra Grasshopper e Envi-met, rivestono un ruolo cruciale i componenti 'Morpho Library' e 'Morpho Workspace'. Il primo funge da ponte diretto verso la vasta libreria di Envi-met, permettendo agli utenti di estrarre e manipolare specifici elementi ambientali e materiali per i loro progetti.
 
 In parallelo, 'Morpho Workspace' gioca un ruolo strategico nel definire la posizione della cartella di workspace di Envi-met e specificare il nome del progetto Envi-met attivo. Essenziale per contenere tutte le informazioni e i dati configurati per uno specifico progetto ambientale, il workspace di Envi-met include simulazioni, materiali, configurazioni vegetative e altro. 'Morpho Workspace' non solo indica il percorso fisico dei dati, ma serve anche come riferimento contestuale per l'intero progetto, assicurando che tutte le operazioni in Grasshopper siano allineate con il progetto Envi-met specifico. Questa sincronizzazione garantisce che le modifiche, le selezioni e le analisi siano sempre pertinenti e aggiornate.
-![[readLibrary.png]]
+![Interfaccia di lettura della libreria Envi-met](attachment/readLibrary.png)
 Inserendo la parola chiave 'wall' nell'input `_type_` di 'Morpho Library', si possono ottenere immediatamente i codici Envi-met e le descrizioni di ogni costruzione muraria presente nella libreria. Questo consente una selezione e un'esplorazione rapide delle varie opzioni di costruzione muraria disponibili, fondamentali per la modellazione di ambienti urbani e naturali.
 
 Per una disamina più approfondita, in particolare per ottenere dettagli sui 'Materials' (ovvero i codici dei materiali che compongono la costruzione) e il 'Color', si utilizza il componente 'morpho_decompose_xml'. Questo componente analizza il codice XML fornito in output da 'Morpho Library', estraendo le informazioni pertinenti attraverso le opportune parole chiave. La capacità di decomporre e interpretare questi dati è cruciale per comprendere e utilizzare efficacemente le risorse della libreria Envi-met.
@@ -274,7 +270,7 @@ red = int(hex_color[0:2], 16)
 green = int(hex_color[2:4], 16)
 blue = int(hex_color[4:6], 16)`
 ```
-![[decimalToRGB.png]]
+![Conversione decimale a RGB](attachment/decimalToRGB.png)
 L'output di questo script viene poi convertito in un parametro 'Color' dal componente 'Colour RGB', come mostrato nell'immagine #figuradanumerare . Questo processo non solo assicura che i colori siano interpretati correttamente, ma consente anche una visualizzazione intuitiva e coerente all'interno del workflow di Grasshopper.
 
 Gli output del ramo 'Wall' in Grasshopper sono specificamente delineati per fornire una comprensione completa delle caratteristiche di ogni costruzione muraria. Gli output includono:
@@ -392,7 +388,7 @@ Una volta che si ritiene conclusa la fase di selezione dei materiali, l'utente p
 Con l'avanzamento delle operazioni, i risultati vengono progressivamente aggregati e visualizzati in uno specchietto tridimensionale, che funge da collettore di tutti gli edifici impostati finora. Questa rappresentazione tridimensionale non solo fornisce un feedback immediato sull'andamento del progetto, ma facilita anche ulteriori riflessioni e modifiche. Il processo culmina con una tabella riassuntiva che elenca tutti i gruppi generati, fornendo un'analisi dettagliata dei materiali utilizzati e un conteggio degli edifici per ciascun gruppo.
 
 #insert_image #figuradanumerare 
-![[Pasted image 20240103122159.png | immagine dell'interfaccia da migliorare!]]
+![Interfaccia del processo di modellazione](attachment/Pasted%20image%2020240103122159.png)
 
 è importante sottolineare che, a causa della complessità intrinseca del processo utilizzato, non è possibile presentare l'immagine originale del processo Grasshopper. Al suo posto, è stato elaborato uno schema semplificato che illustra i passaggi chiave coinvolti nella creazione di questa parte dell'interfaccia e del suo comportamento logico.
 
@@ -493,9 +489,7 @@ Il modulo 1 si concentra sulle ore di soleggiamento registrate a livello del ter
 **Sun hours Terrain level (data) (h)**: Rappresenta il numero totale di ore di soleggiamento a livello del terreno registrato in date specifiche. Questo dato è espressivo dell'irraggiamento solare diretto che incide su un dato piano orizzontale.
 La palette transita dal giallo chiaro al rosso intenso per riflettere l'intensità crescente delle ore di sole. Il giallo chiaro rappresenta ore di sole minime, evocando un senso di calma e freschezza, mentre il rosso intenso denota il massimo dell'irraggiamento solare, suggerendo calore e intensità. Questa scelta cromatica consente una percezione immediata dell'intensità solare e della sua variazione stagionale o giornaliera.
 
-```palette
-https://coolors.co/palette/FCF3CF-F7DC6F-F39C12-C0392B
-```
+![FCF3CF](https://img.shields.io/badge/FCF3CF-%23FCF3CF.svg?style=for-the-badge&labelColor=FCF3CF)![F7DC6F](https://img.shields.io/badge/F7DC6F-%23F7DC6F.svg?style=for-the-badge&labelColor=F7DC6F)![F39C12](https://img.shields.io/badge/F39C12-%23F39C12.svg?style=for-the-badge&labelColor=F39C12)![C0392B](https://img.shields.io/badge/C0392B-%23C0392B.svg?style=for-the-badge&labelColor=C0392B)
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -508,41 +502,38 @@ Questo modulo dettaglia le caratteristiche fisiche e geometriche dell'ambiente s
 
 **Objects ()**: Elenco e caratterizzazione degli oggetti presenti nella simulazione, quali edifici o vegetazione, senza specificare le loro funzioni o impatti ambientali.
 I toni neutri di grigio sono stati scelti per rappresentare oggetti e costruzioni in modo oggettivo. La gradazione dal grigio chiaro al scuro fornisce una rappresentazione visuale della variazione di densità o presenza di oggetti, permettendo un'interpretazione diretta senza connotazioni emotive.
-```palette
-https://coolors.co/palette/D3D3D3-A6ACAF-585858
-```
+
+![D3D3D3](https://img.shields.io/badge/D3D3D3-%23D3D3D3.svg?style=for-the-badge&labelColor=D3D3D3)![A6ACAF](https://img.shields.io/badge/A6ACAF-%23A6ACAF.svg?style=for-the-badge&labelColor=A6ACAF)![585858](https://img.shields.io/badge/585858-%23585858.svg?style=for-the-badge&labelColor=585858)
+
 **Building Height (m)**: Indica l'altezza degli edifici nel modello, misurata in metri.
 La palette spazia dal beige al marrone scuro per rappresentare l'altitudine degli edifici. Il beige, associato a costruzioni più basse, evoca leggerezza e spazio, mentre il marrone scuro, usato per le strutture più alte, suggerisce solidità e imponenza. Questa progressione cromatica aiuta a distinguere visivamente gli edifici in base alla loro altezza.
-```palette
-https://coolors.co/palette/F5F5DC-D7B29D-5D4037
-```
+
+![F5F5DC](https://img.shields.io/badge/F5F5DC-%23F5F5DC.svg?style=for-the-badge&labelColor=F5F5DC)![D7B29D](https://img.shields.io/badge/D7B29D-%23D7B29D.svg?style=for-the-badge&labelColor=D7B29D)![5D4037](https://img.shields.io/badge/5D4037-%235D4037.svg?style=for-the-badge&labelColor=5D4037)
+
 **z Topo (m)**: Rappresenta l'altitudine topografica del terreno rispetto a un livello di riferimento.
 toni di verde rappresentano le variazioni altimetriche della topografia. Il verde chiaro indica aree più basse, mentre il verde scuro segnala regioni più elevate. Il verde è comunemente associato all'elemento terreno e qui viene utilizzato per fornire una sensazione di flusso e continuità nel paesaggio.
 
-```palette
-https://coolors.co/palette/DAF7A6-7DCEA0-229954
-```
+![DAF7A6](https://img.shields.io/badge/DAF7A6-%23DAF7A6.svg?style=for-the-badge&labelColor=DAF7A6)![7DCEA0](https://img.shields.io/badge/7DCEA0-%237DCEA0.svg?style=for-the-badge&labelColor=7DCEA0)![229954](https://img.shields.io/badge/229954-%23229954.svg?style=for-the-badge&labelColor=229954)
 
 **Soil Profile Type ()**: Classifica il tipo di profilo del suolo in base a caratteristiche fisiche e composizione.
 Questa palette di marroni rappresenta la varietà nei profili del suolo. Il marrone chiaro può indicare suoli più sabbiosi o meno fertili, mentre il marrone scuro può rappresentare suoli più ricchi e densi. Questa gamma cromatica evoca la terra e la varietà dei suoi strati. #daRivedere 
-```palette
-https://coolors.co/palette/CD853F-8B572A-8B4513
-```
+
+![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+
 **Surface Albedo ()**: Misura la riflettività della superficie del terreno, indicando la frazione di radiazione solare riflessa.
 Il bianco al nero rappresenta l'albedo della superficie, dalla riflettività massima alla minima. Il bianco indica una superficie altamente riflettente, come la neve, mentre il nero indica una bassa riflettività, come l'asfalto scuro. Questa scala cromatica fornisce una comprensione intuitiva della capacità di una superficie di riflettere la radiazione solare.
-```palette
-https://coolors.co/palette/FFFFFF-BDC3C7-000000
-```
+
+![FFFFFF](https://img.shields.io/badge/FFFFFF-%23FFFFFF.svg?style=for-the-badge&labelColor=FFFFFF)![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![000000](https://img.shields.io/badge/000000-%23000000.svg?style=for-the-badge&labelColor=000000)
+
 **SkyViewFaktor ()**: Valuta la frazione di cielo visibile da un punto specifico a livello del suolo, influenzata dalla morfologia urbana circostante.
 L'azzurro al blu navy rappresenta il fattore di visuale del cielo, con colori più chiari che indicano una maggiore apertura e colori più scuri che indicano una visuale più limitata. Questi colori riflettono visivamente la sensazione di apertura o confinamento dello spazio sopra l'osservatore.
-```palette
-https://coolors.co/palette/87CEEB-3498DB-2C3E50
-```
+
+![87CEEB](https://img.shields.io/badge/87CEEB-%2387CEEB.svg?style=for-the-badge&labelColor=87CEEB)![3498DB](https://img.shields.io/badge/3498DB-%233498DB.svg?style=for-the-badge&labelColor=3498DB)![2C3E50](https://img.shields.io/badge/2C3E50-%232C3E50.svg?style=for-the-badge&labelColor=2C3E50)
+
 **Receptors ()**: Punti specifici nel modello dove vengono raccolti e analizzati i dati ambientali.
 L'arancione è stato scelto per i receptor per la sua capacità di attirare l'attenzione e indicare punti di interesse o di raccolta dati. Questo colore vivace si distingue nel contesto del report, guidando visivamente l'occhio verso i punti di misurazione chiave.
-```palette
-https://coolors.co/palette/FFA07A
-```
+
+![FFA07A](https://img.shields.io/badge/FFA07A-%23FFA07A.svg?style=for-the-badge&labelColor=FFA07A)
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -559,49 +550,48 @@ Il modulo 3 si immerge nei parametri atmosferici e di radiazione, offrendo una p
 
 **Potential Air Temperature (°C)**: Temperatura dell'aria potenziale, un indicatore termodinamico che prescinde da influenze locali come radiazione o convezione.
 La palette per la temperatura dell'aria potenziale mostra una transizione dal blu, che evoca sensazioni di freddo, al rosso, che rappresenta il calore. Questa gamma di colori facilita la comprensione istantanea delle variazioni termiche, con sfumature intermedie che permettono di percepire variazioni più sottili.
-```palette
-https://coolors.co/palette/3498DB-85C1E9-AED6F1-F5B041-E74C3C
-```
+
+![3498DB](https://img.shields.io/badge/3498DB-%233498DB.svg?style=for-the-badge&labelColor=3498DB)![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)![AED6F1](https://img.shields.io/badge/AED6F1-%23AED6F1.svg?style=for-the-badge&labelColor=AED6F1)![F5B041](https://img.shields.io/badge/F5B041-%23F5B041.svg?style=for-the-badge&labelColor=F5B041)![E74C3C](https://img.shields.io/badge/E74C3C-%23E74C3C.svg?style=for-the-badge&labelColor=E74C3C)
+
 **Relative Humidity ()**: Umidità relativa dell'aria, espressa come percentuale, che indica il rapporto tra il contenuto di umidità attuale e la massima umidità possibile all'attuale temperatura.
 Questa palette usa tonalità di azzurro e verde per rappresentare l'umidità relativa, con l'azzurro chiaro che indica condizioni più secche e il verde scuro condizioni più umide. La scelta di questi colori rispecchia la naturale associazione tra freschezza, acqua e umidità.
-```palette
-https://coolors.co/palette/AED6F1-48C9B0-27AE60
-```
+
+![AED6F1](https://img.shields.io/badge/AED6F1-%23AED6F1.svg?style=for-the-badge&labelColor=AED6F1)![48C9B0](https://img.shields.io/badge/48C9B0-%2348C9B0.svg?style=for-the-badge&labelColor=48C9B0)![27AE60](https://img.shields.io/badge/27AE60-%2327AE60.svg?style=for-the-badge&labelColor=27AE60)
+
 **Wind Speed (m/s)**: Velocità del vento misurata in metri al secondo.
 Il bianco al viola rappresenta la velocità del vento, con il bianco che indica calma e il viola che suggerisce condizioni più tempestose. La progressione verso il viola per velocità più elevate aggiunge una dimensione visiva di allerta e intensità.
-```palette
-https://coolors.co/palette/FFFFFF-85C1E9-8E44AD
-```
+
+![FFFFFF](https://img.shields.io/badge/FFFFFF-%23FFFFFF.svg?style=for-the-badge&labelColor=FFFFFF)![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)![8E44AD](https://img.shields.io/badge/8E44AD-%238E44AD.svg?style=for-the-badge&labelColor=8E44AD)
+
 **Wind Direction (deg)**: Direzione del vento espressa in gradi, indicante da quale direzione soffia il vento.
 I toni di grigio e blu navy sono stati selezionati per rappresentare la direzione del vento in modo neutro e informativo. La gradazione di colore fornisce una rappresentazione visiva chiara della variazione direzionale, senza sovraccaricare l'utente con implicazioni emotive. #daRivedere 
-```palette
-https://coolors.co/palette/BDC3C7-7F8C8D-34495E
-```
+
+![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![7F8C8D](https://img.shields.io/badge/7F8C8D-%237F8C8D.svg?style=for-the-badge&labelColor=7F8C8D)![34495E](https://img.shields.io/badge/34495E-%2334495E.svg?style=for-the-badge&labelColor=34495E)
+
 **Mean Radiant Temp. (°C)**: Temperatura radiante media, una misura complessiva della radiazione termica che incide su un individuo o oggetto.
 Dal giallo al rosso, questa palette indica l'aumento della temperatura radiante media, con il giallo che rappresenta condizioni più miti e il rosso condizioni più intense. Questi colori caldi sono intuitivamente associati al calore e all'energia radiante.
-```palette
-https://coolors.co/palette/F7DC6F-F39C12-C0392B
-```
+
+![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+
 **Direct SW Radiation (W/m²)**: Radiazione solare diretta misurata in Watt per metro quadrato.
  I toni del giallo al rosso scuro rappresentano l'aumento dell'intensità della radiazione solare diretta. Il giallo pallido suggerisce un'intensità minore, mentre il rosso scuro indica una forte esposizione solare, riflettendo visivamente l'energia e il calore del sole.
- ```palette
-https://coolors.co/palette/FCF3CF-F7DC6F-CB4335
- ```
+
+![FCF3CF](https://img.shields.io/badge/FCF3CF-%23FCF3CF.svg?style=for-the-badge&labelColor=FCF3CF)![F7DC6F](https://img.shields.io/badge/F7DC6F-%23F7DC6F.svg?style=for-the-badge&labelColor=F7DC6F)![CB4335](https://img.shields.io/badge/CB4335-%23CB4335.svg?style=for-the-badge&labelColor=CB4335)
+ 
 **Diffuse SW Radiation (W/m²)**: Radiazione solare diffusa, indicando quella porzione di radiazione solare che raggiunge il suolo dopo essere stata diffusa e riflessa dall'atmosfera.
 Questa palette utilizza diverse sfumature di giallo per rappresentare l'intensità della radiazione solare diffusa, dal più chiaro al più scuro. La scelta del giallo in tutte le sue sfumature permette di sottolineare la natura solare di questo parametro, mentre le gradazioni aiutano a distinguere l'intensità.
-```palette
-https://coolors.co/palette/F9E79F-F4D03F-F1C40F
-```
+
+![F9E79F](https://img.shields.io/badge/F9E79F-%23F9E79F.svg?style=for-the-badge&labelColor=F9E79F)![F4D03F](https://img.shields.io/badge/F4D03F-%23F4D03F.svg?style=for-the-badge&labelColor=F4D03F)![F1C40F](https://img.shields.io/badge/F1C40F-%23F1C40F.svg?style=for-the-badge&labelColor=F1C40F)
+
 **Reflected SW Radiation (W/m²)**: Radiazione solare riflessa dal suolo e dagli oggetti, misurata in Watt per metro quadrato.
 Dal colore argento al grigio scuro, questa palette rappresenta la radiazione solare riflessa. L'argento e i toni di grigio sono associati alle superfici riflettenti e al concetto di riflessione, con una gradazione che indica l'aumento dell'intensità riflessa.
-```palette
-https://coolors.co/palette/C0C0C0-95A5A6-707B7C
-```
+
+![C0C0C0](https://img.shields.io/badge/C0C0C0-%23C0C0C0.svg?style=for-the-badge&labelColor=C0C0C0)![95A5A6](https://img.shields.io/badge/95A5A6-%2395A5A6.svg?style=for-the-badge&labelColor=95A5A6)![707B7C](https://img.shields.io/badge/707B7C-%23707B7C.svg?style=for-the-badge&labelColor=707B7C)
+
 **CO2 (ppm)**: Concentrazione di diossido di carbonio nell'aria, espressa in parti per milione.
 La transizione dal verde al rosso scuro riflette l'aumento dei livelli di CO2, con il verde che rappresenta condizioni più sicure e il rosso scuro che indica livelli preoccupanti. Questa palette visualizza l'impatto e la gravità dell'aumento di CO2, con il rosso scuro che funge da segnale di allerta.
-```palette
-https://coolors.co/palette/ABEBC6-58D68D-922B21
-```
+
+![ABEBC6](https://img.shields.io/badge/ABEBC6-%23ABEBC6.svg?style=for-the-badge&labelColor=ABEBC6)![58D68D](https://img.shields.io/badge/58D68D-%2358D68D.svg?style=for-the-badge&labelColor=58D68D)![922B21](https://img.shields.io/badge/922B21-%23922B21.svg?style=for-the-badge&labelColor=922B21)
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -621,10 +611,8 @@ Il modulo 4 si focalizza sull'indice di comfort termico Universal Thermal Climat
 **UTCI (°C) (+ wind)**: Indice Climatico Termico Universale, una misura che sintetizza l'effetto combinato di temperatura, vento, radiazione e umidità sul comfort termico umano.
 La palette per l'UTCI varia dall'azzurro, che evoca un senso di freschezza e di bassa temperatura, al rosso scuro, che indica condizioni estremamente calde e potenzialmente pericolose. La progressione attraverso il blu e il viola rappresenta una transizione verso condizioni più calde e meno confortevoli, mentre il rosso e il rosso scuro sono allarmanti e indicano un aumento significativo del disagio termico. #daRivedere 
 
+![003866](https://img.shields.io/badge/003866-%23003866.svg?style=for-the-badge&labelColor=003866)![018f94](https://img.shields.io/badge/018f94-%23018f94.svg?style=for-the-badge&labelColor=018f94)![33bd5a](https://img.shields.io/badge/33bd5a-%2333bd5a.svg?style=for-the-badge&labelColor=33bd5a)![ffbb00](https://img.shields.io/badge/ffbb00-%23ffbb00.svg?style=for-the-badge&labelColor=ffbb00)![d1593b](https://img.shields.io/badge/d1593b-%23d1593b.svg?style=for-the-badge&labelColor=d1593b)![ad177e](https://img.shields.io/badge/ad177e-%23ad177e.svg?style=for-the-badge&labelColor=ad177e)
 
-```palette
-https://coolors.co/palette/003866-018f94-33bd5a-ffbb00-d1593b-ad177e
-```
 **Section UTCI X (+ wind)**: Misura dell'UTCI lungo l'asse X del modello, considerando l'impatto del vento.
 **Section UTCI Y (+ wind)**: Misura dell'UTCI lungo l'asse Y del modello, considerando anch'esso l'impatto del vento.
 
@@ -639,30 +627,28 @@ Il modulo 5 si concentra sul bilancio energetico delle superfici, esplorando tem
 
 **T Surface (°C)**: Temperatura della superficie, che indica la temperatura istantanea dell'elemento superficiale in esame.
 Questa gamma di colori rappresenta la temperatura superficiale da fredda a calda. Il blu chiaro e l'azzurro suggeriscono temperature più basse, ideali per il comfort, mentre il passaggio al giallo, arancione e rosso indica un aumento della temperatura, con il rosso che rappresenta superfici estremamente calde. Questa palette facilita l'identificazione visiva delle zone di calore e di freschezza.
-```palette
-https://coolors.co/palette/5DADE2-85C1E9-F7DC6F-F39C12-E74C3C
-```
+
+![efc69b](https://img.shields.io/badge/efc69b-%23efc69b.svg?style=for-the-badge&labelColor=efc69b)![df9c84](https://img.shields.io/badge/df9c84-%23df9c84.svg?style=for-the-badge&labelColor=df9c84)![af1b3f](https://img.shields.io/badge/af1b3f-%23af1b3f.svg?style=for-the-badge&labelColor=af1b3f)![d04e6c](https://img.shields.io/badge/d04e6c-%23d04e6c.svg?style=for-the-badge&labelColor=d04e6c)
+
+
 **Shadow Flag ()**: Indicatore binario o categorico che identifica la presenza o assenza di ombreggiatura in un punto specifico.
 La transizione dal grigio chiaro al nero è stata scelta per rappresentare l'ombreggiatura, con il grigio chiaro che indica aree scarsamente ombreggiate e il nero che indica ombreggiatura completa. Questa scala di grigi comunica efficacemente la presenza e l'intensità dell'ombreggiatura, essenziale per valutare l'impatto dell'irradiazione solare e del comfort termico.
-```palette
-https://coolors.co/palette/D5D8DC-BDC3C7-626567-17202A
-```
+
+![D5D8DC](https://img.shields.io/badge/D5D8DC-%23D5D8DC.svg?style=for-the-badge&labelColor=D5D8DC)![BDC3C7](https://img.shields.io/badge/BDC3C7-%23BDC3C7.svg?style=for-the-badge&labelColor=BDC3C7)![626567](https://img.shields.io/badge/626567-%23626567.svg?style=for-the-badge&labelColor=626567)![17202A](https://img.shields.io/badge/17202A-%2317202A.svg?style=for-the-badge&labelColor=17202A)
+
 **Sensible Heat Flux H (W/m2)**: Flusso di calore sensibile, rappresentando la quantità di calore trasferito per convezione e conduzione.
 L'arancione al rosso scuro rappresenta l'aumento del flusso di calore sensibile, con l'arancione chiaro che indica flussi più deboli e il rosso scuro che indica flussi intensi. Questi colori caldi sono intuitivamente legati al concetto di calore e trasferimento energetico, evidenziando le aree di maggiore attività termica.
-```palette
-https://coolors.co/palette/F5B041-F39C12-78281F
-```
+
 **Latent Heat Flux LE (W/m2)**: Flusso di calore latente, associato alla fase di evaporazione e traspirazione.
 I toni di verde rappresentano il flusso di calore latente associato all'evaporazione e alla traspirazione. Il verde chiaro indica flussi più bassi, mentre il verde scuro indica flussi più elevati. Questa scelta cromatica riflette il legame tra umidità, vegetazione e trasferimento di calore latente, con una gradazione che facilita la distinzione visiva delle variazioni.
 
-```palette
-https://coolors.co/palette/ABEBC6-2ECC71-1E8449
-```
+![ABEBC6](https://img.shields.io/badge/ABEBC6-%23ABEBC6.svg?style=for-the-badge&labelColor=ABEBC6)![2ECC71](https://img.shields.io/badge/2ECC71-%232ECC71.svg?style=for-the-badge&labelColor=2ECC71)![1E8449](https://img.shields.io/badge/1E8449-%231E8449.svg?style=for-the-badge&labelColor=1E8449)
+
 **Soil Heat Flux G (W/m2)**: Flusso di calore nel suolo, rappresentando il trasferimento di calore tra il suolo e l'atmosfera.
 Dal grigio chiaro al marrone scuro, questa palette visualizza il flusso di calore nel suolo. Il grigio chiaro indica flussi minimi, mentre il marrone scuro indica flussi significativi di calore nel suolo. Questi colori sono stati scelti per la loro associazione con la terra e il suolo, con una progressione cromatica che riflette l'aumento dell'attività termica sotterranea.
-```palette
-https://coolors.co/palette/D7DBDD-A04000-784212
-```
+
+![D7DBDD](https://img.shields.io/badge/D7DBDD-%23D7DBDD.svg?style=for-the-badge&labelColor=D7DBDD)![A04000](https://img.shields.io/badge/A04000-%23A04000.svg?style=for-the-badge&labelColor=A04000)![784212](https://img.shields.io/badge/784212-%23784212.svg?style=for-the-badge&labelColor=784212)
+
 
 | Modulo | Descrizione | Unità di misura | Colori (Dal meno al più intenso) |
 | ---- | ---- | ---- | ---- |
@@ -674,29 +660,29 @@ https://coolors.co/palette/D7DBDD-A04000-784212
 ### Modulo grafici dei receptors
 **wSpeed (m/s)**: 85C1E9 (Maya blue)
 **Descrizione**: L'azzurro, associato al cielo e all'aria, rappresenta visivamente la velocità del vento. Questo colore chiaro e fresco suggerisce movimento e fluidità, facilitando la comprensione intuitiva della velocità e della presenza del vento nell'ambiente.
-```palette
-https://coolors.co/palette/85C1E9
-```
+
+![85C1E9](https://img.shields.io/badge/85C1E9-%2385C1E9.svg?style=for-the-badge&labelColor=85C1E9)
+
 **Potential Air Temperature (°C)**: E74C3C (Vermilion)
 **Descrizione**: Il rosso è stato scelto per la temperatura dell'aria potenziale per la sua immediata associazione con il calore. Questo colore intenso comunica rapidamente la presenza di temperature elevate, servendo come un segnale visivo dell'importanza di monitorare e comprendere le variazioni termiche.
-```palette
-https://coolors.co/palette/E74C3C
-```
+
+![E74C3C](https://img.shields.io/badge/E74C3C-%23E74C3C.svg?style=for-the-badge&labelColor=E74C3C)
+
 **Relative Humidity (%)**: 48C9B0 (Turquoise)
 **Descrizione**: Il verde acqua, simbolo di freschezza e vitalità, rappresenta l'umidità relativa, suggerendo equilibrio e benessere ambientale.
-```palette
-https://coolors.co/palette/48C9B0
-```
+
+![48C9B0](https://img.shields.io/badge/48C9B0-%2348C9B0.svg?style=for-the-badge&labelColor=48C9B0)
+
 **Mean Radiant Temperature (°C)**: F5B041 (Hunyadi yellow)
 **Descrizione**: L'arancione, un colore caldo e vivace, rappresenta la temperatura radiante media. Questo colore è stato scelto per la sua capacità di suggerire energia e calore radiante, fornendo una rappresentazione visiva immediata dell'influenza della radiazione termica sull'ambiente.
-```palette
-https://coolors.co/palette/F5B041
-```
+
+
+
+![F5B041](https://img.shields.io/badge/F5B041-%23F5B041.svg?style=for-the-badge&labelColor=F5B041)
+
 **Pressure Perturbation (dPa)**: 58D68D (Emerald)
 **Descrizione**: Il verde chiaro per la perturbazione della pressione comunica una sensazione di variazione e cambiamento. Questo colore, leggero e rinfrescante, è stato scelto per rappresentare le fluttuazioni e le dinamiche della pressione atmosferica, con una tonalità che evoca equilibrio e naturalezza.
-```palette
-https://coolors.co/palette/58D68D
-```
+
 
 | Campo | Descrizione | Unità di misura | Colore (Esadecimale) |
 | ---- | ---- | ---- | ---- |
@@ -987,9 +973,17 @@ const option = {
 app.plugins.plugins['obsidian-echarts'].render(option, this.container);
 ```
 
-
+....
 
 
 # Validation and Quality Control
 - Implement checking procedures to ensure the reliability of results.
 
+<table>
+  <tr>
+    <td width="33%" bgcolor="#F5F5DC">#F5F5DC</td>
+    <td width="33%" bgcolor="#D7B29D">#D7B29D</td>
+    <td width="33%" bgcolor="#5D4037">#5D4037</td>
+  </tr>
+</table> 
+ccc
