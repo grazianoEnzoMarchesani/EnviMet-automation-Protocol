@@ -1,0 +1,495 @@
+{
+  "soil_profiles": {
+    "Decorative": [
+      { "envi_id": "0200KK", "name": "Brick road (red stones)" },
+      { "envi_id": "0200KG", "name": "Brick road (yellow stones)" }
+    ],
+    "Natural surfaces": [
+      { "envi_id": "0200SL", "name": "Default Unsealed Soil (Sandy Loam)" },
+      { "envi_id": "000000", "name": "Default Sandy Loam" },
+      { "envi_id": "0200LO", "name": "Loam" },
+      { "envi_id": "0200SD", "name": "Sandy Soil" }
+    ],
+    "Roads&Pavements": [
+      { "envi_id": "0200ST", "name": "Asphalt Road" },
+      { "envi_id": "0200PP", "name": "Pavement (Concrete), used/ dirty" },
+      { "envi_id": "0200GG", "name": "Dark Granit Pavement" },
+      { "envi_id": "0200GS", "name": "Granit Pavement (single stones)" },
+      { "envi_id": "0200G2", "name": "Granit shining" },
+      { "envi_id": "0200PG", "name": "Concrete Pavement Gray" },
+      { "envi_id": "0200PL", "name": "Concrete Pavement Light" },
+      { "envi_id": "0200PD", "name": "Concrete Pavement Dark" },
+      { "envi_id": "0200AR", "name": "Asphalt road with red coating" },
+      { "envi_id": "0200BA", "name": "Basalt Brick Road" },
+      { "envi_id": "0200WD", "name": "Wood Planks" },
+      { "envi_id": "0200DW", "name": "Darker Wood Planks" }
+    ],
+    "Special Surfaces": [
+      { "envi_id": "CELLAR", "name": "Default soil profile underneath a building" }
+    ],
+    "other": [
+      { "envi_id": "0200WW", "name": "Deep Water" }
+    ]
+  },
+  "simple_plants": {
+    "Agriculture": [
+      { "envi_id": "0200SO", "name": "Soja 63cm" }, 
+      { "envi_id": "0200LG", "name": "Luzerne 18cm" }
+    ],
+    "Facade Greening plants": [
+      { "envi_id": "0200IV", "name": "Ivy (Hedera helix)" },
+      { "envi_id": "0200FE", "name": "Fern (Nephrolepis)" },
+      { "envi_id": "0200FU", "name": "Funkia (Hosta)" }
+    ],
+    "Grass": [
+      { "envi_id": "0200XY", "name": "Grass 50 cm aver. dense" },
+      { "envi_id": "0200XX", "name": "Grass 25 cm aver. dense" }
+    ],
+    "Hedges and others": [
+      { "envi_id": "0200H2", "name": "Hedge dense, 2m" },
+      { "envi_id": "0201H2", "name": "Hedge light, 2m" },
+      { "envi_id": "0200H1", "name": "Hedge dense, 1m" },
+      { "envi_id": "0201H1", "name": "Hedge light, 1m" },
+      { "envi_id": "0200H4", "name": "Hedge dense, 4m" },
+      { "envi_id": "0201H4", "name": "Hedge light, 4m" }
+    ]
+  },
+  "3d_plants": {
+    "Abstract": {
+      "Conifers": {
+        "Large": {
+          "dense canopy": [
+            { "envi_id": "02ALDL", "name": "Conic, large trunk, dense, large (25m)" },
+            { "envi_id": "02AMDL", "name": "Conic, medium trunk, dense, large (25m)" },
+            { "envi_id": "02ASDL", "name": "Conic, small trunk, dense, large (25m)" },
+            { "envi_id": "02CLDL", "name": "Cylindric, large trunk, dense, large (25m)" },
+            { "envi_id": "02CMDL", "name": "Cylindric, medium trunk, dense, large (25m)" },
+            { "envi_id": "02CSDL", "name": "Cylindric, small trunk, dense, large (25m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02ALSL", "name": "Conic, large trunk, sparse, large (25m)" },
+            { "envi_id": "02AMSL", "name": "Conic, medium trunk, sparse, large (25m)" },
+            { "envi_id": "02ASSL", "name": "Conic, small trunk, sparse, large (25m)" },
+            { "envi_id": "02CLSL", "name": "Cylindric, large trunk, sparse, large (25m)" },
+            { "envi_id": "02CMSL", "name": "Cylindric, medium trunk, sparse, large (25m)" },
+            { "envi_id": "02CSSL", "name": "Cylindric, small trunk, sparse, large (25m)" }
+          ]
+        },
+        "Medium": {
+          "dense canopy": [
+            { "envi_id": "02ALDM", "name": "Conic, large trunk, dense, medium (15m)" },
+            { "envi_id": "02AMDM", "name": "Conic, medium trunk, dense, medium (15m)" },
+            { "envi_id": "02ASDM", "name": "Conic, small trunk, dense, medium (15m)" },
+            { "envi_id": "02CLDM", "name": "Cylindric, large trunk, dense, medium (15m)" },
+            { "envi_id": "02CMDM", "name": "Cylindric, medium trunk, dense, medium (15m)" },
+            { "envi_id": "02CSDM", "name": "Cylindric, small trunk, dense, medium (15m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02ALSM", "name": "Conic, large trunk, sparse, medium (15m)" },
+            { "envi_id": "02AMSM", "name": "Conic, medium trunk, sparse, medium (15m)" },
+            { "envi_id": "02ASSM", "name": "Conic, small trunk, sparse, medium (15m)" },
+            { "envi_id": "02CLSM", "name": "Cylindric, large trunk, sparse, medium (15m)" },
+            { "envi_id": "02CMSM", "name": "Cylindric, medium trunk, sparse, medium (15m)" },
+            { "envi_id": "02CSSM", "name": "Cylindric, small trunk, sparse, medium (15m)" }
+          ]
+        },
+        "Small": {
+          "dense canopy": [
+            { "envi_id": "02ALDS", "name": "Conic, large trunk, dense, small (5m)" },
+            { "envi_id": "02AMDS", "name": "Conic, medium trunk, dense, small (5m)" },
+            { "envi_id": "02ASDS", "name": "Conic, small trunk, dense, small (5m)" },
+            { "envi_id": "02CLDS", "name": "Cylindric, large trunk, dense, small (5m)" },
+            { "envi_id": "02CMDS", "name": "Cylindric, medium trunk, dense, small (5m)" },
+            { "envi_id": "02CSDS", "name": "Cylindric, small trunk, dense, small (5m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02ALSS", "name": "Conic, large trunk, sparse, small (5m)" },
+            { "envi_id": "02AMSS", "name": "Conic, medium trunk, sparse, small (5m)" },
+            { "envi_id": "02ASSS", "name": "Conic, small trunk, sparse, small (5m)" },
+            { "envi_id": "02CLSS", "name": "Cylindric, large trunk, sparse, small (5m)" },
+            { "envi_id": "02CMSS", "name": "Cylindric, medium trunk, sparse, small (5m)" },
+            { "envi_id": "02CSSS", "name": "Cylindric, small trunk, sparse, small (5m)" }
+          ]
+        }
+      },
+      "Deciduous Trees": {
+        "Large": {
+          "dense canopy": [
+            { "envi_id": "02OLDL", "name": "Cylindric, large trunk, dense, large (25m)" },
+            { "envi_id": "02OMDL", "name": "Cylindric, medium trunk, dense, large (25m)" },
+            { "envi_id": "02OSDL", "name": "Cylindric, small trunk, dense, large (25m)" },
+            { "envi_id": "02HLDL", "name": "Heart-shaped, large trunk, dense, large (25m)" },
+            { "envi_id": "02HMDL", "name": "Heart-shaped, medium trunk, dense, large (25m)" },
+            { "envi_id": "02HSDL", "name": "Heart-shaped, small trunk, dense, large (25m)" },
+            { "envi_id": "02SLDL", "name": "Spherical, large trunk, dense, large (25m)" },
+            { "envi_id": "02SMDL", "name": "Spherical, medium trunk, dense, large (25m)" },
+            { "envi_id": "02SSDL", "name": "Spherical, small trunk, dense, large (25m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OLSL", "name": "Cylindric, large trunk, sparse, large (25m)" },
+            { "envi_id": "02OMSL", "name": "Cylindric, medium trunk, sparse, large (25m)" },
+            { "envi_id": "02OSSL", "name": "Cylindric, small trunk, sparse, large (25m)" },
+            { "envi_id": "02HLSL", "name": "Heart-shaped, large trunk, sparse, large (25m)" },
+            { "envi_id": "02HMSL", "name": "Heart-shaped, medium trunk, sparse, large (25m)" },
+            { "envi_id": "02HSSL", "name": "Heart-shaped, small trunk, sparse, large (25m)" },
+            { "envi_id": "02SLSL", "name": "Spherical, large trunk, sparse, large (25m)" },
+            { "envi_id": "02SMSL", "name": "Spherical, medium trunk, sparse, large (25m)" },
+            { "envi_id": "02SSSL", "name": "Spherical, small trunk, sparse, large (25m)" }
+          ]
+        },
+        "Medium": {
+          "dense canopy": [
+            { "envi_id": "02OLDM", "name": "Cylindric, large trunk, dense, medium (15m)" },
+            { "envi_id": "02OMDM", "name": "Cylindric, medium trunk, dense, medium (15m)" },
+            { "envi_id": "02OSDM", "name": "Cylindric, small trunk, dense, medium (15m)" },
+            { "envi_id": "02HLDM", "name": "Heart-shaped, large trunk, dense, medium (15m)" },
+            { "envi_id": "02HMDM", "name": "Heart-shaped, medium trunk, dense, medium (15m)" },
+            { "envi_id": "02HSDM", "name": "Heart-shaped, small trunk, dense, medium (15m)" },
+            { "envi_id": "02SLDM", "name": "Spherical, large trunk, dense, medium (15m)" },
+            { "envi_id": "02SMDM", "name": "Spherical, medium trunk, dense, medium (15m)" },
+            { "envi_id": "02SSDM", "name": "Spherical, small trunk, dense, medium (15m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OLSM", "name": "Cylindric, large trunk, sparse, medium (15m)" },
+            { "envi_id": "02OMSM", "name": "Cylindric, medium trunk, sparse, medium (15m)" },
+            { "envi_id": "02OSSM", "name": "Cylindric, small trunk, sparse, medium (15m)" },
+            { "envi_id": "ED00NN", "name": "Example Tree" },
+            { "envi_id": "02HLSM", "name": "Heart-shaped, large trunk, sparse, medium (15m)" },
+            { "envi_id": "02HMSM", "name": "Heart-shaped, medium trunk, sparse, medium (15m)" },
+            { "envi_id": "02HSSM", "name": "Heart-shaped, small trunk, sparse, medium (15m)" },
+            { "envi_id": "02SLSM", "name": "Spherical, large trunk, sparse, medium (15m)" },
+            { "envi_id": "02SMSM", "name": "Spherical, medium trunk, sparse, medium (15m)" },
+            { "envi_id": "02SSSM", "name": "Spherical, small trunk, sparse, medium (15m)" }
+          ]
+        },
+        "Small": {
+          "dense canopy": [
+            { "envi_id": "02OLDS", "name": "Cylindric, large trunk, dense, small (5m)" },
+            { "envi_id": "02OMDS", "name": "Cylindric, medium trunk, dense, small (5m)" },
+            { "envi_id": "02OSDS", "name": "Cylindric, small trunk, dense, small (5m)" },
+            { "envi_id": "02HLDS", "name": "Heart-shaped, large trunk, dense, small (5m)" },
+            { "envi_id": "02HMDS", "name": "Heart-shaped, medium trunk, dense, small (5m)" },
+            { "envi_id": "02HSDS", "name": "Heart-shaped, small trunk, dense, small (5m)" },
+            { "envi_id": "02SLDS", "name": "Spherical, large trunk, dense, small (5m)" },
+            { "envi_id": "02SMDS", "name": "Spherical, medium trunk, dense, small (5m)" },
+            { "envi_id": "02SSDS", "name": "Spherical, small trunk, dense, small (5m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OLSS", "name": "Cylindric, large trunk, sparse, small (5m)" },
+            { "envi_id": "02OMSS", "name": "Cylindric, medium trunk, sparse, small (5m)" },
+            { "envi_id": "02OSSS", "name": "Cylindric, small trunk, sparse, small (5m)" },
+            { "envi_id": "02HLSS", "name": "Heart-shaped, large trunk, sparse, small (5m)" },
+            { "envi_id": "02HMSS", "name": "Heart-shaped, medium trunk, sparse, small (5m)" },
+            { "envi_id": "02HSSS", "name": "Heart-shaped, small trunk, sparse, small (5m)" },
+            { "envi_id": "02SLSS", "name": "Spherical, large trunk, sparse, small (5m)" },
+            { "envi_id": "02SMSS", "name": "Spherical, medium trunk, sparse, small (5m)" },
+            { "envi_id": "02SSSS", "name": "Spherical, small trunk, sparse, small (5m)" }
+          ]
+        }
+      },
+      "Palm Trees": {
+        "Large": [
+          { "envi_id": "01PLDL", "name": "Palm, large trunk, dense, large (25m)" }
+        ],
+        "Medium": [
+          { "envi_id": "01PLDM", "name": "Palm, large trunk, dense, medium (15m)" }
+        ],
+        "Small": [
+          { "envi_id": "01PLDS", "name": "Palm, large trunk, dense, small (5m)" },
+          { "envi_id": "01PMDS", "name": "Palm, medium trunk, dense, small (5m)" },
+          { "envi_id": "01PSDS", "name": "Palm, small trunk, dense, small (5m)" }
+        ]
+      }
+    },
+    "Specific": {
+      "Alder": [
+        { "envi_id": "020039", "name": "(Q) Spaeth's Alder (middle)" },
+        { "envi_id": "030039", "name": "(Q) Spaeth's Alder (old)" },
+        { "envi_id": "010039", "name": "(Q) Spaeth's Alder (young)" }
+      ],
+      "American Sweet Gum": [
+        { "envi_id": "020160", "name": "(Q) American Sweet Gum (middle)" },
+        { "envi_id": "010160", "name": "(Q) American Sweet Gum (young)" }
+      ],
+      "Apple Tree": [
+        { "envi_id": "020100", "name": "(Q) Apple Tree (middle)" }
+      ],
+      "Ash": [
+        { "envi_id": "020080", "name": "(Q) Common Ash (middle)" },
+        { "envi_id": "030080", "name": "(Q) Common Ash (old)" },
+        { "envi_id": "010080", "name": "(Q) Common Ash (young)" }
+      ],
+      "Beech": [
+        { "envi_id": "030450", "name": "(Q) Beech (old)" },
+        { "envi_id": "010440", "name": "(Q) Common Beech (young)" }
+      ],
+      "Birch": [
+        { "envi_id": "020111", "name": "(Q) Hanging Birch (middle)" },
+        { "envi_id": "030111", "name": "(Q) Hanging Birch (old)" },
+        { "envi_id": "010111", "name": "(Q) Hanging Birch (young)" },
+        { "envi_id": "040112", "name": "(Q) Hanging Birch 2 (very old)" }
+      ],
+      "Bird Cherry": [
+        { "envi_id": "010800", "name": "(Q) Bird Cherry (young)" },
+        { "envi_id": "020810", "name": "(Q) Bird Cherry Schloss Tiefurt (middle)" }
+      ],
+      "Bluebell Tree": [
+        { "envi_id": "020031", "name": "(Q) Bluebell Tree (middle)" },
+        { "envi_id": "010031", "name": "(Q) Bluebell Tree (young)" }
+      ],
+      "DemoTree": [
+        { "envi_id": "0000NM", "name": "(Q) DemoTree 10 Iterations" },
+        { "envi_id": "0000NO", "name": "(Q) DemoTree 5 Iterations" },
+        { "envi_id": "000DNN", "name": "(Q) DemoTree altern Angle" }
+      ],
+      "Elm": [
+        { "envi_id": "020121", "name": "(Q) Dutch Elm (middle)" },
+        { "envi_id": "030120", "name": "(Q) Dutch Elm (old)" }
+      ],
+      "Englisch Hawthorn": [
+        { "envi_id": "010461", "name": "(Q) Englisch Hawthorn Paul's Scarlett (young)" }
+      ],
+      "Field Maple": [
+        { "envi_id": "020020", "name": "(Q) Field Maple (middle)" },
+        { "envi_id": "030020", "name": "(Q) Field Maple (old)" },
+        { "envi_id": "010020", "name": "(Q) Field Maple (young)" }
+      ],
+      "Field Maple Elegant": [
+        { "envi_id": "02002B", "name": "(Q) Field Maple Elegant (middle)" },
+        { "envi_id": "01002B", "name": "(Q) Field Maple Elegant (young)" }
+      ],
+      "Field Maple Elsrijk": [
+        { "envi_id": "02002A", "name": "(Q) Field Maple Elsrijk (middle)" },
+        { "envi_id": "01002A", "name": "(Q) Field Maple Elsrijk (young)" }
+      ],
+      "Flower / Manna Ash": [
+        { "envi_id": "020180", "name": "(Q) Flower-/ Manna-Ash (middle)" }
+      ],
+      "Ginkgo / Fan Leave Tree": [
+        { "envi_id": "020150", "name": "(Q) Ginkgo / Fan Leave Tree (middle)" },
+        { "envi_id": "030150", "name": "(Q) Ginkgo / Fan Leave Tree (old)" },
+        { "envi_id": "010150", "name": "(Q) Ginkgo / Fan Leave Tree (young)" }
+      ],
+      "Gleditschie / Leather Sleeve Tree": [
+        { "envi_id": "020170", "name": "(Q) American Gelditschie / Leather Sleeve Tree (middle)" },
+        { "envi_id": "030170", "name": "(Q) American Gleditschie / Leather Sleeve Tree (old)" }
+      ],
+      "Hornbeam": [
+        { "envi_id": "020070", "name": "(Q) Hornbeam (middle)" },
+        { "envi_id": "030070", "name": "(Q) Hornbeam (old)" },
+        { "envi_id": "010070", "name": "(Q) Hornbeam (young)" }
+      ],
+      "Horse Chestnut": [
+        { "envi_id": "020050", "name": "(Q) Horse Chestnut (middle)" },
+        { "envi_id": "030052", "name": "(Q) Horse Chestnut (old)" },
+        { "envi_id": "010050", "name": "(Q) Horse Chestnut (young)" }
+      ],
+      "Hungarian Oak": [
+        { "envi_id": "021041", "name": "(Q) Hungarian Oak (middle)" },
+        { "envi_id": "020041", "name": "(Q) Hungarian Oak (middle) II" }
+      ],
+      "Indian Bean Tree": [
+        { "envi_id": "010641", "name": "(Q) Indian Bean Tree (young)" }
+      ],
+      "Japanese Pagoda Tree": [
+        { "envi_id": "020592", "name": "(Q) Japanese Pagoda Tree (middle)" }
+      ],
+      "Little Leaf Lime": [
+        { "envi_id": "020010", "name": "(Q) Little Leaf Lime (middle)" },
+        { "envi_id": "030010", "name": "(Q) Little Leaf Lime (old)" },
+        { "envi_id": "042010", "name": "(Q) Little Leaf Lime (very old) II" },
+        { "envi_id": "010010", "name": "(Q) Little Leaf Lime (young)" }
+      ],
+      "Little Leaf Lime Greenspire": [
+        { "envi_id": "02001B", "name": "(Q) Little Leaf Lime Greenspire (middle)" }
+      ],
+      "Little Leaf Lime Rancho": [
+        { "envi_id": "02001A", "name": "(Q) Little Leaf Lime Rancho (middle)" }
+      ],
+      "Norway Maple": [
+        { "envi_id": "020030", "name": "(Q) Norway Maple (middle)" },
+        { "envi_id": "030030", "name": "(Q) Norway Maple (old)" },
+        { "envi_id": "040030", "name": "(Q) Norway Maple (very old)" },
+        { "envi_id": "010030", "name": "(Q) Norway Maple (young)" }
+      ],
+      "Norway Maple Cleveland": [
+        { "envi_id": "02003A", "name": "(Q) Norway Maple Cleveland (middle)" }
+      ],
+      "Norway Maple Globosum": [
+        { "envi_id": "02003B", "name": "(Q) Norway Maple Globosum (middle)" }
+      ],
+      "Norway Maple Olmsted": [
+        { "envi_id": "02003C", "name": "(Q) Norway Maple Olmsted (middle)" }
+      ],
+      "Oak": [
+        { "envi_id": "020440", "name": "(Q) Oak (middle)" },
+        { "envi_id": "030440", "name": "(Q) Oak (old)" }
+      ],
+      "Pendunculate Oak": [
+        { "envi_id": "000040", "name": "(Q) Pendunculate Oak (GALK)" },
+        { "envi_id": "020040", "name": "(Q) Pendunculate Oak (middle)" },
+        { "envi_id": "030040", "name": "(Q) Pendunculate Oak (old)" },
+        { "envi_id": "010040", "name": "(Q) Pendunculate Oak (young)" }
+      ],
+      "Pine": [
+        { "envi_id": "020027", "name": "(Q) Pine Tree (middle)" },
+        { "envi_id": "010027", "name": "(Q) Pine Tree (young)" }
+      ],
+      "Pine like Tree": [
+        { "envi_id": "0000DD", "name": "(Q) Pine like Tree" }
+      ],
+      "Plane Tree": [
+        { "envi_id": "020060", "name": "(Q) London Plane Tree (middle)" },
+        { "envi_id": "030060", "name": "(Q) London Plane Tree (old)" },
+        { "envi_id": "010060", "name": "(Q) London Plane Tree (young)" }
+      ],
+      "Primeval Sequioa": [
+        { "envi_id": "030660", "name": "(Q) Primeval Sequioa (old)" }
+      ],
+      "Quaking Aspen": [
+        { "envi_id": "021200", "name": "(Q) Quaking Aspen (middle)" },
+        { "envi_id": "020200", "name": "(Q) Quaking Aspen (middle) II" }
+      ],
+      "Red Oak": [
+        { "envi_id": "020034", "name": "(Q) Red Oak (middle)" },
+        { "envi_id": "030034", "name": "(Q) Red Oak (old)" }
+      ],
+      "Red-flowered Horse Chestnut": [
+        { "envi_id": "020051", "name": "(Q) Red-flowered Horse Chestnut (middle)" },
+        { "envi_id": "030051", "name": "(Q) Red-flowered Horse Chestnut (old)" },
+        { "envi_id": "010051", "name": "(Q) Red-flowered Horse Chestnut (young)" }
+      ],
+      "Robinia / False Acacia": [
+        { "envi_id": "020090", "name": "(Q) Common Robinia (middle)" },
+        { "envi_id": "030090", "name": "(Q) Common Robinia (old)" },
+        { "envi_id": "010090", "name": "(Q) Common Robinia (young)" }
+      ],
+      "Rowan": [
+        { "envi_id": "020025", "name": "(Q) Rowan (middle)" },
+        { "envi_id": "010025", "name": "(Q) Rowan (young)" }
+      ],
+      "Silver Lime": [
+        { "envi_id": "020210", "name": "(Q) Silver Lime (middle)" }
+      ],
+      "Silver Maple": [
+        { "envi_id": "020035", "name": "(Q) Silver Maple (middle)" },
+        { "envi_id": "030035", "name": "(Q) Silver Maple (old)" },
+        { "envi_id": "010035", "name": "(Q) Silver Maple (young)" }
+      ],
+      "Sweet Chestnut / Maron": [
+        { "envi_id": "020032", "name": "(Q) Sweet Chestnut/Maron (middle)" },
+        { "envi_id": "030032", "name": "(Q) Sweet Chestnut/Maron (old)" }
+      ],
+      "Sycamore Maple": [
+        { "envi_id": "020033", "name": "(Q) Sycamore Maple (middle)" },
+        { "envi_id": "030033", "name": "(Q) Sycamore Maple (old)" },
+        { "envi_id": "010033", "name": "(Q) Sycamore Maple (young)" }
+      ],
+      "Thuja": [
+        { "envi_id": "010900", "name": "(Q) Thuja (young)" }
+      ],
+      "Tilia Alternative": [
+        { "envi_id": "000NNN", "name": "(Q) Tilia Alternative" }
+      ],
+      "Tree Hazel": [
+        { "envi_id": "020190", "name": "(Q) Tree Hazel (middle)" },
+        { "envi_id": "010190", "name": "(Q) Tree Hazel (young)" }
+      ],
+      "Tree of Heaven": [
+        { "envi_id": "020037", "name": "(Q) Tree of Heaven (middle)" },
+        { "envi_id": "030037", "name": "(Q) Tree of Heaven (old)" }
+      ],
+      "Tulip Tree": [
+        { "envi_id": "020652", "name": "(Q) Tulip Tree (middle)" }
+      ],
+      "Walnut": [
+        { "envi_id": "010430", "name": "(Q) Persian Walnut (young)" }
+      ],
+      "White Willow": [
+        { "envi_id": "020600", "name": "(Q) White Willow (middle)" },
+        { "envi_id": "030600", "name": "(Q) White Willow (old)" }
+      ],
+      "Whitebeam": [
+        { "envi_id": "020130", "name": "(Q) Swedisch Whitebeam (middle)" },
+        { "envi_id": "010130", "name": "(Q) Swedish Whitebeam (young)" }
+      ],
+      "Wild Cherry": [
+        { "envi_id": "000140", "name": "(Q) Wild Cherry Plena (GALK)" },
+        { "envi_id": "020140", "name": "(Q) Wild Cherry Plena (middle)" },
+        { "envi_id": "030140", "name": "(Q) Wild Cherry Plena (old)" },
+        { "envi_id": "010140", "name": "(Q) Wild Cherry Plena (young)" }
+      ],
+      "Wild Fruit Tree": [
+        { "envi_id": "010721", "name": "(Q) Wild Fruit Tree (young)" }
+      ],
+      "Willow Tree": [
+        { "envi_id": "020702", "name": "(Q) Willow Tree (middle)" },
+        { "envi_id": "010700", "name": "(Q) Willow Tree (young)" }
+      ]
+    }
+  },
+  "wall_roof_constructions": {
+    "Cement and Concrete": [
+      { "envi_id": "0200C1", "name": "Concrete Wall (heavy)" },
+      { "envi_id": "0200C2", "name": "Concrete wall (light weight)" },
+      { "envi_id": "0200C3", "name": "Concrete wall (hollow block)" },
+      { "envi_id": "0200C4", "name": "Concrete wall (Filled block)" },
+      { "envi_id": "0200C5", "name": "Concrete Wall (cast dense)" },
+      { "envi_id": "0200WR", "name": "WetRoof" }
+    ],
+    "Default": [
+      { "envi_id": "0200MI", "name": "Default Wall - moderate insulation" },
+      { "envi_id": "000000", "name": "Default Wall - moderate insulation" }
+    ],
+    "Glass": [
+      { "envi_id": "0200G1", "name": "Heat Protection Glass (one layered)" },
+      { "envi_id": "0200G2", "name": "Plexiglass (one layered)" },
+      { "envi_id": "0200G3", "name": "Foamed Glass (one layered)" },
+      { "envi_id": "0200G4", "name": "Clear Float glass (one layered)" },
+      { "envi_id": "0200G5", "name": "Glass Bricks (one layered)" },
+      { "envi_id": "0200GH", "name": "Heat protection glass (one air layer)" },
+      { "envi_id": "0200SG", "name": "Shading Plexiglass" },
+      { "envi_id": "0200PW", "name": "Photovoltaic Concrete Insulation Wall" }
+    ],
+    "Misc Materials": [
+      { "envi_id": "0200SU", "name": "PVC Sun Sail" }
+    ],
+    "Roofing": [
+      { "envi_id": "0200R1", "name": "Roofing: Tile" }
+    ],
+    "Simple Metal": [
+      { "envi_id": "0200AL", "name": "Aluminium (single layer)" },
+      { "envi_id": "0200CU", "name": "Copper (single layer)" },
+      { "envi_id": "0200IR", "name": "Iron (single layer)" },
+      { "envi_id": "0200ST", "name": "Steel (one layer)" }
+    ],
+    "Stones": [
+      { "envi_id": "0200B1", "name": "Brick wall (aerated)" },
+      { "envi_id": "0200B2", "name": "Brick wall (burned)" },
+      { "envi_id": "0200B3", "name": "Brick wall (reinforced)" }
+    ]
+  },
+  "greenings": {
+    "Default Greenings with air gap": [
+      { "envi_id": "02AGSS", "name": "green + sandy loam substrate" },
+      { "envi_id": "02AGDS", "name": "green + sandy substrate" }
+    ],
+    "Default Greenings without air gap": [
+      { "envi_id": "02NAFG", "name": "only green" }
+    ]
+  },
+  "single_walls": {
+    "General": [
+      { "envi_id": "0200OS", "name": "SunSail" },
+      { "envi_id": "0200BW", "name": "BrickWall" },
+      { "envi_id": "0200PV", "name": "Photovoltaic Panel" }
+    ]
+  },
+  "sources": {
+    "General": [
+      { "envi_id": "0200DR", "name": "Test Lane" },
+      { "envi_id": "0200FT", "name": "Water Fountain 4 m" },
+      { "envi_id": "0200WN", "name": "Water Nozzle 2 m" }
+    ]
+  }
+}
