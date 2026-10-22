@@ -125,17 +125,25 @@ EnviMet-automation-Protocol/
 ## Installation & Setup
 
 ### Requirements
-- **QGIS**: Version 4.0 or higher
-- **Python**: 3.12+ (embedded in QGIS 4)
-- **Dependencies**: `requests`, `numpy`, `scipy` (installed automatically or via plugin prompt)
+- **QGIS**: Version 3.28 LTR or higher (fully compatible with QGIS 3.x and QGIS 4.x)
+- **Python**: 3.9+ / 3.12+ (standard Python environment bundled with QGIS)
+- **Core Dependencies**: `requests`, `numpy`, `urllib3` — **pre-installed by default in all official QGIS distributions**. No manual `pip install` required for running the plugin!
+- **Optional ML Dependencies**: `pandas`, `scikit-learn`, `matplotlib`, `joblib` (only required if executing the standalone post-processing scripts in `script modifica raster envimet/`).
 
-### Installing the QGIS Plugin
-1. Download or clone this repository.
-2. Copy the folder `EnviMet-automation-Protocol-plugin` to your QGIS 4 plugins directory:
-   - **Windows**: `%APPDATA%\QGIS\QGIS4\profiles\<your_profile>\python\plugins\`
-   - **Linux**: `~/.local/share/QGIS/QGIS4/profiles/<your_profile>/python/plugins/`
-   - **macOS**: `~/Library/Application Support/QGIS/QGIS4/profiles/<your_profile>/python/plugins/`
-3. Launch QGIS, open **Plugins > Manage and Install Plugins...**, and activate **EnviProtocol**.
+### Quick Installation via QGIS (Install from ZIP - Recommended)
+1. Download **`EnviProtocol.zip`** from the latest [GitHub Release Assets](https://github.com/grazianoEnzoMarchesani/EnviMet-automation-Protocol/releases).
+2. Open QGIS and navigate to **Plugins > Manage and Install Plugins...** (*Plugin > Gestisci e installa plugin...*).
+3. Select the **Install from ZIP** (*Installa da ZIP*) tab on the left sidebar.
+4. Browse to and select `EnviProtocol.zip`, then click **Install Plugin** (*Installa plugin*).
+5. EnviProtocol will immediately load and be accessible from the toolbar and the **Plugins > EnviProtocol** menu.
+
+### Manual Installation (from Source)
+1. Clone or download this repository.
+2. Copy the plugin directory into your QGIS profile plugins path:
+   - **Windows**: `%APPDATA%\QGIS\QGIS3\profiles\<profile>\python\plugins\EnviProtocol` (or `QGIS4` if using QGIS 4)
+   - **Linux**: `~/.local/share/QGIS/QGIS3/profiles/<profile>/python/plugins/EnviProtocol`
+   - **macOS**: `~/Library/Application Support/QGIS/QGIS3/profiles/<profile>/python/plugins/EnviProtocol`
+3. Restart QGIS, open **Plugins > Manage and Install Plugins...**, and enable **EnviProtocol**.
 
 ---
 
@@ -150,7 +158,7 @@ If you use this protocol, the QGIS plugin, or associated scripts in your scienti
   month        = oct,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {2.0.0},
+  version      = {2.0.1},
   doi          = {10.5281/zenodo.14548213},
   url          = {https://doi.org/10.5281/zenodo.14548213}
 }

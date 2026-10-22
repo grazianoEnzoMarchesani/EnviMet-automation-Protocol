@@ -74,6 +74,16 @@ class EnviProtocol:
         
         if self.dock_widget:
             self.iface.removeDockWidget(self.dock_widget)
+            self.dock_widget.deleteLater()
+            self.dock_widget = None
+
+        import sys
+        pkg = __package__
+        if pkg:
+            prefix = pkg + "."
+            for mod_name in list(sys.modules.keys()):
+                if mod_name.startswith(prefix):
+                    sys.modules.pop(mod_name, None)
 
     def run(self):
         if not self.dock_widget:

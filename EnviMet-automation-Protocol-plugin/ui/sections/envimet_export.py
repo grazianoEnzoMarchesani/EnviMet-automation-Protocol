@@ -34,6 +34,7 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         self.btn_plants_config = None
         self.btn_buildings_config = None
         self.chk_level_terrain = None
+        self.chk_envimet_v6 = None
         self.btn_convert = None
         
         self._setup_ui()
@@ -82,6 +83,15 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         self.chk_level_terrain = QCheckBox("Livella terreno sotto gli edifici (Pads)")
         self.chk_level_terrain.setChecked(True)
         self.action_layout.addWidget(self.chk_level_terrain)
+
+        self.chk_envimet_v6 = QCheckBox("Usa catalogo piante 3D ENVI-met 6")
+        self.chk_envimet_v6.setToolTip(
+            "Se attivo, utilizza esclusivamente le nuove piante 3D Abstract di ENVI-met 6\n"
+            "(Small 5m, Regular 10m, Medium 15m, Large 20m) invece del vecchio catalogo v5."
+        )
+        self.chk_envimet_v6.setChecked(True)
+        self.chk_envimet_v6.toggled.connect(self._on_envimet_v6_toggled)
+        self.action_layout.addWidget(self.chk_envimet_v6)
 
         # 3. Main Action Button
         self.btn_convert = QPushButton(" Prepara Dati per ENVI-met")
@@ -141,14 +151,30 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         if res:
             self.custom_widths, self.custom_road_materials = dlg.get_settings()
 
+    def _on_envimet_v6_toggled(self, checked):
+        """Sync ENVI-met 6 catalog preference and refresh Attribute Modification tree if open."""
+        if self.custom_tree_settings is not None:
+            self.custom_tree_settings["envimet_v6"] = checked
+            if checked and self.custom_tree_settings.get("shape") == "Heart-shaped":
+                self.custom_tree_settings["shape"] = "Random"
+        dashboard = self._get_dashboard()
+        if dashboard and hasattr(dashboard, "attr_mod_section"):
+            dashboard.attr_mod_section.refresh_tree_if_vegetation()
+
     def _open_plant_dialog(self):
         """Opens the plants customization dialog (Simple + 3D)."""
         from ..dialogs.plant_customization_dialog import PlantCustomizationDialog
-        dlg = PlantCustomizationDialog(self.custom_plant_mapping, self.custom_tree_settings, self)
+        current_settings = self.get_tree_settings()
+        dlg = PlantCustomizationDialog(self.custom_plant_mapping, current_settings, self)
         # QGIS 4 compatibility (exec_ -> exec)
         res = dlg.exec() if hasattr(dlg, 'exec') else dlg.exec_()
         if res:
             self.custom_plant_mapping, self.custom_tree_settings = dlg.get_settings()
+            if self.chk_envimet_v6 is not None:
+                self.chk_envimet_v6.blockSignals(True)
+                self.chk_envimet_v6.setChecked(self.custom_tree_settings.get("envimet_v6", True))
+                self.chk_envimet_v6.blockSignals(False)
+                self._on_envimet_v6_toggled(self.chk_envimet_v6.isChecked())
 
     def _open_building_dialog(self):
         """Opens the building customization dialog."""
@@ -171,9 +197,29 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         """Returns the custom plant mapping (None if default)."""
         return self.custom_plant_mapping
 
+    def is_envimet_v6(self):
+        """Returns True if ENVI-met 6 3D plants catalog is selected."""
+        return self.chk_envimet_v6.isChecked() if self.chk_envimet_v6 else True
+
     def get_tree_settings(self):
-        """Returns the custom 3D tree settings (None if default)."""
-        return self.custom_tree_settings
+        """Returns the custom 3D tree settings (including envimet_v6 flag)."""
+        v6_enabled = self.is_envimet_v6()
+        if self.custom_tree_settings is None:
+            return {
+                "type": "Deciduous Trees",
+                "shape": "Random",
+                "density_mode": "auto",
+                "tcd_threshold": 70,
+                "density_multiplier": 1.0,
+                "exclude_barren_water": True,
+                "exclude_grassland": True,
+                "envimet_v6": v6_enabled
+            }
+        settings = self.custom_tree_settings.copy()
+        settings["envimet_v6"] = v6_enabled
+        if v6_enabled and settings.get("shape") == "Heart-shaped":
+            settings["shape"] = "Random"
+        return settings
 
     def get_building_settings(self):
         """Returns the current building materials and greenings (None if default)."""
@@ -190,6 +236,8 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         self.btn_fix_alignment.setEnabled(enabled)
         if self.chk_level_terrain:
             self.chk_level_terrain.setEnabled(enabled)
+        if self.chk_envimet_v6:
+            self.chk_envimet_v6.setEnabled(enabled)
         self.btn_landuse_config.setEnabled(enabled)
         self.btn_roads_config.setEnabled(enabled)
         self.btn_plants_config.setEnabled(enabled)
@@ -540,7 +588,8 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             "02O": "#2ecc71", # Deciduous (Vibrant)
             "02H": "#2ecc71", # Heart-shaped
             "02S": "#2ecc71", # Spherical
-            "01P": "#4caf50", # Palms
+            "01P": "#4caf50", # Palms (v5)
+            "02P": "#4caf50", # Palms (v6)
             "OTH": "#228b22", # Default Forest Green
         }
 
@@ -715,8 +764,10 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             
             # Find if layer already exists in the project
             existing_layer = None
+            norm_target = os.path.normcase(os.path.normpath(path))
             for lyr in project.mapLayers().values():
-                if lyr.source() == path:
+                lyr_src = lyr.source().split("|")[0] if lyr.source() else ""
+                if lyr_src and os.path.normcase(os.path.normpath(lyr_src)) == norm_target:
                     existing_layer = lyr
                     break
             

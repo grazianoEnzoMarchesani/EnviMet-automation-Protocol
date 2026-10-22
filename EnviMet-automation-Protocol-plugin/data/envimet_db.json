@@ -200,6 +200,102 @@
         ]
       }
     },
+    "Abstract_v6": {
+      "Conifers": {
+        "Large": {
+          "dense canopy": [
+            { "envi_id": "02AMDL", "name": "Conic, dense, large (20m)" },
+            { "envi_id": "02CMDL", "name": "Cylindric, dense, large (20m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02AMSL", "name": "Conic, sparse, large (20m)" },
+            { "envi_id": "02CMSL", "name": "Cylindric, sparse, large (20m)" }
+          ]
+        },
+        "Medium": {
+          "dense canopy": [
+            { "envi_id": "02AMDM", "name": "Conic, dense, medium (15m)" },
+            { "envi_id": "02CMDM", "name": "Cylindric, dense, medium (15m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02AMSM", "name": "Conic, sparse, medium (15m)" },
+            { "envi_id": "02CMSM", "name": "Cylindric, sparse, medium (15m)" }
+          ]
+        },
+        "Regular": {
+          "dense canopy": [
+            { "envi_id": "02AMDR", "name": "Conic, dense, regular (10m)" },
+            { "envi_id": "02CMDR", "name": "Cylindric, dense, regular (10m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02AMSR", "name": "Conic, sparse, regular (10m)" },
+            { "envi_id": "02CMSR", "name": "Cylindric, sparse, regular (10m)" }
+          ]
+        },
+        "Small": {
+          "dense canopy": [
+            { "envi_id": "02AMDS", "name": "Generic, dense, small (5m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02AMSS", "name": "Generic, sparse, small (5m)" }
+          ]
+        }
+      },
+      "Deciduous Trees": {
+        "Large": {
+          "dense canopy": [
+            { "envi_id": "02OMDL", "name": "Cylindric, dense, large (20m)" },
+            { "envi_id": "02SMDL", "name": "Spherical, dense, large (20m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OMSL", "name": "Cylindric, sparse, large (20m)" },
+            { "envi_id": "02SMSL", "name": "Spherical, sparse, large (20m)" }
+          ]
+        },
+        "Medium": {
+          "dense canopy": [
+            { "envi_id": "02OMDM", "name": "Cylindric, dense, medium (15m)" },
+            { "envi_id": "02SMDM", "name": "Spherical, dense, medium (15m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OMSM", "name": "Cylindric, sparse, medium (15m)" },
+            { "envi_id": "02SMSM", "name": "Spherical, sparse, medium (15m)" }
+          ]
+        },
+        "Regular": {
+          "dense canopy": [
+            { "envi_id": "02OMDR", "name": "Cylindric, dense, regular (10m)" },
+            { "envi_id": "02SMDR", "name": "Spherical, dense, regular (10m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02OMSR", "name": "Cylindric, sparse, regular (10m)" },
+            { "envi_id": "02SMSR", "name": "Spherical, sparse, regular (10m)" }
+          ]
+        },
+        "Small": {
+          "dense canopy": [
+            { "envi_id": "02OMDS", "name": "Generic, dense, small (5m)" }
+          ],
+          "sparse canopy": [
+            { "envi_id": "02SMSS", "name": "Generic, sparse, small (5m)" }
+          ]
+        }
+      },
+      "Palm Trees": {
+        "Large": [
+          { "envi_id": "02PLDM", "name": "Palm, medium (15m)" }
+        ],
+        "Medium": [
+          { "envi_id": "02PLDM", "name": "Palm, medium (15m)" }
+        ],
+        "Regular": [
+          { "envi_id": "02PLDI", "name": "Palm, regular (10m)" }
+        ],
+        "Small": [
+          { "envi_id": "02PLDS", "name": "Palm, small (5m)" }
+        ]
+      }
+    },
     "Specific": {
       "Alder": [
         { "envi_id": "020039", "name": "(Q) Spaeth's Alder (middle)" },

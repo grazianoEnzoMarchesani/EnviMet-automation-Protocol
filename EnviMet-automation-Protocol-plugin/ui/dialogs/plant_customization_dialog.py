@@ -36,8 +36,11 @@ class PlantCustomizationDialog(QDialog):
             "tcd_threshold": 70,
             "density_multiplier": 1.0,
             "exclude_barren_water": True,
-            "exclude_grassland": True
+            "exclude_grassland": True,
+            "envimet_v6": True
         }
+        if "envimet_v6" not in self.tree_settings:
+            self.tree_settings["envimet_v6"] = True
         
         # Load database to get all simple plant options
         self.plant_options = self._load_plant_options()
@@ -111,6 +114,16 @@ class PlantCustomizationDialog(QDialog):
         self.tree_layout.addWidget(self.tree_info)
         
         self.tree_form = QFormLayout()
+        
+        # 0. ENVI-met 6 Catalog Toggle
+        self.chk_envimet_v6 = QCheckBox("Usa catalogo piante 3D ENVI-met 6 (Abstract aggiornate)")
+        self.chk_envimet_v6.setToolTip(
+            "Se attivo, utilizza esclusivamente le nuove piante 3D Abstract di ENVI-met 6\n"
+            "(Small 5m, Regular 10m, Medium 15m, Large 20m) escludendo i vecchi ID rimossi."
+        )
+        self.chk_envimet_v6.setChecked(self.tree_settings.get("envimet_v6", True))
+        self.chk_envimet_v6.toggled.connect(lambda _: self._update_shape_options(self.combo_type.currentText()))
+        self.tree_form.addRow(self.chk_envimet_v6)
         
         # 1. Tree Type
         self.combo_type = QComboBox()
@@ -214,14 +227,22 @@ class PlantCustomizationDialog(QDialog):
             self.table.setCellWidget(row, 1, combo)
 
     def _update_shape_options(self, tree_type):
-        """Update shape options based on the tree type."""
+        """Update shape options based on the tree type and ENVI-met version."""
+        current_shape = self.combo_shape.currentText() if hasattr(self, "combo_shape") else ""
         self.combo_shape.clear()
+        use_v6 = self.chk_envimet_v6.isChecked() if hasattr(self, "chk_envimet_v6") else True
         if tree_type == "Deciduous Trees":
-            self.combo_shape.addItems(["Random", "Cylindric", "Heart-shaped", "Spherical"])
+            if use_v6:
+                self.combo_shape.addItems(["Random", "Cylindric", "Spherical"])
+            else:
+                self.combo_shape.addItems(["Random", "Cylindric", "Heart-shaped", "Spherical"])
         elif tree_type == "Conifers":
             self.combo_shape.addItems(["Random", "Conic", "Cylindric"])
         else: # Palm Trees
             self.combo_shape.addItems(["Palm"])
+        idx = self.combo_shape.findText(current_shape)
+        if idx >= 0:
+            self.combo_shape.setCurrentIndex(idx)
 
     def _reset_to_defaults(self):
         """Reset internal mapping and reload table."""
@@ -235,8 +256,10 @@ class PlantCustomizationDialog(QDialog):
             "tcd_threshold": 70,
             "density_multiplier": 1.0,
             "exclude_barren_water": True,
-            "exclude_grassland": True
+            "exclude_grassland": True,
+            "envimet_v6": True
         }
+        self.chk_envimet_v6.setChecked(True)
         self.combo_type.setCurrentText("Deciduous Trees")
         self._update_shape_options("Deciduous Trees")
         self.combo_shape.setCurrentText("Random")
@@ -262,6 +285,7 @@ class PlantCustomizationDialog(QDialog):
             "tcd_threshold": self.spin_tcd.value(),
             "density_multiplier": self.spin_mult.value(),
             "exclude_barren_water": self.chk_exclude_barren.isChecked(),
-            "exclude_grassland": self.chk_exclude_grassland.isChecked()
+            "exclude_grassland": self.chk_exclude_grassland.isChecked(),
+            "envimet_v6": self.chk_envimet_v6.isChecked()
         }
         return new_mapping, new_tree_settings

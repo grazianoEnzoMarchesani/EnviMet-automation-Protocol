@@ -117,6 +117,7 @@ class ENVImetTask(QgsTask):
             # 3. Vectorize Land Use (ESA)
             self.setProgress(40)
             if self.isCanceled(): return False
+            road_layer = None
             esa_path = find_file(FolderNames.ESA, ".tif", "ESA")
             if esa_path:
                 self.log(f"Processamento Land Use ESA: {esa_path}")
@@ -124,7 +125,7 @@ class ENVImetTask(QgsTask):
                 
                 # Pre-calculate road layer to share between surfaces and plants
                 self.log("Preprocessing reti stradali...")
-                road_layer = self.em_manager._process_osm_roads(clip_extent, self.crs, self.road_widths, self.road_materials)
+                road_layer = self.em_manager._process_osm_roads(clip_extent, crs_id, self.road_widths, self.road_materials)
                 
                 if self.isCanceled(): return False
                 ok, msg = self.em_manager.vectorize_land_use(
@@ -133,7 +134,8 @@ class ENVImetTask(QgsTask):
                     road_widths=self.road_widths,
                     road_materials=self.road_materials,
                     road_layer=road_layer,
-                    precise_geometry=aoi_poly
+                    precise_geometry=aoi_poly,
+                    crs_auth_id=crs_id
                 )
                 if not ok:
                     QgsMessageLog.logMessage(f"Avviso Land Use: {msg}", "EnviProtocol", Qgis.Warning)
@@ -145,10 +147,10 @@ class ENVImetTask(QgsTask):
             # 4. Process Buildings (TUM)
             self.setProgress(60)
             if self.isCanceled(): return False
+            out_bld = os.path.join(export_dir, FileNames.EM_BUILDINGS)
             bld_path = find_file(FolderNames.TUM, ".gpkg") # Any .gpkg in folder
             if bld_path:
                 self.log(f"Processamento Edifici: {bld_path}")
-                out_bld = os.path.join(export_dir, FileNames.EM_BUILDINGS)
                 ok, msg = self.em_manager.process_buildings(bld_path, out_bld, aoi_poly, crs_id, 
                                                             building_settings=self.building_settings)
                 if not ok:
@@ -170,7 +172,6 @@ class ENVImetTask(QgsTask):
                 # Level terrain under buildings if explicitly requested and buildings exist
                 if self.do_leveling:
                     if self.isCanceled(): return False
-                    out_bld = os.path.join(export_dir, FileNames.EM_BUILDINGS)
                     if os.path.exists(out_bld):
                         self.em_manager.level_terrain_under_buildings(terrain_path, out_bld)
                     else:
@@ -183,8 +184,8 @@ class ENVImetTask(QgsTask):
             if self.isCanceled(): return False
             tcd_path = find_file(FolderNames.HRL, ".tif", "TCD")
             eth_path = find_file(FolderNames.ETH, ".tif")
-            if tcd_path and eth_path:
-                self.log(f"Processamento Vegetazione: TCD={tcd_path}")
+            if tcd_path or eth_path:
+                self.log(f"Processamento Vegetazione: TCD={tcd_path}, ETH={eth_path}")
                 veg_path = os.path.join(export_dir, FileNames.EM_VEGETATION)
                 
                 # Retrieve layers for cleaning if available
@@ -203,6 +204,7 @@ class ENVImetTask(QgsTask):
                     roads_layer=road_layer,
                     esa_raster=esa_path
                 )
+                del bld_layer
                 if not ok:
                     QgsMessageLog.logMessage(f"Avviso Vegetazione: {msg}", "EnviProtocol", Qgis.Warning)
                 else:
@@ -217,9 +219,10 @@ class ENVImetTask(QgsTask):
                 self.log(f"Processamento Simple Plants (ESA + TCD): {esa_path}")
                 simple_plants_path = os.path.join(export_dir, FileNames.EM_SIMPLE_PLANTS)
                 ok, msg = self.em_manager.process_simple_plants(
-                    esa_path, tcd_path, simple_plants_path, self.extent, crs_id, 
+                    esa_path, tcd_path, simple_plants_path, clip_extent, crs_id, 
                     road_layer=road_layer,
-                    custom_mapping=self.plant_mapping
+                    custom_mapping=self.plant_mapping,
+                    precise_geometry=aoi_poly
                 )
                 if not ok:
                     # Not critical, some areas might not have simple plants

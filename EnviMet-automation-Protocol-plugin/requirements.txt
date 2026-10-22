@@ -1,5 +1,21 @@
-# EnviProtocol Plugin Dependencies (Data Acquisition Core)
-eodag
-shapely
-requests
-urllib3
+# ==============================================================================
+# EnviProtocol: Core Plugin Dependencies
+# ==============================================================================
+# Note: All core dependencies required to run the EnviProtocol QGIS Plugin
+# (numpy, requests, urllib3, pyproj, GDAL/osgeo) are NATIVELY PRE-INSTALLED
+# in official QGIS distributions (Windows OSGeo4W/standalone, macOS, Linux).
+# End-users installing the QGIS plugin DO NOT need to run pip install.
+
+numpy>=1.22.0
+requests>=2.25.0
+urllib3>=1.25.0
+
+# ==============================================================================
+# Optional Dependencies for Standalone ML & Post-Processing Scripts
+# (Located in 'script modifica raster envimet/')
+# Only required if you run the standalone topological clustering or ML diagnostics.
+# ==============================================================================
+# pandas>=1.5.0
+# scikit-learn>=1.0.0
+# joblib>=1.2.0
+# matplotlib>=3.5.0

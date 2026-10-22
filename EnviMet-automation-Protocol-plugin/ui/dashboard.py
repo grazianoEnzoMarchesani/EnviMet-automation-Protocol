@@ -300,6 +300,29 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
                 )
                 if not ok:
                     QgsMessageLog.logMessage(f"Avviso preparazione sub-area nel thread principale: {msg}", "EnviProtocol", Qgis.Warning)
+
+                # Unload existing prepared output layers from QGIS project in the main thread
+                # so Windows releases file locks on .gpkg and .tif files before the background task overwrites them.
+                target_export_files = {
+                    os.path.normcase(os.path.normpath(os.path.join(export_dir, fname)))
+                    for fname in (
+                        FileNames.EM_VEGETATION,
+                        FileNames.EM_BUILDINGS,
+                        FileNames.EM_SIMPLE_PLANTS,
+                        FileNames.EM_SURFACES,
+                        FileNames.DTM,
+                    )
+                }
+                project = QgsProject.instance()
+                layers_to_remove = []
+                for lyr_id, lyr in list(project.mapLayers().items()):
+                    lyr_src = lyr.source().split("|")[0] if lyr.source() else ""
+                    if lyr_src and os.path.normcase(os.path.normpath(lyr_src)) in target_export_files:
+                        layers_to_remove.append(lyr_id)
+                if layers_to_remove:
+                    project.removeMapLayers(layers_to_remove)
+                    import gc
+                    gc.collect()
             
             task = ENVImetTask(
                 self.data_manager, extent, crs, 

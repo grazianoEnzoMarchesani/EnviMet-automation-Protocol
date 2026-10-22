@@ -1,102 +1,88 @@
 # -*- coding: utf-8 -*-
 """
-EnviProtocol Plugin - Dependency Installer for QGIS
-Run this script inside the QGIS Python Console to install missing dependencies.
+EnviProtocol Plugin - Dependency Verification & Diagnostic Helper for QGIS.
+Run this script inside the QGIS Python Console (Plugins -> Python Console)
+to verify your environment or optionally install advanced ML dependencies.
 """
 
 import sys
 import subprocess
 import os
 
-def install_dependencies():
-    import sys
-    import subprocess
-    import os
-    from qgis.core import QgsMessageLog, Qgis, QgsApplication
+def check_or_install_dependencies():
+    from qgis.core import QgsMessageLog, Qgis
     from qgis.utils import iface
 
     def log(msg, level=Qgis.Info):
         print(msg)
         QgsMessageLog.logMessage(str(msg), 'EnviProtocol', level)
         if iface:
-            iface.messageBar().pushMessage("EnviProtocol", str(msg), level=level, duration=3)
+            iface.messageBar().pushMessage("EnviProtocol", str(msg), level=level, duration=4)
 
-    log("=== EnviProtocol: Avvio Installazione Dipendenze ===")
-    
-    # Updated Requirements for EnviProtocol Core (Data Acquisition only)
-    requirements = ["eodag", "shapely", "requests", "urllib3"]
-    
-    # On MacOS, sys.executable might point to the QGIS binary instead of python
+    log("=== EnviProtocol: Verifica Ambiente e Dipendenze ===")
+
+    # 1. Core dependencies (normally bundled directly with QGIS)
+    core_packages = ["requests", "urllib3", "numpy"]
+    missing_core = []
+
+    for pkg in core_packages:
+        try:
+            __import__(pkg)
+            log(f"  [OK] {pkg} è presente.")
+        except ImportError:
+            missing_core.append(pkg)
+            log(f"  [MANCANTE] {pkg} non trovato!", Qgis.Warning)
+
     python_exe = sys.executable
-    if "QGIS" in python_exe and "MacOS" in python_exe and not python_exe.endswith("python3"):
+    if sys.platform == 'darwin' and "QGIS" in python_exe and not python_exe.endswith("python3"):
         base = os.path.dirname(python_exe)
         potential = os.path.join(base, "python3")
         if os.path.exists(potential):
             python_exe = potential
 
-    log(f"Utilizzo Python: {python_exe}")
-    log(f"QGIS sys.prefix: {sys.prefix}")
-    log(f"QGIS sys.path: {sys.path}")
-    
-    # Prepare environment for subprocess
     env = os.environ.copy()
-    
-    # We found libraries here
-    res_python = "/Applications/QGIS-final-3_44_5.app/Contents/Resources/python3.11"
-    
-    paths = sys.path.copy()
-    if os.path.exists(res_python) and res_python not in paths:
-        paths.insert(0, res_python)
-    
-    env["PYTHONPATH"] = os.pathsep.join(paths)
-    
-    # Force PYTHONHOME to the app contents if prefix is broken
-    if "/Users/runner" in sys.prefix:
-        log("Rilevato prefix errato (build runner). Forzo PYTHONPATH e home.", Qgis.Warning)
-        # On Mac, PYTHONPATH is often enough if it contains the stdlib
 
-    # Try to upgrade pip first
-    try:
-        log("Aggiornamento pip...")
-        subprocess.run([python_exe, "-m", "pip", "install", "--upgrade", "pip"], env=env, capture_output=True)
-    except:
-        pass
-
-    for package in requirements:
-        try:
-            # Check availability
-            import_name = package.replace("-", "_")
-            if package == "scikit-learn":
-                import_name = "sklearn"
-            
-            __import__(import_name)
-            log(f"✓ {package} è già presente.")
-            continue
-        except ImportError:
-            log(f"⏳ Installazione di {package} (binary preference)...")
+    # Attempt to install missing core packages if any
+    if missing_core:
+        log(f"Tentativo di installazione automatica per: {missing_core}...", Qgis.Warning)
+        for pkg in missing_core:
             try:
-                # Use subprocess.run to capture output for debugging
-                cmd = [python_exe, "-m", "pip", "install", "--prefer-binary", "--no-cache-dir", package]
-                result = subprocess.run(cmd, capture_output=True, text=True, env=env)
-                if result.returncode == 0:
-                    log(f"✓ {package} installato!")
+                cmd = [python_exe, "-m", "pip", "install", "--prefer-binary", pkg]
+                res = subprocess.run(cmd, capture_output=True, text=True, env=env)
+                if res.returncode == 0:
+                    log(f"  ✓ {pkg} installato con successo!")
                 else:
-                    raise Exception(result.stderr or result.stdout)
-            except Exception as e:
-                log(f"⚠ Prova user-mode per {package}...", Qgis.Warning)
-                try:
-                    cmd = [python_exe, "-m", "pip", "install", "--user", "--prefer-binary", package]
-                    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
-                    if result.returncode == 0:
-                        log(f"✓ {package} installato (user)!")
+                    # Fallback user mode
+                    cmd_user = [python_exe, "-m", "pip", "install", "--user", "--prefer-binary", pkg]
+                    res_user = subprocess.run(cmd_user, capture_output=True, text=True, env=env)
+                    if res_user.returncode == 0:
+                        log(f"  ✓ {pkg} installato (modalità utente)!")
                     else:
-                        raise Exception(result.stderr or result.stdout)
-                except Exception as e2:
-                    log(f"❌ Fallito: {package}.", Qgis.Warning)
-                    log(f"ERRORE DETTAGLIATO:\n{e2}", Qgis.Warning)
+                        log(f"  ✗ Errore nell'installazione di {pkg}: {res.stderr or res.stdout}", Qgis.Critical)
+            except Exception as e:
+                log(f"  ✗ Errore imprevisto: {e}", Qgis.Critical)
+    else:
+        log("✓ Tutte le dipendenze CORE del plugin sono presenti e operative!", Qgis.Success)
 
-    log("=== PROCESSO COMPLETATO ===")
-    log("RIAVVIA QGIS per caricare i nuovi pacchetti.", Qgis.Success)
+    # 2. Check optional ML dependencies (for standalone scripts in 'script modifica raster envimet')
+    log("\n--- Controllo Dipendenze Opzionali per Script ML / Post-Processing ---")
+    ml_packages = ["pandas", "sklearn", "joblib", "matplotlib"]
+    missing_ml = []
 
-# Call directly to ensure execution when using exec()
-install_dependencies()
+    for pkg in ml_packages:
+        try:
+            __import__(pkg)
+            log(f"  [OK] {pkg} (opzionale) è presente.")
+        except ImportError:
+            missing_ml.append(pkg)
+            log(f"  [INFO] {pkg} (opzionale per script ML) non installato.")
+
+    if not missing_ml:
+        log("✓ Anche le dipendenze opzionali di Machine Learning sono pronte!", Qgis.Success)
+    else:
+        log(f"Nota: Se intendi utilizzare gli script avanzati di Machine Learning, puoi installare: {missing_ml}")
+
+    log("=== CONTROLLO COMPLETATO ===")
+
+if __name__ == '__main__':
+    check_or_install_dependencies()

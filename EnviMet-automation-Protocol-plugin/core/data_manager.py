@@ -76,8 +76,8 @@ class DataManager:
     def fetch_esa_worldcover(self, extent, crs_auth_id, progress_callback=None, cancel_check=None):
         return self.esa.fetch_worldcover(extent, crs_auth_id, progress_callback, cancel_check)
 
-    def fetch_osm_roads(self, extent, crs_auth_id, log_callback=None):
-        return self.osm.fetch_roads(extent, crs_auth_id, log_callback=log_callback)
+    def fetch_osm_roads(self, extent, crs_auth_id, log_callback=None, cancel_check=None):
+        return self.osm.fetch_roads(extent, crs_auth_id, log_callback=log_callback, cancel_check=cancel_check)
 
     def fetch_copernicus_hrl(self, extent, crs_auth_id, log_callback=None):
         return self.hrl.fetch_imperviousness(extent, crs_auth_id, log_callback=log_callback)

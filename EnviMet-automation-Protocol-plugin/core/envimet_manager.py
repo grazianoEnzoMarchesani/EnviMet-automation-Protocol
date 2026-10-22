@@ -55,6 +55,42 @@ class ENVImetManager:
         import tempfile, uuid
         return os.path.join(tempfile.gettempdir(), f"envimet_tmp_{uuid.uuid4().hex}.gpkg")
 
+    def _remove_existing_file(self, path):
+        """Safely removes an existing vector/raster file and its SQLite/GDAL sidecars before overwriting."""
+        import gc, time
+        gc.collect()
+        for suffix in ("", "-wal", "-shm", ".aux.xml"):
+            candidate = path + suffix
+            if os.path.exists(candidate):
+                for attempt in range(3):
+                    try:
+                        os.remove(candidate)
+                        break
+                    except OSError:
+                        if attempt < 2:
+                            time.sleep(0.3)
+                            gc.collect()
+
+    def _replace_file_atomic(self, src_path, dst_path):
+        """Atomically replaces dst_path with src_path on Windows with retries for transient file locks."""
+        import gc, time
+        if not os.path.exists(src_path):
+            return False
+        gc.collect()
+        last_err = None
+        for attempt in range(5):
+            try:
+                self._remove_existing_file(dst_path)
+                os.replace(src_path, dst_path)
+                return True
+            except OSError as e:
+                last_err = e
+                time.sleep(0.4)
+                gc.collect()
+        if last_err:
+            raise last_err
+        return False
+
     def get_model_constraints(self, project_dir):
         """
         Analyzes Buildings and DTM to determine optimal ENVI-met constraints.
@@ -163,7 +199,9 @@ class ENVImetManager:
         mem_layer.startEditing()
         
         source_crs = road_layer.crs()
-        xf = QgsCoordinateTransform(source_crs, target_crs, QgsProject.instance())
+        if not source_crs.isValid():
+            source_crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        xf = QgsCoordinateTransform(source_crs, target_crs, QgsProject.instance().transformContext())
         
         new_feats = []
         for feat in road_layer.getFeatures():
@@ -174,8 +212,9 @@ class ENVImetManager:
                 continue
                 
             h_type = feat.attribute("highway")
-            width = widths.get(h_type, widths.get("default", 4.0))
-            envi_id = materials.get(h_type, materials.get("default", "0200ST"))
+            base_h_type = h_type.replace("_link", "") if isinstance(h_type, str) else ""
+            width = widths.get(h_type, widths.get(base_h_type, widths.get("default", 4.0)))
+            envi_id = materials.get(h_type, materials.get(base_h_type, materials.get("default", "0200ST")))
             
             # Buffer is half-width
             poly_geom = geom.buffer(width / 2.0, 5)
@@ -200,7 +239,7 @@ class ENVImetManager:
         
         return dissolve_res['OUTPUT']
 
-    def vectorize_land_use(self, input_raster, output_path, extent, custom_mapping=None, road_widths=None, road_materials=None, road_layer=None, precise_geometry=None):
+    def vectorize_land_use(self, input_raster, output_path, extent, custom_mapping=None, road_widths=None, road_materials=None, road_layer=None, precise_geometry=None, crs_auth_id=None):
         """Vectorizes ESA raster and integrates custom road network, clipped to precise geometry."""
         try:
             mapping = custom_mapping if custom_mapping else ESA_ENVIMET_MAPPING
@@ -208,12 +247,15 @@ class ENVImetManager:
             # 1. Reproject extent to raster CRS to avoid PB disk space error
             raster_layer = QgsRasterLayer(input_raster, "temp_raster")
             raster_crs = raster_layer.crs()
-            project_crs = QgsProject.instance().crs()
+            del raster_layer
+            target_crs = QgsCoordinateReferenceSystem(crs_auth_id) if crs_auth_id else QgsProject.instance().crs()
+            if not target_crs.isValid():
+                target_crs = QgsProject.instance().crs()
             
             x_extent = extent
-            if raster_crs != project_crs:
-                self.log(f"Reprojecting extent from {project_crs.authid()} to {raster_crs.authid()}")
-                xf = QgsCoordinateTransform(project_crs, raster_crs, QgsProject.instance())
+            if raster_crs.authid() != target_crs.authid():
+                self.log(f"Reprojecting extent from {target_crs.authid()} to {raster_crs.authid()}")
+                xf = QgsCoordinateTransform(target_crs, raster_crs, QgsProject.instance().transformContext())
                 x_extent = xf.transformBoundingBox(extent)
                 self.log(f"New extent: {x_extent.toString()}")
 
@@ -245,10 +287,10 @@ class ENVImetManager:
                 return False, "Impossibile vettorizzare Land Use ESA (area vuota?)."
 
             # --- 2. EARLY REPROJECTION TO METRIC ---
-            if layer.crs().authid() != project_crs.authid():
-                self.log(f"Riproiezione Land Use da {layer.crs().authid()} a {project_crs.authid()}...")
+            if layer.crs().authid() != target_crs.authid():
+                self.log(f"Riproiezione Land Use da {layer.crs().authid()} a {target_crs.authid()}...")
                 reproj_res = processing.run("native:reprojectlayer", {
-                    'INPUT': layer, 'TARGET_CRS': project_crs.authid(), 'OUTPUT': 'TEMPORARY_OUTPUT'
+                    'INPUT': layer, 'TARGET_CRS': target_crs.authid(), 'OUTPUT': 'TEMPORARY_OUTPUT'
                 })
                 layer = reproj_res['OUTPUT']
 
@@ -276,7 +318,7 @@ class ENVImetManager:
             # --- 4. ROAD INTEGRATION (Customized) ---
             if not road_layer:
                 self.log("Generazione layer stradale...")
-                road_layer = self._process_osm_roads(extent, project_crs, road_widths, road_materials)
+                road_layer = self._process_osm_roads(extent, target_crs, road_widths, road_materials)
             
             if road_layer:
                 # Difference: Land Use - Roads (cutholes)
@@ -305,7 +347,7 @@ class ENVImetManager:
             if precise_geometry:
                 self.log("Clipping finale Land Use alla Sub Area precisa...")
                 # Create memory layer for precise geometry
-                mask_layer = QgsVectorLayer(f"Polygon?crs={project_crs.authid()}", "mask", "memory")
+                mask_layer = QgsVectorLayer(f"Polygon?crs={target_crs.authid()}", "mask", "memory")
                 mask_layer.startEditing()
                 f = QgsFeature()
                 f.setGeometry(precise_geometry)
@@ -318,10 +360,12 @@ class ENVImetManager:
                 layer = clip_res['OUTPUT']
 
             # 6. Save final 
-            # Output is already in project_crs, just write to disk
+            # Output is already in target_crs, just write to disk
+            self._remove_existing_file(output_path)
             options = QgsVectorFileWriter.SaveVectorOptions()
             options.driverName = "GPKG"
             options.fileEncoding = "UTF-8"
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             
             error = QgsVectorFileWriter.writeAsVectorFormatV3(
                 layer, output_path, QgsProject.instance().transformContext(), options
@@ -368,8 +412,10 @@ class ENVImetManager:
                 # Try to edit in place if the layer is loaded in QGIS project
                 project = QgsProject.instance()
                 active_layer = None
+                norm_out = os.path.normcase(os.path.normpath(output_path))
                 for lyr in project.mapLayers().values():
-                    if lyr.source() == output_path:
+                    lyr_src = lyr.source().split("|")[0] if lyr.source() else ""
+                    if lyr_src and os.path.normcase(os.path.normpath(lyr_src)) == norm_out:
                         active_layer = lyr
                         break
                 
@@ -571,9 +617,11 @@ class ENVImetManager:
                 clip_layer = reproj_res['OUTPUT']
 
             # 5. Save using explicit writer factory
+            self._remove_existing_file(output_path)
             options = QgsVectorFileWriter.SaveVectorOptions()
             options.driverName = "GPKG"
             options.fileEncoding = "UTF-8"
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             
             error = QgsVectorFileWriter.writeAsVectorFormatV3(
                 clip_layer, 
@@ -623,60 +671,55 @@ class ENVImetManager:
             # 3. Reproject extent to DTM CRS
             raster_layer = QgsRasterLayer(merged, "temp_dtm")
             raster_crs = raster_layer.crs()
-            project_crs = QgsProject.instance().crs()
+            del raster_layer
+            target_crs = QgsCoordinateReferenceSystem(crs_auth_id) if crs_auth_id else QgsProject.instance().crs()
+            if not target_crs.isValid():
+                target_crs = QgsProject.instance().crs()
             
             x_extent = extent
-            if raster_crs.authid() != project_crs.authid():
-                xf = QgsCoordinateTransform(project_crs, raster_crs, QgsProject.instance())
+            if raster_crs.authid() != target_crs.authid():
+                xf = QgsCoordinateTransform(target_crs, raster_crs, QgsProject.instance().transformContext())
                 x_extent = xf.transformBoundingBox(extent)
 
             # 4. Clip to extent
             temp_clip = output_path.replace(".tif", "_tmp_clip.tif")
+            self._remove_existing_file(temp_clip)
             clip_params = {
                 'INPUT': merged,
                 'PROJWIN': x_extent,
                 'NODATA': -9999,
                 'OPTIONS': 'COMPRESS=LZW',
-                'DATA_TYPE': 5, # Float32
+                'DATA_TYPE': 6, # Float32
                 'OUTPUT': temp_clip
             }
             processing.run("gdal:cliprasterbyextent", clip_params)
             
             # --- 5. FORCED REPROJECTION TO TARGET CRS ---
-            target_crs = QgsCoordinateReferenceSystem(crs_auth_id)
             # Since temp_clip was clipped from merged directly without reprojection,
             # it has the exact same CRS as raster_crs (the CRS of merged).
             if raster_crs.authid() != target_crs.authid():
-                self.log(f"Reprojecting DTM from {raster_crs.authid()} to {crs_auth_id}...")
+                self.log(f"Reprojecting DTM from {raster_crs.authid()} to {target_crs.authid()}...")
+                self._remove_existing_file(output_path)
                 warp_params = {
                     'INPUT': temp_clip,
-                    'TARGET_CRS': crs_auth_id,
+                    'TARGET_CRS': target_crs.authid(),
                     'RESAMPLING': 0, # Nearest Neighbour
                     'NODATA': -9999,
-                    'DATA_TYPE': 5,
+                    'DATA_TYPE': 6, # Float32
                     'OUTPUT': output_path
                 }
                 processing.run("gdal:warpreproject", warp_params)
-                if os.path.exists(temp_clip):
-                    try:
-                        os.remove(temp_clip)
-                    except Exception as e:
-                        self.log(f"Non è stato possibile eliminare il file temporaneo DTM {temp_clip}: {e}", Qgis.Warning)
+                self._remove_existing_file(temp_clip)
             else:
-                if os.path.exists(output_path):
-                    try:
-                        os.remove(output_path)
-                    except Exception as e:
-                        self.log(f"Non è stato possibile eliminare il vecchio DTM {output_path}: {e}", Qgis.Warning)
                 try:
-                    os.rename(temp_clip, output_path)
+                    self._replace_file_atomic(temp_clip, output_path)
                 except Exception as e:
                     self.log(f"Errore nello spostamento del file DTM: {e}", Qgis.Warning)
 
             # --- 6. OPTIONAL FINAL CLIP TO PRECISE GEOMETRY ---
             if precise_geometry:
                 self.log("Clipping finale DTM alla geometria precisa (ruotata)...")
-                mask_layer = QgsVectorLayer(f"Polygon?crs={crs_auth_id}", "mask", "memory")
+                mask_layer = QgsVectorLayer(f"Polygon?crs={target_crs.authid()}", "mask", "memory")
                 mask_layer.startEditing()
                 f = QgsFeature()
                 f.setGeometry(precise_geometry)
@@ -684,6 +727,7 @@ class ENVImetManager:
                 mask_layer.commitChanges()
 
                 final_clip = output_path.replace(".tif", "_final_mask.tif")
+                self._remove_existing_file(final_clip)
                 mask_params = {
                     'INPUT': output_path,
                     'MASK': mask_layer,
@@ -692,18 +736,13 @@ class ENVImetManager:
                     'CROP_TO_CUTLINE': True,
                     'KEEP_RESOLUTION': True,
                     'OPTIONS': 'COMPRESS=LZW',
-                    'DATA_TYPE': 5,
+                    'DATA_TYPE': 6, # Float32
                     'OUTPUT': final_clip
                 }
                 processing.run("gdal:cliprasterbymasklayer", mask_params)
                 
-                if os.path.exists(output_path):
-                    try:
-                        os.remove(output_path)
-                    except Exception as e:
-                        pass
                 try:
-                    os.rename(final_clip, output_path)
+                    self._replace_file_atomic(final_clip, output_path)
                 except Exception as e:
                     self.log(f"Errore nello spostamento del DTM mascherato: {e}", Qgis.Warning)
 
@@ -714,8 +753,10 @@ class ENVImetManager:
     def process_vegetation_advanced(self, tcd_raster, eth_raster, output_path, aoi_geometry, extent, crs_auth_id, 
                                    tree_settings=None, buildings_layer=None, roads_layer=None, esa_raster=None):
         """Generates random tree points based on Tree Cover Density (TCD) and ETH height, with spatial cleaning."""
-        if not os.path.exists(tcd_raster) or not os.path.exists(eth_raster):
-            return False, "Dati TCD o ETH mancanti."
+        has_tcd = bool(tcd_raster and os.path.exists(tcd_raster))
+        has_eth = bool(eth_raster and os.path.exists(eth_raster))
+        if not has_tcd and not has_eth:
+            return False, "Dati TCD e ETH mancanti."
 
         # Tree settings defaults
         if not tree_settings:
@@ -724,43 +765,57 @@ class ENVImetManager:
                 "density_mode": "auto", # auto, dense, sparse
                 "tcd_threshold": 70,
                 "exclude_barren_water": True,
-                "exclude_grassland": True
+                "exclude_grassland": True,
+                "envimet_v6": True
             }
 
         try:
-            # 1. Reproject extent to TCD CRS
-            raster_layer = QgsRasterLayer(tcd_raster, "temp_tcd")
-            raster_crs = raster_layer.crs()
-            project_crs = QgsProject.instance().crs()
-            
-            x_extent = extent
-            target_crs_obj = QgsCoordinateReferenceSystem(crs_auth_id)
-            if raster_crs.authid() != target_crs_obj.authid():
-                xf = QgsCoordinateTransform(project_crs, raster_crs, QgsProject.instance())
-                x_extent = xf.transformBoundingBox(extent)
+            target_crs_obj = QgsCoordinateReferenceSystem(crs_auth_id) if crs_auth_id else QgsProject.instance().crs()
+            if not target_crs_obj.isValid():
+                target_crs_obj = QgsProject.instance().crs()
+            tx_ctx = QgsProject.instance().transformContext()
 
-            # 2. Clip TCD to extent for speed
-            self.log("Ritaglio del raster TCD all'estensione dell'area di studio...")
-            clip_res = processing.run("gdal:cliprasterbyextent", {
-                'INPUT': tcd_raster,
-                'PROJWIN': x_extent,
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            tcd_clipped = clip_res['OUTPUT']
+            tcd_clipped = None
+            tcd_warped = None
+            eth_clipped_path = None
+            eth_warped = None
 
-            # 3. Clip ETH to extent for speed
-            self.log("Ritaglio del raster ETH all'estensione dell'area di studio...")
-            eth_qgs = QgsRasterLayer(eth_raster, "temp_eth")
-            x_extent_eth = extent
-            if eth_qgs.isValid():
-                if eth_qgs.crs().authid() != project_crs.authid():
-                    xf_e = QgsCoordinateTransform(project_crs, eth_qgs.crs(), QgsProject.instance())
-                    x_extent_eth = xf_e.transformBoundingBox(extent)
-            
-            clip_eth_res = processing.run("gdal:cliprasterbyextent", {
-                'INPUT': eth_raster, 'PROJWIN': x_extent_eth, 'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            eth_clipped_path = clip_eth_res['OUTPUT']
+            # 1 & 2. Clip and Warp TCD if available
+            if has_tcd:
+                raster_layer = QgsRasterLayer(tcd_raster, "temp_tcd")
+                raster_crs = raster_layer.crs()
+                del raster_layer
+                
+                x_extent = extent
+                if raster_crs.authid() != target_crs_obj.authid():
+                    xf = QgsCoordinateTransform(target_crs_obj, raster_crs, tx_ctx)
+                    x_extent = xf.transformBoundingBox(extent)
+
+                self.log("Ritaglio del raster TCD all'estensione dell'area di studio...")
+                clip_res = processing.run("gdal:cliprasterbyextent", {
+                    'INPUT': tcd_raster,
+                    'PROJWIN': x_extent,
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                tcd_clipped = clip_res['OUTPUT']
+
+            # 3. Clip ETH to extent for speed if available
+            if has_eth:
+                self.log("Ritaglio del raster ETH all'estensione dell'area di studio...")
+                eth_qgs = QgsRasterLayer(eth_raster, "temp_eth")
+                x_extent_eth = extent
+                if eth_qgs.isValid():
+                    if eth_qgs.crs().authid() != target_crs_obj.authid():
+                        xf_e = QgsCoordinateTransform(target_crs_obj, eth_qgs.crs(), tx_ctx)
+                        x_extent_eth = xf_e.transformBoundingBox(extent)
+                del eth_qgs
+                
+                clip_eth_res = processing.run("gdal:cliprasterbyextent", {
+                    'INPUT': eth_raster, 'PROJWIN': x_extent_eth, 'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                eth_clipped_path = clip_eth_res['OUTPUT']
+            else:
+                self.log("Raster ETH non disponibile: stima altezze alberi basata sulla densità TCD...")
 
             # 3.5 Clip and Warp ESA land use if requested for filtering
             esa_warped = None
@@ -773,9 +828,10 @@ class ENVImetManager:
                 esa_qgs = QgsRasterLayer(esa_raster, "temp_esa")
                 x_extent_esa = extent
                 if esa_qgs.isValid():
-                    if esa_qgs.crs().authid() != project_crs.authid():
-                        xf_esa = QgsCoordinateTransform(project_crs, esa_qgs.crs(), QgsProject.instance())
+                    if esa_qgs.crs().authid() != target_crs_obj.authid():
+                        xf_esa = QgsCoordinateTransform(target_crs_obj, esa_qgs.crs(), tx_ctx)
                         x_extent_esa = xf_esa.transformBoundingBox(extent)
+                del esa_qgs
                 
                 clip_esa_res = processing.run("gdal:cliprasterbyextent", {
                     'INPUT': esa_raster, 'PROJWIN': x_extent_esa, 'OUTPUT': 'TEMPORARY_OUTPUT'
@@ -783,11 +839,14 @@ class ENVImetManager:
                 esa_clipped_path = clip_esa_res['OUTPUT']
                 
                 esa_rl = QgsRasterLayer(esa_clipped_path, "esa_clipped")
-                if esa_rl.crs().authid() != target_crs_obj.authid():
+                esa_rl_crs = esa_rl.crs()
+                del esa_rl
+                if esa_rl_crs.authid() != target_crs_obj.authid():
                     esa_warped = os.path.join(os.path.dirname(output_path), "esa_warped_tmp.tif")
+                    self._remove_existing_file(esa_warped)
                     processing.run("gdal:warpreproject", {
                         'INPUT': esa_clipped_path,
-                        'TARGET_CRS': crs_auth_id,
+                        'TARGET_CRS': target_crs_obj.authid(),
                         'RESAMPLING': 0, # Nearest Neighbour
                         'NODATA': -9999,
                         'OUTPUT': esa_warped
@@ -798,69 +857,80 @@ class ENVImetManager:
             # 4. Warp clipped rasters to the target CRS (metric) if needed
             self.log("Allineamento e riproiezione dei raster al CRS di destinazione...")
             
-            tcd_rl = QgsRasterLayer(tcd_clipped, "tcd_clipped")
-            if tcd_rl.crs().authid() != target_crs_obj.authid():
-                tcd_warped = os.path.join(os.path.dirname(output_path), "tcd_warped_tmp.tif")
-                processing.run("gdal:warpreproject", {
-                    'INPUT': tcd_clipped,
-                    'TARGET_CRS': crs_auth_id,
-                    'RESAMPLING': 0, # Nearest Neighbour
-                    'NODATA': -9999,
-                    'OUTPUT': tcd_warped
-                })
-            else:
-                tcd_warped = tcd_clipped
+            if has_tcd:
+                tcd_rl = QgsRasterLayer(tcd_clipped, "tcd_clipped")
+                tcd_rl_crs = tcd_rl.crs()
+                del tcd_rl
+                if tcd_rl_crs.authid() != target_crs_obj.authid():
+                    tcd_warped = os.path.join(os.path.dirname(output_path), "tcd_warped_tmp.tif")
+                    self._remove_existing_file(tcd_warped)
+                    processing.run("gdal:warpreproject", {
+                        'INPUT': tcd_clipped,
+                        'TARGET_CRS': target_crs_obj.authid(),
+                        'RESAMPLING': 0, # Nearest Neighbour
+                        'NODATA': -9999,
+                        'OUTPUT': tcd_warped
+                    })
+                else:
+                    tcd_warped = tcd_clipped
 
-            eth_rl = QgsRasterLayer(eth_clipped_path, "eth_clipped")
-            if eth_rl.crs().authid() != target_crs_obj.authid():
-                eth_warped = os.path.join(os.path.dirname(output_path), "eth_warped_tmp.tif")
-                processing.run("gdal:warpreproject", {
-                    'INPUT': eth_clipped_path,
-                    'TARGET_CRS': crs_auth_id,
-                    'RESAMPLING': 0, # Nearest Neighbour
-                    'NODATA': -9999,
-                    'OUTPUT': eth_warped
-                })
-            else:
-                eth_warped = eth_clipped_path
+            if has_eth:
+                eth_rl = QgsRasterLayer(eth_clipped_path, "eth_clipped")
+                eth_rl_crs = eth_rl.crs()
+                del eth_rl
+                if eth_rl_crs.authid() != target_crs_obj.authid():
+                    eth_warped = os.path.join(os.path.dirname(output_path), "eth_warped_tmp.tif")
+                    self._remove_existing_file(eth_warped)
+                    processing.run("gdal:warpreproject", {
+                        'INPUT': eth_clipped_path,
+                        'TARGET_CRS': target_crs_obj.authid(),
+                        'RESAMPLING': 0, # Nearest Neighbour
+                        'NODATA': -9999,
+                        'OUTPUT': eth_warped
+                    })
+                else:
+                    eth_warped = eth_clipped_path
 
-            # 5. Convert pixels to points (very fast, automatically skips NoData pixels)
-            self.log("Conversione dei pixel TCD in punti vettoriali...")
-            tcd_pts_res = processing.run("native:pixelstopoints", {
-                'INPUT_RASTER': tcd_warped,
-                'RASTER_BAND': 1,
-                'FIELD_NAME': 'tcd_val',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            tcd_pts = tcd_pts_res['OUTPUT']
-
-            self.log("Conversione dei pixel ETH in punti vettoriali...")
-            eth_pts_res = processing.run("native:pixelstopoints", {
-                'INPUT_RASTER': eth_warped,
-                'RASTER_BAND': 1,
-                'FIELD_NAME': 'eth_val',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            eth_pts = eth_pts_res['OUTPUT']
-
-            # 5.5 Pre-filter points in C++ using extractbyexpression
+            # 5. Convert pixels to points & pre-filter in C++
             d_mult = tree_settings.get("density_multiplier", 1.0) if tree_settings else 1.0
+            tcd_filtered = None
+            eth_filtered = None
 
-            self.log("Filtraggio punti TCD in C++...")
-            tcd_filtered_res = processing.run("native:extractbyexpression", {
-                'INPUT': tcd_pts,
-                'EXPRESSION': '"tcd_val" >= 10 AND "tcd_val" <= 100',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            tcd_filtered = tcd_filtered_res['OUTPUT']
+            if has_tcd:
+                self.log("Conversione dei pixel TCD in punti vettoriali...")
+                tcd_pts_res = processing.run("native:pixelstopoints", {
+                    'INPUT_RASTER': tcd_warped,
+                    'RASTER_BAND': 1,
+                    'FIELD_NAME': 'tcd_val',
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                tcd_pts = tcd_pts_res['OUTPUT']
 
-            self.log("Filtraggio punti ETH in C++...")
-            eth_filtered_res = processing.run("native:extractbyexpression", {
-                'INPUT': eth_pts,
-                'EXPRESSION': '"eth_val" >= 2',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            eth_filtered = eth_filtered_res['OUTPUT']
+                self.log("Filtraggio punti TCD in C++...")
+                tcd_filtered_res = processing.run("native:extractbyexpression", {
+                    'INPUT': tcd_pts,
+                    'EXPRESSION': '"tcd_val" >= 10 AND "tcd_val" <= 100',
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                tcd_filtered = tcd_filtered_res['OUTPUT']
+
+            if has_eth:
+                self.log("Conversione dei pixel ETH in punti vettoriali...")
+                eth_pts_res = processing.run("native:pixelstopoints", {
+                    'INPUT_RASTER': eth_warped,
+                    'RASTER_BAND': 1,
+                    'FIELD_NAME': 'eth_val',
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                eth_pts = eth_pts_res['OUTPUT']
+
+                self.log("Filtraggio punti ETH in C++...")
+                eth_filtered_res = processing.run("native:extractbyexpression", {
+                    'INPUT': eth_pts,
+                    'EXPRESSION': '"eth_val" >= 2',
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                eth_filtered = eth_filtered_res['OUTPUT']
 
             # 5.6 Spatial cleaning in C++ (Extract by location disjoint from buildings/roads)
             def ensure_spatial_index(layer_input):
@@ -874,91 +944,97 @@ class ENVImetManager:
             ensure_spatial_index(roads_layer)
 
             if buildings_layer and buildings_layer.isValid() and buildings_layer.featureCount() > 0:
-                self.log("Rimozione punti TCD sovrapposti a edifici in C++...")
-                ensure_spatial_index(tcd_filtered)
-                tcd_filtered_res = processing.run("native:extractbylocation", {
-                    'INPUT': tcd_filtered,
-                    'PREDICATE': [2], # disjoint
-                    'INTERSECT': buildings_layer,
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                tcd_filtered = tcd_filtered_res['OUTPUT']
+                if tcd_filtered is not None:
+                    self.log("Rimozione punti TCD sovrapposti a edifici in C++...")
+                    ensure_spatial_index(tcd_filtered)
+                    tcd_filtered_res = processing.run("native:extractbylocation", {
+                        'INPUT': tcd_filtered,
+                        'PREDICATE': [2], # disjoint
+                        'INTERSECT': buildings_layer,
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    tcd_filtered = tcd_filtered_res['OUTPUT']
 
-                self.log("Rimozione punti ETH sovrapposti a edifici in C++...")
-                ensure_spatial_index(eth_filtered)
-                eth_filtered_res = processing.run("native:extractbylocation", {
-                    'INPUT': eth_filtered,
-                    'PREDICATE': [2], # disjoint
-                    'INTERSECT': buildings_layer,
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                eth_filtered = eth_filtered_res['OUTPUT']
+                if eth_filtered is not None:
+                    self.log("Rimozione punti ETH sovrapposti a edifici in C++...")
+                    ensure_spatial_index(eth_filtered)
+                    eth_filtered_res = processing.run("native:extractbylocation", {
+                        'INPUT': eth_filtered,
+                        'PREDICATE': [2], # disjoint
+                        'INTERSECT': buildings_layer,
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    eth_filtered = eth_filtered_res['OUTPUT']
 
             if roads_layer and roads_layer.isValid() and roads_layer.featureCount() > 0:
-                self.log("Rimozione punti TCD sovrapposti a strade in C++...")
-                ensure_spatial_index(tcd_filtered)
-                tcd_filtered_res = processing.run("native:extractbylocation", {
-                    'INPUT': tcd_filtered,
-                    'PREDICATE': [2], # disjoint
-                    'INTERSECT': roads_layer,
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                tcd_filtered = tcd_filtered_res['OUTPUT']
+                if tcd_filtered is not None:
+                    self.log("Rimozione punti TCD sovrapposti a strade in C++...")
+                    ensure_spatial_index(tcd_filtered)
+                    tcd_filtered_res = processing.run("native:extractbylocation", {
+                        'INPUT': tcd_filtered,
+                        'PREDICATE': [2], # disjoint
+                        'INTERSECT': roads_layer,
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    tcd_filtered = tcd_filtered_res['OUTPUT']
 
-                self.log("Rimozione punti ETH sovrapposti a strade in C++...")
-                ensure_spatial_index(eth_filtered)
-                eth_filtered_res = processing.run("native:extractbylocation", {
-                    'INPUT': eth_filtered,
-                    'PREDICATE': [2], # disjoint
-                    'INTERSECT': roads_layer,
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                eth_filtered = eth_filtered_res['OUTPUT']
+                if eth_filtered is not None:
+                    self.log("Rimozione punti ETH sovrapposti a strade in C++...")
+                    ensure_spatial_index(eth_filtered)
+                    eth_filtered_res = processing.run("native:extractbylocation", {
+                        'INPUT': eth_filtered,
+                        'PREDICATE': [2], # disjoint
+                        'INTERSECT': roads_layer,
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    eth_filtered = eth_filtered_res['OUTPUT']
 
             # 6. Sample rasters on the filtered points to get the missing variable
-            self.log("Campionamento altezze sui punti TCD pre-filtrati...")
-            sample_eth_res = processing.run("native:rastersampling", {
-                'INPUT': tcd_filtered,
-                'RASTERCOPY': eth_warped,
-                'COLUMN_PREFIX': 'height_',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            tcd_sampled = sample_eth_res['OUTPUT']
-            if isinstance(tcd_sampled, str):
-                tcd_sampled = QgsVectorLayer(tcd_sampled, "tcd_sampled", "ogr")
-
-            if esa_warped:
-                self.log("Campionamento Land Use ESA sui punti TCD pre-filtrati...")
-                sample_esa_res = processing.run("native:rastersampling", {
-                    'INPUT': tcd_sampled,
-                    'RASTERCOPY': esa_warped,
-                    'COLUMN_PREFIX': 'esa_',
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                tcd_sampled = sample_esa_res['OUTPUT']
+            tcd_sampled = None
+            if tcd_filtered is not None:
+                tcd_sampled = tcd_filtered
+                if has_eth and eth_warped:
+                    self.log("Campionamento altezze sui punti TCD pre-filtrati...")
+                    sample_eth_res = processing.run("native:rastersampling", {
+                        'INPUT': tcd_sampled,
+                        'RASTERCOPY': eth_warped,
+                        'COLUMN_PREFIX': 'height_',
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    tcd_sampled = sample_eth_res['OUTPUT']
+                if esa_warped:
+                    self.log("Campionamento Land Use ESA sui punti TCD pre-filtrati...")
+                    sample_esa_res = processing.run("native:rastersampling", {
+                        'INPUT': tcd_sampled,
+                        'RASTERCOPY': esa_warped,
+                        'COLUMN_PREFIX': 'esa_',
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    tcd_sampled = sample_esa_res['OUTPUT']
                 if isinstance(tcd_sampled, str):
                     tcd_sampled = QgsVectorLayer(tcd_sampled, "tcd_sampled", "ogr")
 
-            self.log("Campionamento densità sui punti ETH pre-filtrati...")
-            sample_tcd_res = processing.run("native:rastersampling", {
-                'INPUT': eth_filtered,
-                'RASTERCOPY': tcd_warped,
-                'COLUMN_PREFIX': 'tcd_',
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            })
-            eth_sampled = sample_tcd_res['OUTPUT']
-            if isinstance(eth_sampled, str):
-                eth_sampled = QgsVectorLayer(eth_sampled, "eth_sampled", "ogr")
-
-            if esa_warped:
-                self.log("Campionamento Land Use ESA sui punti ETH pre-filtrati...")
-                sample_esa_res_eth = processing.run("native:rastersampling", {
-                    'INPUT': eth_sampled,
-                    'RASTERCOPY': esa_warped,
-                    'COLUMN_PREFIX': 'esa_',
-                    'OUTPUT': 'TEMPORARY_OUTPUT'
-                })
-                eth_sampled = sample_esa_res_eth['OUTPUT']
+            eth_sampled = None
+            if eth_filtered is not None:
+                eth_sampled = eth_filtered
+                if has_tcd and tcd_warped:
+                    self.log("Campionamento densità sui punti ETH pre-filtrati...")
+                    sample_tcd_res = processing.run("native:rastersampling", {
+                        'INPUT': eth_sampled,
+                        'RASTERCOPY': tcd_warped,
+                        'COLUMN_PREFIX': 'tcd_',
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    eth_sampled = sample_tcd_res['OUTPUT']
+                if esa_warped:
+                    self.log("Campionamento Land Use ESA sui punti ETH pre-filtrati...")
+                    sample_esa_res_eth = processing.run("native:rastersampling", {
+                        'INPUT': eth_sampled,
+                        'RASTERCOPY': esa_warped,
+                        'COLUMN_PREFIX': 'esa_',
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    eth_sampled = sample_esa_res_eth['OUTPUT']
                 if isinstance(eth_sampled, str):
                     eth_sampled = QgsVectorLayer(eth_sampled, "eth_sampled", "ogr")
 
@@ -970,15 +1046,20 @@ class ENVImetManager:
             fields.append(QgsField("tcd_1", QMetaType.Double, "double"))
 
             # Load species database
+            use_v6 = tree_settings.get("envimet_v6", True) if tree_settings else True
             db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "envimet_db.json")
             db_plants = {}
             try:
                 with open(db_path, "r", encoding="utf-8") as f:
                     db = json.load(f)
-                    db_plants = db.get("3d_plants", {}).get("Abstract", {})
+                    abstract_key = "Abstract_v6" if use_v6 else "Abstract"
+                    db_plants = db.get("3d_plants", {}).get(abstract_key, {})
+                    if not db_plants:
+                        db_plants = db.get("3d_plants", {}).get("Abstract", {})
             except Exception as e:
                 self.log(f"Impossibile leggere database piante: {e}", Qgis.Warning)
 
+            self.log(f"Catalogo piante 3D Abstract attivo: {'ENVI-met 6' if use_v6 else 'ENVI-met 5 (Legacy)'}")
             tree_type = tree_settings.get("type", "Deciduous Trees") if tree_settings else "Deciduous Trees"
             type_data = db_plants.get(tree_type, {})
             d_mode = tree_settings.get("density_mode", "auto") if tree_settings else "auto"
@@ -988,12 +1069,24 @@ class ENVImetManager:
             def get_species_for_tree(h, tcd_val):
                 if h is None or h < 2:
                     return "0000XX", "Unknown Tree"
-                elif h < 10:
-                    h_cat = "Small"
-                elif h < 20:
-                    h_cat = "Medium"
+                if use_v6:
+                    # ENVI-met 6 heights: Small (5m), Regular (10m), Medium (15m), Large (20m)
+                    if h < 7.5:
+                        h_cat = "Small"
+                    elif h < 12.5:
+                        h_cat = "Regular"
+                    elif h < 17.5:
+                        h_cat = "Medium"
+                    else:
+                        h_cat = "Large"
                 else:
-                    h_cat = "Large"
+                    # ENVI-met 5 heights: Small (5m), Medium (15m), Large (25m)
+                    if h < 10:
+                        h_cat = "Small"
+                    elif h < 20:
+                        h_cat = "Medium"
+                    else:
+                        h_cat = "Large"
 
                 if not type_data:
                     return "0000XX", "Unknown Tree"
@@ -1022,42 +1115,9 @@ class ENVImetManager:
                             selected_plant = plants[0]
                     return selected_plant["envi_id"], selected_plant["name"]
                 else:
+                    if use_v6:
+                        return "02OMDM", "Cylindric, dense, medium (15m)"
                     return "0010MO", "Deciduous Tree Fallback"
-
-            # Find dynamic field names in sampled layers
-            f_names_tcd = [f.name() for f in tcd_sampled.fields()]
-            idx_tcd_val = tcd_sampled.fields().indexFromName("tcd_val")
-            idx_height_sampled = -1
-            for target in ["height_1", "height", "height_1_1", "SAMPLE", "SAMPLE_1"]:
-                if target in f_names_tcd:
-                    idx_height_sampled = tcd_sampled.fields().indexFromName(target)
-                    break
-
-            idx_esa_tcd = -1
-            if esa_warped:
-                for target in ["esa_1", "esa", "esa_1_1", "SAMPLE", "SAMPLE_1"]:
-                    if target in f_names_tcd:
-                        idx = tcd_sampled.fields().indexFromName(target)
-                        if idx != idx_height_sampled:
-                            idx_esa_tcd = idx
-                            break
-
-            f_names_eth = [f.name() for f in eth_sampled.fields()]
-            idx_eth_val = eth_sampled.fields().indexFromName("eth_val")
-            idx_tcd_sampled = -1
-            for target in ["tcd_1", "tcd", "tcd_1_1", "SAMPLE", "SAMPLE_1"]:
-                if target in f_names_eth:
-                    idx_tcd_sampled = eth_sampled.fields().indexFromName(target)
-                    break
-
-            idx_esa_eth = -1
-            if esa_warped:
-                for target in ["esa_1", "esa", "esa_1_1", "SAMPLE", "SAMPLE_1"]:
-                    if target in f_names_eth:
-                        idx = eth_sampled.fields().indexFromName(target)
-                        if idx != idx_tcd_sampled:
-                            idx_esa_eth = idx
-                            break
 
             new_features = []
             next_id = 1
@@ -1074,63 +1134,165 @@ class ENVImetManager:
                 aoi_rect.grow(margin)
 
             # 8. Loop over final TCD points
-            self.log("Posizionamento finale e jittering punti vegetazione TCD...")
-            for feat in tcd_sampled.getFeatures():
-                # Check ESA Land Use to exclude barren/water/grassland
-                if idx_esa_tcd != -1:
-                    esa_val = feat.attributes()[idx_esa_tcd]
-                    if esa_val is not None and not (isinstance(esa_val, QVariant) and esa_val.isNull()):
-                        try:
-                            val_int = int(float(esa_val))
-                            if exclude_barren_water and val_int in [60, 70, 80]:
-                                continue
-                            if exclude_grassland and val_int == 30:
-                                continue
-                        except (ValueError, TypeError):
-                            pass
+            if tcd_sampled and tcd_sampled.isValid():
+                f_names_tcd = [f.name() for f in tcd_sampled.fields()]
+                idx_tcd_val = tcd_sampled.fields().indexFromName("tcd_val")
+                idx_height_sampled = -1
+                for target in ["height_1", "height", "height_1_1", "SAMPLE", "SAMPLE_1"]:
+                    if target in f_names_tcd:
+                        idx_height_sampled = tcd_sampled.fields().indexFromName(target)
+                        break
 
-                tcd_val = feat.attributes()[idx_tcd_val]
-                if tcd_val is None or (isinstance(tcd_val, QVariant) and tcd_val.isNull()):
-                    continue
-                
-                tcd_val = float(tcd_val)
-                h = None
-                if idx_height_sampled != -1:
-                    h_val = feat.attributes()[idx_height_sampled]
-                    if h_val is not None and not (isinstance(h_val, QVariant) and h_val.isNull()):
-                        h = float(h_val)
+                idx_esa_tcd = -1
+                if esa_warped:
+                    for target in ["esa_1", "esa", "esa_1_1", "SAMPLE", "SAMPLE_1"]:
+                        if target in f_names_tcd:
+                            idx = tcd_sampled.fields().indexFromName(target)
+                            if idx != idx_height_sampled:
+                                idx_esa_tcd = idx
+                                break
 
-                if h is None or h < 2.0:
-                    continue
+                self.log("Posizionamento finale e jittering punti vegetazione TCD...")
+                for feat in tcd_sampled.getFeatures():
+                    # Check ESA Land Use to exclude barren/water/grassland
+                    if idx_esa_tcd != -1:
+                        esa_val = feat.attributes()[idx_esa_tcd]
+                        if esa_val is not None and not (isinstance(esa_val, QVariant) and esa_val.isNull()):
+                            try:
+                                val_int = int(float(esa_val))
+                                if exclude_barren_water and val_int in [60, 70, 80]:
+                                    continue
+                                if exclude_grassland and val_int == 30:
+                                    continue
+                            except (ValueError, TypeError):
+                                pass
 
-                # Calculate expected number of trees based on TCD and height
-                # Canopy width = h * 0.7, so radius = h * 0.35
-                r = h * 0.35
-                a_tree = math.pi * (r ** 2)
-                # target canopy area in a 10m x 10m cell (100 m2) is tcd_val (since tcd_val is in %)
-                n_trees = (tcd_val / a_tree) * d_mult
-                
-                # Cap the number of trees per pixel to prevent performance issues
-                n_trees = min(n_trees, 4.0)
-                
-                # Determine how many trees to place
-                num_to_place = int(n_trees)
-                remainder = n_trees - num_to_place
-                if random.random() < remainder:
-                    num_to_place += 1
-                
-                if num_to_place == 0:
-                    continue
+                    tcd_val = feat.attributes()[idx_tcd_val]
+                    if tcd_val is None or (isinstance(tcd_val, QVariant) and tcd_val.isNull()):
+                        continue
+                    
+                    tcd_val = float(tcd_val)
+                    h = None
+                    if idx_height_sampled != -1:
+                        h_val = feat.attributes()[idx_height_sampled]
+                        if h_val is not None and not (isinstance(h_val, QVariant) and h_val.isNull()):
+                            h = float(h_val)
+                    elif not has_eth:
+                        # Fallback height estimation from TCD density when ETH raster is unavailable
+                        h = round(5.0 + (tcd_val / 100.0) * 12.0, 1)
 
-                # Lookup species
-                envi_id, species_name = get_species_for_tree(h, tcd_val)
-                if envi_id == "0000XX":
-                    continue
+                    if h is None or h < 2.0:
+                        continue
 
-                pt = feat.geometry().asPoint()
-                
-                for _ in range(num_to_place):
+                    # Calculate expected number of trees based on TCD and height
+                    # Canopy width = h * 0.7, so radius = h * 0.35
+                    r = h * 0.35
+                    a_tree = math.pi * (r ** 2)
+                    # target canopy area in a 10m x 10m cell (100 m2) is tcd_val (since tcd_val is in %)
+                    n_trees = (tcd_val / a_tree) * d_mult
+                    
+                    # Cap the number of trees per pixel to prevent performance issues
+                    n_trees = min(n_trees, 4.0)
+                    
+                    # Determine how many trees to place
+                    num_to_place = int(n_trees)
+                    remainder = n_trees - num_to_place
+                    if random.random() < remainder:
+                        num_to_place += 1
+                    
+                    if num_to_place == 0:
+                        continue
+
+                    # Lookup species
+                    envi_id, species_name = get_species_for_tree(h, tcd_val)
+                    if envi_id == "0000XX":
+                        continue
+
+                    pt = feat.geometry().asPoint()
+                    
+                    for _ in range(num_to_place):
+                        # Jitter coordinates within the 10m x 10m pixel cell boundaries ([-5, 5])
+                        dx = random.uniform(-5.0, 5.0)
+                        dy = random.uniform(-5.0, 5.0)
+                        jittered_pt = QgsPointXY(pt.x() + dx, pt.y() + dy)
+
+                        if not aoi_rect.contains(jittered_pt):
+                            continue
+
+                        # Create feature
+                        new_f = QgsFeature(fields)
+                        new_f.setGeometry(QgsGeometry.fromPointXY(jittered_pt))
+                        new_f.setAttribute("ENVI_ID", envi_id)
+                        new_f.setAttribute("Name", species_name)
+                        new_f.setAttribute("height_1", h)
+                        new_f.setAttribute("tcd_1", tcd_val)
+                        new_f.setId(next_id)
+                        next_id += 1
+                        new_features.append(new_f)
+
+            # 9. Loop over final ETH points
+            if eth_sampled and eth_sampled.isValid():
+                f_names_eth = [f.name() for f in eth_sampled.fields()]
+                idx_eth_val = eth_sampled.fields().indexFromName("eth_val")
+                idx_tcd_sampled = -1
+                for target in ["tcd_1", "tcd", "tcd_1_1", "SAMPLE", "SAMPLE_1"]:
+                    if target in f_names_eth:
+                        idx_tcd_sampled = eth_sampled.fields().indexFromName(target)
+                        break
+
+                idx_esa_eth = -1
+                if esa_warped:
+                    for target in ["esa_1", "esa", "esa_1_1", "SAMPLE", "SAMPLE_1"]:
+                        if target in f_names_eth:
+                            idx = eth_sampled.fields().indexFromName(target)
+                            if idx != idx_tcd_sampled:
+                                idx_esa_eth = idx
+                                break
+
+                self.log("Posizionamento finale e jittering punti vegetazione ETH di fallback...")
+                for feat in eth_sampled.getFeatures():
+                    # Check ESA Land Use to exclude barren/water/grassland
+                    if idx_esa_eth != -1:
+                        esa_val = feat.attributes()[idx_esa_eth]
+                        if esa_val is not None and not (isinstance(esa_val, QVariant) and esa_val.isNull()):
+                            try:
+                                val_int = int(float(esa_val))
+                                if exclude_barren_water and val_int in [60, 70, 80]:
+                                    continue
+                                if exclude_grassland and val_int == 30:
+                                    continue
+                            except (ValueError, TypeError):
+                                pass
+
+                    h = feat.attributes()[idx_eth_val]
+                    if h is None or (isinstance(h, QVariant) and h.isNull()):
+                        continue
+                    
+                    h = float(h)
+                    if h < 2.0:
+                        continue
+
+                    tcd_val = 0.0
+                    if idx_tcd_sampled != -1:
+                        tcd_val_raw = feat.attributes()[idx_tcd_sampled]
+                        if tcd_val_raw is not None and not (isinstance(tcd_val_raw, QVariant) and tcd_val_raw.isNull()):
+                            tcd_val = float(tcd_val_raw)
+
+                    if has_tcd and tcd_val >= 10.0:
+                        continue # Already covered by TCD loop
+
+                    # Apply probabilistic filter for low density ETH fallback points
+                    prob = 0.50 * d_mult
+                    if random.random() > prob:
+                        continue
+
+                    # Lookup species
+                    envi_id, species_name = get_species_for_tree(h, tcd_val)
+                    if envi_id == "0000XX":
+                        continue
+
                     # Jitter coordinates within the 10m x 10m pixel cell boundaries ([-5, 5])
+                    pt = feat.geometry().asPoint()
                     dx = random.uniform(-5.0, 5.0)
                     dy = random.uniform(-5.0, 5.0)
                     jittered_pt = QgsPointXY(pt.x() + dx, pt.y() + dy)
@@ -1149,83 +1311,22 @@ class ENVImetManager:
                     next_id += 1
                     new_features.append(new_f)
 
-            # 9. Loop over final ETH points
-            self.log("Posizionamento finale e jittering punti vegetazione ETH di fallback...")
-            for feat in eth_sampled.getFeatures():
-                # Check ESA Land Use to exclude barren/water/grassland
-                if idx_esa_eth != -1:
-                    esa_val = feat.attributes()[idx_esa_eth]
-                    if esa_val is not None and not (isinstance(esa_val, QVariant) and esa_val.isNull()):
-                        try:
-                            val_int = int(float(esa_val))
-                            if exclude_barren_water and val_int in [60, 70, 80]:
-                                continue
-                            if exclude_grassland and val_int == 30:
-                                continue
-                        except (ValueError, TypeError):
-                            pass
-
-                h = feat.attributes()[idx_eth_val]
-                if h is None or (isinstance(h, QVariant) and h.isNull()):
-                    continue
-                
-                h = float(h)
-                if h < 2.0:
-                    continue
-
-                tcd_val = 0.0
-                if idx_tcd_sampled != -1:
-                    tcd_val_raw = feat.attributes()[idx_tcd_sampled]
-                    if tcd_val_raw is not None and not (isinstance(tcd_val_raw, QVariant) and tcd_val_raw.isNull()):
-                        tcd_val = float(tcd_val_raw)
-
-                if tcd_val >= 10.0:
-                    continue # Already covered by TCD loop
-
-                # Apply probabilistic filter for low density ETH fallback points
-                prob = 0.50 * d_mult
-                if random.random() > prob:
-                    continue
-
-                # Lookup species
-                envi_id, species_name = get_species_for_tree(h, tcd_val)
-                if envi_id == "0000XX":
-                    continue
-
-                # Jitter coordinates within the 10m x 10m pixel cell boundaries ([-5, 5])
-                pt = feat.geometry().asPoint()
-                dx = random.uniform(-5.0, 5.0)
-                dy = random.uniform(-5.0, 5.0)
-                jittered_pt = QgsPointXY(pt.x() + dx, pt.y() + dy)
-
-                if not aoi_rect.contains(jittered_pt):
-                    continue
-
-                # Create feature
-                new_f = QgsFeature(fields)
-                new_f.setGeometry(QgsGeometry.fromPointXY(jittered_pt))
-                new_f.setAttribute("ENVI_ID", envi_id)
-                new_f.setAttribute("Name", species_name)
-                new_f.setAttribute("height_1", h)
-                new_f.setAttribute("tcd_1", tcd_val)
-                new_f.setId(next_id)
-                next_id += 1
-                new_features.append(new_f)
-
             if not new_features:
                 return False, "Nessun albero generato dai layer TCD e ETH."
 
             # 10. Save final Points layer
             self.log("Salvataggio dei punti vegetazione finali...")
-            uri = f"Point?crs={crs_auth_id}&field=ENVI_ID:string(6)&field=Name:string(100)&field=height_1:double&field=tcd_1:double"
+            uri = f"Point?crs={target_crs_obj.authid()}&field=ENVI_ID:string(6)&field=Name:string(100)&field=height_1:double&field=tcd_1:double"
             mem_layer = QgsVectorLayer(uri, "final_veg", "memory")
             mem_layer.startEditing()
             mem_layer.addFeatures(new_features)
             mem_layer.commitChanges()
 
+            self._remove_existing_file(output_path)
             options = QgsVectorFileWriter.SaveVectorOptions()
             options.driverName = "GPKG"
             options.fileEncoding = "UTF-8"
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
             
             error = QgsVectorFileWriter.writeAsVectorFormatV3(
                 mem_layer, 
@@ -1255,16 +1356,19 @@ class ENVImetManager:
         from .constants import ESA_SIMPLE_PLANT_MAPPING
         try:
             mapping = custom_mapping if custom_mapping else ESA_SIMPLE_PLANT_MAPPING
+            target_crs_obj = QgsCoordinateReferenceSystem(crs_auth_id) if crs_auth_id else QgsProject.instance().crs()
+            if not target_crs_obj.isValid():
+                target_crs_obj = QgsProject.instance().crs()
+            tx_ctx = QgsProject.instance().transformContext()
             
             # --- 1. PROCESS ESA (Shrubs, Grass, Crops) ---
             raster_layer = QgsRasterLayer(esa_raster, "temp_raster")
             raster_crs = raster_layer.crs()
-            project_crs = QgsProject.instance().crs()
+            del raster_layer
             
             x_extent = extent
-            target_crs_obj = QgsCoordinateReferenceSystem(crs_auth_id)
             if raster_crs.authid() != target_crs_obj.authid():
-                xf = QgsCoordinateTransform(project_crs, raster_crs, QgsProject.instance())
+                xf = QgsCoordinateTransform(target_crs_obj, raster_crs, tx_ctx)
                 x_extent = xf.transformBoundingBox(extent)
 
             clip_res = processing.run("gdal:cliprasterbyextent", {
@@ -1303,14 +1407,23 @@ class ENVImetManager:
                 esa_layer.changeAttributeValue(feat.id(), idx_name, self._soil_names.get(envi_id, "Simple Plant"))
             esa_layer.commitChanges()
 
+            if esa_layer.crs().authid() != target_crs_obj.authid():
+                esa_reproj = processing.run("native:reprojectlayer", {
+                    'INPUT': esa_layer,
+                    'TARGET_CRS': target_crs_obj.authid(),
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
+                })
+                esa_layer = esa_reproj['OUTPUT']
+
             # --- 2. PROCESS TCD (Undergrowth under 3D trees) ---
             tcd_layer = None
             if tcd_raster and os.path.exists(tcd_raster):
                 tcd_rl = QgsRasterLayer(tcd_raster, "temp_tcd")
                 tcd_crs = tcd_rl.crs()
+                del tcd_rl
                 tx_extent = extent
-                if tcd_crs != project_crs:
-                    xf = QgsCoordinateTransform(project_crs, tcd_crs, QgsProject.instance())
+                if tcd_crs.authid() != target_crs_obj.authid():
+                    xf = QgsCoordinateTransform(target_crs_obj, tcd_crs, tx_ctx)
                     tx_extent = xf.transformBoundingBox(extent)
 
                 t_clip = processing.run("gdal:cliprasterbyextent", {
@@ -1341,6 +1454,14 @@ class ENVImetManager:
                     tcd_layer.changeAttributeValue(feat.id(), idx_envi_t, tcd_envi_id)
                     tcd_layer.changeAttributeValue(feat.id(), idx_name_t, self._soil_names.get(tcd_envi_id, "Undergrowth"))
                 tcd_layer.commitChanges()
+
+                if tcd_layer.crs().authid() != target_crs_obj.authid():
+                    tcd_reproj = processing.run("native:reprojectlayer", {
+                        'INPUT': tcd_layer,
+                        'TARGET_CRS': target_crs_obj.authid(),
+                        'OUTPUT': 'TEMPORARY_OUTPUT'
+                    })
+                    tcd_layer = tcd_reproj['OUTPUT']
 
             # --- 3. MERGE, DISSOLVE AND CUT ROADS ---
             final_layer = esa_layer
@@ -1377,7 +1498,7 @@ class ENVImetManager:
             # --- 4.5 FINAL CLIPPING TO PRECISE GEOMETRY ---
             if precise_geometry:
                 self.log("Clipping finale Simple Plants alla Sub Area precisa...")
-                mask_layer = QgsVectorLayer(f"Polygon?crs={project_crs.authid()}", "mask", "memory")
+                mask_layer = QgsVectorLayer(f"Polygon?crs={target_crs_obj.authid()}", "mask", "memory")
                 mask_layer.startEditing()
                 f = QgsFeature()
                 f.setGeometry(precise_geometry)
@@ -1389,29 +1510,28 @@ class ENVImetManager:
                 })
                 final_layer = clip_res['OUTPUT']
 
-            # --- 5. Save final - FORCE REPROJECTION TO TARGET ---
+            # --- 5. Save final ---
             if final_layer.crs().authid() != target_crs_obj.authid():
                 self.log(f"Riproiezione finale Simple Plants a {target_crs_obj.authid()}...")
                 reproj_res = processing.run("native:reprojectlayer", {
                     'INPUT': final_layer,
                     'TARGET_CRS': target_crs_obj.authid(),
-                    'OUTPUT': output_path
+                    'OUTPUT': 'TEMPORARY_OUTPUT'
                 })
-                if os.path.exists(output_path):
-                    return True, output_path
-                else:
-                    return False, "Errore nella riproiezione finale delle piante semplici."
-            else:
-                options = QgsVectorFileWriter.SaveVectorOptions()
-                options.driverName = "GPKG"
-                options.fileEncoding = "UTF-8"
-                error = QgsVectorFileWriter.writeAsVectorFormatV3(
-                    final_layer, output_path, QgsProject.instance().transformContext(), options
-                )
-                if error[0] != QgsVectorFileWriter.NoError:
-                    return False, f"Errore salvataggio Simple Plants: {error[1]}"
-                
-                return True, output_path
+                final_layer = reproj_res['OUTPUT']
+
+            self._remove_existing_file(output_path)
+            options = QgsVectorFileWriter.SaveVectorOptions()
+            options.driverName = "GPKG"
+            options.fileEncoding = "UTF-8"
+            options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+            error = QgsVectorFileWriter.writeAsVectorFormatV3(
+                final_layer, output_path, tx_ctx, options
+            )
+            if error[0] != QgsVectorFileWriter.NoError:
+                return False, f"Errore salvataggio Simple Plants: {error[1]}"
+            
+            return True, output_path
             
         except Exception as e:
             return False, str(e)
@@ -1428,7 +1548,7 @@ class ENVImetManager:
         try:
             self.log(f"Inizio livellamento terreno sotto gli edifici...")
             
-            # 1. Load the layer explicitly
+            # 1. Load metadata from layers and release file handles immediately
             vlayer_src = QgsVectorLayer(buildings_path, "buildings_src", "ogr")
             rlayer = QgsRasterLayer(terrain_path, "terrain_tmp")
             
@@ -1439,9 +1559,13 @@ class ENVImetManager:
                 self.log(f"Impossibile caricare DTM: {terrain_path}", Qgis.Warning)
                 return False
 
-            # 2. Always create a memory layer copy to avoid file lock/modification issues
-            # We also handle reprojection here if needed
             target_crs = rlayer.crs()
+            ext = rlayer.extent()
+            res_x = rlayer.rasterUnitsPerPixelX()
+            res_y = rlayer.rasterUnitsPerPixelY()
+            del rlayer
+
+            # 2. Create a temporary layer copy in target CRS to avoid file lock/modification issues
             self.log(f"Copia edifici in memoria (Target CRS: {target_crs.authid()})...")
             
             reproj_params = {
@@ -1450,39 +1574,37 @@ class ENVImetManager:
                 'OUTPUT': self._temp_gpkg()
             }
             reproj_res = processing.run("native:reprojectlayer", reproj_params)
-            vlayer = reproj_res['OUTPUT']
-            
-            if isinstance(vlayer, str):
-                vlayer = QgsVectorLayer(vlayer, "bld_lev", "ogr")
+            del vlayer_src
+            vlayer_path = reproj_res['OUTPUT']
+            vlayer = QgsVectorLayer(vlayer_path, "bld_lev", "ogr") if isinstance(vlayer_path, str) else vlayer_path
 
             # 3. Calculate Mean Elevation
-            # NOTE: native:zonalstatistics often modifies the layer IN-PLACE 
-            # and does NOT return an 'OUTPUT' key in some QGIS versions.
-            params = {
-                'INPUT': vlayer,
-                'INPUT_RASTER': rlayer,
-                'RASTER_BAND': 1,
-                'COLUMN_PREFIX': '_lev_',
-                'STATISTICS': [2] # Mean
-            }
-            
             self.log("Calcolo statistiche zonali (media elevazione)...")
+            zonal_out_path = self._temp_gpkg()
             try:
-                processing.run("native:zonalstatistics", params)
-            except Exception as e:
-                self.log(f"Fallback su INPUT_VECTOR per zonalstats...")
-                params.pop('INPUT', None)
-                params['INPUT_VECTOR'] = vlayer
-                processing.run("native:zonalstatistics", params)
+                zonal_res = processing.run("native:zonalstatisticsfb", {
+                    'INPUT': vlayer,
+                    'INPUT_RASTER': terrain_path,
+                    'RASTER_BAND': 1,
+                    'COLUMN_PREFIX': '_lev_',
+                    'STATISTICS': [2], # Mean
+                    'OUTPUT': zonal_out_path
+                })
+                del vlayer
+                vlayer_out = zonal_res['OUTPUT']
+                vlayer = QgsVectorLayer(vlayer_out, "bld_lev_zonal", "ogr") if isinstance(vlayer_out, str) else vlayer_out
+            except Exception:
+                processing.run("native:zonalstatistics", {
+                    'INPUT_VECTOR': vlayer,
+                    'INPUT_RASTER': terrain_path,
+                    'RASTER_BAND': 1,
+                    'COLUMN_PREFIX': '_lev_',
+                    'STATISTICS': [2] # Mean
+                })
             
-            # Since it's in-place, vlayer now contains the '_lev_mean' field
             # 4. Rasterize the building pads
             self.log("Rasterizzazione piazzole edifici...")
-            
-            # Get extent and resolution from rlayer to be 100% compliant with new QGIS/GDAL providers
-            ext = rlayer.extent()
-            res_x = rlayer.rasterUnitsPerPixelX()
-            res_y = rlayer.rasterUnitsPerPixelY()
+            pads_raster_path = self._temp_gpkg().replace(".gpkg", "_pads.tif")
             
             # gdal:rasterize in newer QGIS versions requires explicit UNITS, WIDTH/HEIGHT, and EXTENT
             pads_res = processing.run("gdal:rasterize", {
@@ -1493,22 +1615,20 @@ class ENVImetManager:
                 'HEIGHT': res_y,
                 'EXTENT': ext,
                 'OPTIONS': '',
-                'DATA_TYPE': 5, # 5 is Float32
+                'DATA_TYPE': 5, # 5 is Float32 in gdal:rasterize
                 'INIT': -9999,
                 'NODATA': -9999,
-                'OUTPUT': 'TEMPORARY_OUTPUT'
+                'OUTPUT': pads_raster_path
             })
             pads_raster = pads_res['OUTPUT']
 
             # 5. Combine original DTM and Building Pads
             self.log("Fusione DTM con piazzole livellate (Merge)...")
             temp_final = terrain_path.replace(".tif", "_leveled_tmp.tif")
+            self._remove_existing_file(temp_final)
             
             # Libera i lock su Windows cancellando i layer dalla memoria
-            if 'rlayer' in locals(): del rlayer
             if 'vlayer' in locals(): del vlayer
-            if 'vlayer_src' in locals(): del vlayer_src
-            if 'params' in locals(): params.clear()
 
             # gdal:merge processes layers in order. Draw terrain first, then pads on top.
             # By setting NODATA_INPUT to -9999, the empty areas of pads won't wipe out the terrain.
@@ -1519,19 +1639,13 @@ class ENVImetManager:
                 'NODATA_INPUT': -9999,
                 'NODATA_OUTPUT': -9999,
                 'OPTIONS': '',
-                'DATA_TYPE': 5, # Float32
+                'DATA_TYPE': 5, # 5 is Float32 in gdal:merge
                 'OUTPUT': temp_final
             })
             
+            self._remove_existing_file(pads_raster)
             if os.path.exists(temp_final):
-                if os.path.exists(terrain_path):
-                    try:
-                        os.remove(terrain_path)
-                    except PermissionError:
-                        import time
-                        time.sleep(1) # wait for gdal/qgis to fully release handles
-                        os.remove(terrain_path)
-                os.rename(temp_final, terrain_path)
+                self._replace_file_atomic(temp_final, terrain_path)
                 self.log("Livellamento terreno completato con successo.")
                 return True
             

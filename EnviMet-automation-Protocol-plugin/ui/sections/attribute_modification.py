@@ -344,6 +344,12 @@ class AttributeModificationSection(QgsCollapsibleGroupBox, HelpMixin):
             self.stacked_values.setCurrentWidget(self.page_generic)
         self._populate_tree(fname)
 
+    def refresh_tree_if_vegetation(self):
+        """Re-populates the database tree if the 3D Vegetation layer is currently selected."""
+        data = self.combo_layer.currentData() if hasattr(self, "combo_layer") and self.combo_layer else None
+        if data and data[1] == FileNames.EM_VEGETATION:
+            self._populate_tree(FileNames.EM_VEGETATION)
+
     def _populate_tree(self, fname):
         self.tree_items.clear()
         if fname == FileNames.EM_BUILDINGS:
@@ -368,8 +374,17 @@ class AttributeModificationSection(QgsCollapsibleGroupBox, HelpMixin):
             root = QTreeWidgetItem(self.tree_items, [label])
             root.setSelected(False)
         if key == "3d_plants":
+            use_v6 = True
+            dashboard = self._get_dashboard()
+            if dashboard and hasattr(dashboard, "envimet_section") and hasattr(dashboard.envimet_section, "is_envimet_v6"):
+                use_v6 = dashboard.envimet_section.is_envimet_v6()
             for main_cat, main_val in cat_data.items():
-                parent = QTreeWidgetItem(root, [main_cat])
+                if use_v6 and main_cat == "Abstract":
+                    continue
+                if not use_v6 and main_cat == "Abstract_v6":
+                    continue
+                display_cat = "Abstract (ENVI-met 6)" if main_cat == "Abstract_v6" else main_cat
+                parent = QTreeWidgetItem(root, [display_cat])
                 self._recursive_add_3d(main_val, parent)
         else:
             for sub_cat, items in cat_data.items():
@@ -386,7 +401,7 @@ class AttributeModificationSection(QgsCollapsibleGroupBox, HelpMixin):
         except AttributeError: role = Qt.UserRole
         if isinstance(data, list):
             for item in data:
-                child = QTreeWidgetItem(parent, [item["name"]])
+                child = QTreeWidgetItem(parent, [f"{item['envi_id']} {item['name']}"])
                 child.setData(0, role, item["envi_id"])
                 child.setData(1, role, item["name"])
         elif isinstance(data, dict):

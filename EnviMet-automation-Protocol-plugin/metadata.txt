@@ -1,12 +1,16 @@
 [general]
 name=EnviProtocol
-icon=icon.png
-description=EnviProtocol: A new description
-version=2.0.0
-qgisMinimumVersion=4.0
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+description=Standardized environmental modeling and ENVI-met 3D automation pipeline.
+about=EnviProtocol is an automation pipeline and QGIS plugin to standardize microclimatic simulations with ENVI-met, developed within the LIFE A_GreeNET project. It automates acquisition of open geospatial datasets (TINITALY DEM, Copernicus/ETH canopy heights, ESA WorldCover, OSM/TUM 3D buildings) and programmatically exports 3D ENVI-met model files (.INX, .SIM) with sub-area scenario customization.
+version=2.0.1
 author=Graziano Enzo Marchesani
 email=grazianoenzomarchesani@unicam.it
-about= bla bla
-repository=https://github.com/grazianoEnzoMarchesani/Enviprotocol
+repository=https://github.com/grazianoEnzoMarchesani/EnviMet-automation-Protocol
+homepage=https://github.com/grazianoEnzoMarchesani/EnviMet-automation-Protocol
+tracker=https://github.com/grazianoEnzoMarchesani/EnviMet-automation-Protocol/issues
 category=Plugins
-experimental=True
+icon=icon.png
+experimental=False
+tags=envimet, climate, microclimate, urban, 3d, raster, dem, canopy, osm, life agreenet

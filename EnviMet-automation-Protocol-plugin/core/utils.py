@@ -148,20 +148,23 @@ def download_file_generic(url, local_path, auth=None, progress_callback=None, ca
     }
 
     try:
-        # Try with SSL verification first
-        response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=300)
+        # Try with SSL verification first (15s connect timeout, 180s read timeout)
+        response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=(15, 180))
         response.raise_for_status()
     except Exception as e:
         error_msg = str(e)
-        # Be very inclusive for SSL/Connection errors on macOS
-        is_ssl_issue = any(phrase in error_msg for phrase in ["SSL", "certificate", "verify", "handshake", "connection"])
+        # Retry without SSL verification only on actual SSL/certificate errors (not timeouts)
+        is_timeout = "timed out" in error_msg.lower() or "timeout" in error_msg.lower()
+        is_ssl_issue = (not is_timeout) and any(
+            phrase in error_msg for phrase in ["SSL", "certificate", "verify", "handshake", "SSLError"]
+        )
         
         if is_ssl_issue:
-            QgsMessageLog.logMessage(f"Possible SSL/Connection issue for {url}. Retrying without verification...", "EnviProtocol", Qgis.Warning)
+            QgsMessageLog.logMessage(f"Possible SSL issue for {url}. Retrying without verification...", "EnviProtocol", Qgis.Warning)
             try:
                 import urllib3
                 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-                response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=300, verify=False)
+                response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=(15, 180), verify=False)
                 response.raise_for_status()
             except Exception as e2:
                 return False, f"Second-attempt failure: {str(e2)}"

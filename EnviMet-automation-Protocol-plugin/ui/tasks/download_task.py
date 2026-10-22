@@ -199,7 +199,13 @@ class DownloadTask(QgsTask):
                 if self.isCanceled(): return False
                 self.emit_progress("OSM Roads (Vettoriale)", current_step, total_steps)
                 task_log("Acquisizione Strade da OpenStreetMap...")
-                self.data_manager.fetch_osm_roads(self.extent, self.crs, log_callback=task_log)
+                success, msg = self.data_manager.fetch_osm_roads(
+                    self.extent, self.crs, log_callback=task_log, cancel_check=self.isCanceled
+                )
+                if self.isCanceled(): return False
+                if not success:
+                    task_log(f"⚠ OSM Roads: {msg}", Qgis.Warning)
+                    self.error_count += 1
                 self.setProgress(int(current_step / total_steps * 100))
 
             # 7. Copernicus HRL

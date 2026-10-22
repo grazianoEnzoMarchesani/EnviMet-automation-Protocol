@@ -175,21 +175,33 @@ class ProjectSetupSection(QgsCollapsibleGroupBox, HelpMixin):
             
     def _capture_extent(self):
         """Capture the current map canvas extent and create boundary layer."""
+        from qgis.core import QgsCoordinateTransform
         canvas = self.iface.mapCanvas()
         extent = canvas.extent()
         crs = canvas.mapSettings().destinationCrs().authid()
-        self.extent_val = extent
-        self.extent_crs = crs
-        # Update details label in Italian
-        self.extent_label.setText(f"Catturata: {extent.toString(2)} ({crs})")
+
         within = is_within_italy(extent, crs)
         self.warning_label.setVisible(not within)
         
         # Unify project CRS to target metric CRS (e.g. UTM) for alignment
         target_crs_auth = get_target_crs_for_extent(extent, crs)
         target_crs = QgsCoordinateReferenceSystem(target_crs_auth)
+        source_crs = QgsCoordinateReferenceSystem(crs)
+
+        if source_crs != target_crs and source_crs.isValid() and target_crs.isValid():
+            transform = QgsCoordinateTransform(source_crs, target_crs, QgsProject.instance().transformContext())
+            extent = transform.transformBoundingBox(extent)
+            crs = target_crs_auth
+
+        self.extent_val = extent
+        self.extent_crs = crs
+        # Update details label in Italian
+        self.extent_label.setText(f"Catturata: {extent.toString(2)} ({crs})")
+
         if QgsProject.instance().crs() != target_crs:
             QgsProject.instance().setCrs(target_crs)
+            canvas.setExtent(extent)
+            canvas.refresh()
             QgsMessageLog.logMessage(f"Allineamento Progetto su CRS Metrico: {target_crs_auth}", "EnviProtocol", Qgis.Info)
         
         # Create boundary layer for OSM compatibility
@@ -219,6 +231,11 @@ class ProjectSetupSection(QgsCollapsibleGroupBox, HelpMixin):
             
             boundary_path = os.path.join(data_dir, "boundary.gpkg")
             
+            # Remove existing layer from project BEFORE overwriting file on Windows
+            existing = QgsProject.instance().mapLayersByName("Boundary AOI (auto)")
+            for lyr in existing:
+                QgsProject.instance().removeMapLayer(lyr.id())
+            
             # Set up fields
             fields = QgsFields()
             fields.append(QgsField("name", QMetaType.QString))
@@ -232,7 +249,7 @@ class ProjectSetupSection(QgsCollapsibleGroupBox, HelpMixin):
             source_crs = QgsCoordinateReferenceSystem(crs_authid)
             if source_crs != crs:
                 from qgis.core import QgsCoordinateTransform
-                transform = QgsCoordinateTransform(source_crs, crs, QgsProject.instance())
+                transform = QgsCoordinateTransform(source_crs, crs, QgsProject.instance().transformContext())
                 extent_target = transform.transformBoundingBox(extent)
                 polygon = QgsGeometry.fromRect(extent_target)
             else:
@@ -266,11 +283,6 @@ class ProjectSetupSection(QgsCollapsibleGroupBox, HelpMixin):
             writer.addFeature(feature)
             
             del writer  # Close the writer
-            
-            # Check if layer already exists in project and remove it
-            existing = QgsProject.instance().mapLayersByName("Boundary AOI (auto)")
-            for lyr in existing:
-                QgsProject.instance().removeMapLayer(lyr.id())
             
             # Add to project
             boundary_layer = QgsVectorLayer(boundary_path, "Boundary AOI (auto)", "ogr")
@@ -326,13 +338,32 @@ class ProjectSetupSection(QgsCollapsibleGroupBox, HelpMixin):
             layer.triggerRepaint()
         
     def get_extent_and_crs(self):
-        """Get the current AOI extent and CRS."""
+        """Get the current AOI extent and CRS, standardized to the metric project CRS."""
+        from qgis.core import QgsCoordinateTransform
         if self.aoi_layer_radio.isChecked():
             layer = self.aoi_combo.currentLayer()
             if layer:
-                return layer.extent(), layer.crs().authid()
+                ext = layer.extent()
+                crs_auth = layer.crs().authid()
+                target_crs_auth = get_target_crs_for_extent(ext, crs_auth)
+                source_crs = QgsCoordinateReferenceSystem(crs_auth)
+                target_crs = QgsCoordinateReferenceSystem(target_crs_auth)
+                if source_crs != target_crs and source_crs.isValid() and target_crs.isValid():
+                    transform = QgsCoordinateTransform(source_crs, target_crs, QgsProject.instance().transformContext())
+                    ext = transform.transformBoundingBox(ext)
+                    crs_auth = target_crs_auth
+                return ext, crs_auth
             return None, None
         else:
+            if self.extent_val and self.extent_crs:
+                target_crs_auth = get_target_crs_for_extent(self.extent_val, self.extent_crs)
+                if self.extent_crs != target_crs_auth:
+                    source_crs = QgsCoordinateReferenceSystem(self.extent_crs)
+                    target_crs = QgsCoordinateReferenceSystem(target_crs_auth)
+                    if source_crs.isValid() and target_crs.isValid():
+                        transform = QgsCoordinateTransform(source_crs, target_crs, QgsProject.instance().transformContext())
+                        self.extent_val = transform.transformBoundingBox(self.extent_val)
+                        self.extent_crs = target_crs_auth
             return self.extent_val, self.extent_crs
             
     def is_layer_mode(self):
