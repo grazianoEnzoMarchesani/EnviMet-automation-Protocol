@@ -7,8 +7,10 @@ This package contains all QgsTask subclasses for background processing.
 
 from .download_task import DownloadTask
 from .envimet_task import ENVImetTask
+from .migration_task import MigrationTask
 
 __all__ = [
     'DownloadTask',
-    'ENVImetTask'
+    'ENVImetTask',
+    'MigrationTask'
 ]

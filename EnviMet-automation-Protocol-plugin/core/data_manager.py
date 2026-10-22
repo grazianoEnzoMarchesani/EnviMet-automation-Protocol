@@ -64,17 +64,17 @@ class DataManager:
     def calculate_tinitaly_tiles(self, extent, crs_auth_id):
         return self.tinitaly.calculate_tiles(extent, crs_auth_id)
 
-    def download_tinitaly_tile(self, tile_name):
-        return self.tinitaly.download_tile(tile_name)
+    def download_tinitaly_tile(self, tile_name, progress_callback=None, cancel_check=None):
+        return self.tinitaly.download_tile(tile_name, progress_callback, cancel_check)
 
-    def download_tum_data(self, category="LoD1", aoi_geometry=None):
-        return self.tum.download_data(category, aoi_geometry)
+    def download_tum_data(self, category="LoD1", aoi_geometry=None, progress_callback=None, cancel_check=None):
+        return self.tum.download_data(category, aoi_geometry, progress_callback, cancel_check)
 
-    def fetch_eth_canopy(self, extent, crs_auth_id):
-        return self.eth.fetch_canopy(extent, crs_auth_id)
+    def fetch_eth_canopy(self, extent, crs_auth_id, progress_callback=None, cancel_check=None):
+        return self.eth.fetch_canopy(extent, crs_auth_id, progress_callback, cancel_check)
 
-    def fetch_esa_worldcover(self, extent, crs_auth_id):
-        return self.esa.fetch_worldcover(extent, crs_auth_id)
+    def fetch_esa_worldcover(self, extent, crs_auth_id, progress_callback=None, cancel_check=None):
+        return self.esa.fetch_worldcover(extent, crs_auth_id, progress_callback, cancel_check)
 
     def fetch_osm_roads(self, extent, crs_auth_id, log_callback=None):
         return self.osm.fetch_roads(extent, crs_auth_id, log_callback=log_callback)

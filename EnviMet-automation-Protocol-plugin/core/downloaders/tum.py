@@ -11,13 +11,13 @@ class TUMDownloader(BaseDownloader):
         super().__init__(data_manager)
         self.base_data_url = "https://data.source.coop/tge-labs/globalbuildingatlas-lod1/"
 
-    def download_data(self, category="LoD1", aoi_geometry=None):
+    def download_data(self, category="LoD1", aoi_geometry=None, progress_callback=None, cancel_check=None):
         self.log(f"Avvio acquisizione TUM {category}. AOI: {'Disponibile' if aoi_geometry else 'Mancante'}")
         download_dir = self.get_download_dir(f"tum_{category.lower()}")
         if not download_dir: return[]
 
         if category == "LoD1" and aoi_geometry:
-            return self._download_lod1_static(download_dir, aoi_geometry)
+            return self._download_lod1_static(download_dir, aoi_geometry, progress_callback, cancel_check)
 
         self.log(f"Categoria {category} non supportata o AOI mancante.", Qgis.Warning)
         return[]
@@ -103,7 +103,7 @@ class TUMDownloader(BaseDownloader):
 
         return urls
 
-    def _download_lod1_static(self, download_dir, aoi_geometry):
+    def _download_lod1_static(self, download_dir, aoi_geometry, progress_callback=None, cancel_check=None):
         urls = self._get_static_tile_urls(aoi_geometry)
         
         results = []
@@ -126,7 +126,7 @@ class TUMDownloader(BaseDownloader):
                 continue
 
             self.log(f"Download tassello {filename}...")
-            success, msg = self._download_file(url, local_path)
+            success, msg = self._download_file(url, local_path, progress_callback=progress_callback, cancel_check=cancel_check)
             
             if success:
                 # AWS restituisce un file HTML/XML se l'area è in mare o senza edifici (404 Not Found)

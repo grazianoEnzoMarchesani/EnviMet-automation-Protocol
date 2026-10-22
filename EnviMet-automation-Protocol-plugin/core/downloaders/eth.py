@@ -38,7 +38,7 @@ class ETHDownloader(BaseDownloader):
                 tiles.append(tile_name)
         return tiles
 
-    def fetch_canopy(self, extent, crs_auth_id):
+    def fetch_canopy(self, extent, crs_auth_id, progress_callback=None, cancel_check=None):
         self.log("Avvio acquisizione ETH Global Canopy Height...")
         download_dir = self.get_download_dir("eth_canopy")
         if not download_dir: return []
@@ -53,7 +53,7 @@ class ETHDownloader(BaseDownloader):
                 continue
 
             url = f"{self.base_url}{tile_name}"
-            success, msg = self._download_file(url, save_path)
+            success, msg = self._download_file(url, save_path, progress_callback=progress_callback, cancel_check=cancel_check)
             results.append((tile_name, success, msg))
             
             if success:

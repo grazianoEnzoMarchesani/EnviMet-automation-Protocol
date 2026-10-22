@@ -63,13 +63,29 @@ class DownloadTask(QgsTask):
                 for i, tile in enumerate(self.tiles):
                     if self.isCanceled(): return False
                     task_log(f"Download Tinitaly {i+1}/{len(self.tiles)}: {tile}")
-                    # Update with sub-progress for tiles
-                    sub_percent = int(((current_step - 1) + (i+1)/len(self.tiles)) / total_steps * 100)
-                    self.progressUpdated.emit(f"Download DTM Tinitaly (tile {i+1}/{len(self.tiles)})", current_step, total_steps, sub_percent)
-                    success, msg = self.data_manager.download_tinitaly_tile(tile)
+                    
+                    def make_tinitaly_progress_cb(tile_idx):
+                        def cb(dl, total):
+                            if total > 0:
+                                tile_fraction = dl / total
+                                overall_fraction = (tile_idx + tile_fraction) / len(self.tiles)
+                                sub_percent = int(((current_step - 1) + overall_fraction) / total_steps * 100)
+                                percent = int(tile_fraction * 100)
+                                self.progressUpdated.emit(f"Download DTM Tinitaly ({percent}%, tile {tile_idx+1}/{len(self.tiles)})", current_step, total_steps, sub_percent)
+                                self.setProgress(sub_percent)
+                        return cb
+                        
+                    success, msg = self.data_manager.download_tinitaly_tile(
+                        tile,
+                        progress_callback=make_tinitaly_progress_cb(i),
+                        cancel_check=self.isCanceled
+                    )
+                    if self.isCanceled(): return False
                     if not success:
                         task_log(f"⚠ Tinitaly {tile}: {msg}", Qgis.Warning)
                         self.error_count += 1
+                    
+                    sub_percent = int(((current_step - 1) + (i+1)/len(self.tiles)) / total_steps * 100)
                     self.setProgress(sub_percent)
 
             # 2. TUM Building Heights
@@ -94,8 +110,27 @@ class DownloadTask(QgsTask):
                 for category in self.data_manager.tum_categories:
                     if self.isCanceled(): return False
                     task_log(f"Acquisizione TUM {category}...")
+                    
+                    def tum_progress_cb(dl, total):
+                        if total > 0:
+                            percent = int((dl / total) * 100)
+                            sub_percent = int(((current_step - 1) + (dl / total)) / total_steps * 100)
+                            self.progressUpdated.emit(f"Download Edifici TUM ({percent}%)", current_step, total_steps, sub_percent)
+                            self.setProgress(sub_percent)
+                        else:
+                            mb = dl // (1024 * 1024)
+                            sub_percent = int(current_step / total_steps * 100)
+                            self.progressUpdated.emit(f"Download Edifici TUM ({mb} MB)", current_step, total_steps, sub_percent)
+                            self.setProgress(sub_percent)
+
                     # Use the QgsGeometry constructor to create a copy, as 'clone()' is not available on QgsGeometry in PyQGIS
-                    res_list = self.data_manager.download_tum_data(category=category, aoi_geometry=QgsGeometry(aoi_geom))
+                    res_list = self.data_manager.download_tum_data(
+                        category=category, 
+                        aoi_geometry=QgsGeometry(aoi_geom),
+                        progress_callback=tum_progress_cb,
+                        cancel_check=self.isCanceled
+                    )
+                    if self.isCanceled(): return False
                     for file_id, success, msg in res_list:
                         if not success:
                             task_log(f"⚠ TUM {file_id}: {msg}", Qgis.Warning)
@@ -108,7 +143,26 @@ class DownloadTask(QgsTask):
                 if self.isCanceled(): return False
                 self.emit_progress("ETH (Alberi H 10m)", current_step, total_steps)
                 task_log("Acquisizione ETH Global Canopy Height...")
-                self.data_manager.fetch_eth_canopy(self.extent, self.crs)
+                
+                def eth_progress_cb(dl, total):
+                    if total > 0:
+                        percent = int((dl / total) * 100)
+                        sub_percent = int(((current_step - 1) + (dl / total)) / total_steps * 100)
+                        self.progressUpdated.emit(f"Download Altezze Alberi ETH ({percent}%)", current_step, total_steps, sub_percent)
+                        self.setProgress(sub_percent)
+                    else:
+                        mb = dl // (1024 * 1024)
+                        sub_percent = int(current_step / total_steps * 100)
+                        self.progressUpdated.emit(f"Download Altezze Alberi ETH ({mb} MB)", current_step, total_steps, sub_percent)
+                        self.setProgress(sub_percent)
+
+                self.data_manager.fetch_eth_canopy(
+                    self.extent, 
+                    self.crs,
+                    progress_callback=eth_progress_cb,
+                    cancel_check=self.isCanceled
+                )
+                if self.isCanceled(): return False
                 self.setProgress(int(current_step / total_steps * 100))
 
             # 4. ESA WorldCover
@@ -117,7 +171,26 @@ class DownloadTask(QgsTask):
                 if self.isCanceled(): return False
                 self.emit_progress("ESA WorldCover (Land Use)", current_step, total_steps)
                 task_log("Acquisizione ESA WorldCover...")
-                self.data_manager.fetch_esa_worldcover(self.extent, self.crs)
+                
+                def esa_progress_cb(dl, total):
+                    if total > 0:
+                        percent = int((dl / total) * 100)
+                        sub_percent = int(((current_step - 1) + (dl / total)) / total_steps * 100)
+                        self.progressUpdated.emit(f"Download Land Cover ESA ({percent}%)", current_step, total_steps, sub_percent)
+                        self.setProgress(sub_percent)
+                    else:
+                        mb = dl // (1024 * 1024)
+                        sub_percent = int(current_step / total_steps * 100)
+                        self.progressUpdated.emit(f"Download Land Cover ESA ({mb} MB)", current_step, total_steps, sub_percent)
+                        self.setProgress(sub_percent)
+
+                self.data_manager.fetch_esa_worldcover(
+                    self.extent, 
+                    self.crs,
+                    progress_callback=esa_progress_cb,
+                    cancel_check=self.isCanceled
+                )
+                if self.isCanceled(): return False
                 self.setProgress(int(current_step / total_steps * 100))
 
             # 5. OSM Roads

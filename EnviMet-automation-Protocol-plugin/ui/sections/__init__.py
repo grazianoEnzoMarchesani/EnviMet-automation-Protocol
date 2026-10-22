@@ -11,6 +11,7 @@ from .envimet_export import ENVImetExportSection
 from .sub_area_modification import SubAreaModificationSection
 from .attribute_modification import AttributeModificationSection
 from .progress_info import ProgressInfoSection
+from .envimet_import import ENVImetImportSection
 
 __all__ = [
     'ProjectSetupSection',
@@ -18,5 +19,6 @@ __all__ = [
     'ENVImetExportSection',
     'SubAreaModificationSection',
     'AttributeModificationSection',
-    'ProgressInfoSection'
+    'ProgressInfoSection',
+    'ENVImetImportSection'
 ]

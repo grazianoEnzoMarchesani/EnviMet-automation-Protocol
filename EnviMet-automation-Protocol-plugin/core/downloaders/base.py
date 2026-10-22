@@ -12,9 +12,9 @@ class BaseDownloader:
     def log(self, msg, level=Qgis.Info):
         QgsMessageLog.logMessage(msg, "EnviProtocol", level)
 
-    def _download_file(self, url, local_path, auth=None):
+    def _download_file(self, url, local_path, auth=None, progress_callback=None, cancel_check=None):
         """Delegates download to the unified SSL-aware downloader in utils."""
-        return download_file_generic(url, local_path, auth)
+        return download_file_generic(url, local_path, auth=auth, progress_callback=progress_callback, cancel_check=cancel_check)
 
     def get_download_dir(self, subfolder):
         return self.dm.get_download_dir(subfolder)

@@ -153,7 +153,6 @@
             { "envi_id": "02OLSM", "name": "Cylindric, large trunk, sparse, medium (15m)" },
             { "envi_id": "02OMSM", "name": "Cylindric, medium trunk, sparse, medium (15m)" },
             { "envi_id": "02OSSM", "name": "Cylindric, small trunk, sparse, medium (15m)" },
-            { "envi_id": "ED00NN", "name": "Example Tree" },
             { "envi_id": "02HLSM", "name": "Heart-shaped, large trunk, sparse, medium (15m)" },
             { "envi_id": "02HMSM", "name": "Heart-shaped, medium trunk, sparse, medium (15m)" },
             { "envi_id": "02HSSM", "name": "Heart-shaped, small trunk, sparse, medium (15m)" },
@@ -236,11 +235,6 @@
       "Bluebell Tree": [
         { "envi_id": "020031", "name": "(Q) Bluebell Tree (middle)" },
         { "envi_id": "010031", "name": "(Q) Bluebell Tree (young)" }
-      ],
-      "DemoTree": [
-        { "envi_id": "0000NM", "name": "(Q) DemoTree 10 Iterations" },
-        { "envi_id": "0000NO", "name": "(Q) DemoTree 5 Iterations" },
-        { "envi_id": "000DNN", "name": "(Q) DemoTree altern Angle" }
       ],
       "Elm": [
         { "envi_id": "020121", "name": "(Q) Dutch Elm (middle)" },
@@ -487,7 +481,6 @@
   },
   "sources": {
     "General": [
-      { "envi_id": "0200DR", "name": "Test Lane" },
       { "envi_id": "0200FT", "name": "Water Fountain 4 m" },
       { "envi_id": "0200WN", "name": "Water Nozzle 2 m" }
     ]

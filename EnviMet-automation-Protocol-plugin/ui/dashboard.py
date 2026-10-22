@@ -18,13 +18,14 @@ from ..core.data_manager import DataManager
 from ..core.constants import LayerNames, FileNames
 from .styles import STYLESHEET
 from .tasks import (
-    DownloadTask
+    DownloadTask, ENVImetTask, MigrationTask
 )
 from .sections import (
     ProjectSetupSection, DataAcquisitionSection,
     ENVImetExportSection, SubAreaModificationSection,
     AttributeModificationSection,
-    ProgressInfoSection
+    ProgressInfoSection,
+    ENVImetImportSection
 )
 
 from .mixins import LayerMixin
@@ -79,9 +80,15 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
         self.sub_area_mod_section = SubAreaModificationSection(self)
         self.scroll_layout.addWidget(self.sub_area_mod_section)
         
+        self.setup_section.extent_captured.connect(self._on_extent_captured)
+        
         # Section 5: Attribute Modification
         self.attr_mod_section = AttributeModificationSection(self)
         self.scroll_layout.addWidget(self.attr_mod_section)
+        
+        # Section 6: ENVI-met Results Import
+        self.envimet_import_section = ENVImetImportSection(self)
+        self.scroll_layout.addWidget(self.envimet_import_section)
         
         
 
@@ -102,8 +109,15 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
         
         # ENVI-met Integration
         self.envimet_section.conversion_requested.connect(self.run_envimet_prep)
+        self.envimet_section.migration_requested.connect(self.run_project_migration)
         
+        # ENVI-met Import
+        self.envimet_import_section.import_requested.connect(self.run_envimet_import)
         
+        # Subarea Sync
+        self._syncing_subareas = False
+        self.envimet_import_section.cmb_subarea.currentTextChanged.connect(self._sync_subarea_from_import)
+        self.sub_area_mod_section.combo_sub_areas.currentTextChanged.connect(self._sync_subarea_from_mod)
 
         
         # Project signals for dynamic UI gating
@@ -119,6 +133,22 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
     # UI State Management
     # =========================================================================
     
+    def _sync_subarea_from_import(self, text):
+        if self._syncing_subareas: return
+        self._syncing_subareas = True
+        idx = self.sub_area_mod_section.combo_sub_areas.findText(text)
+        if idx >= 0:
+            self.sub_area_mod_section.combo_sub_areas.setCurrentIndex(idx)
+        self._syncing_subareas = False
+
+    def _sync_subarea_from_mod(self, text):
+        if self._syncing_subareas: return
+        self._syncing_subareas = True
+        idx = self.envimet_import_section.cmb_subarea.findText(text)
+        if idx >= 0:
+            self.envimet_import_section.cmb_subarea.setCurrentIndex(idx)
+        self._syncing_subareas = False
+        
     def set_dashboard_enabled(self, enabled):
         """Enable or disable the entire plugin UI during background tasks."""
         self.data_section.set_enabled(enabled)
@@ -126,6 +156,7 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
         self.sub_area_mod_section.setEnabled(enabled)
         self.attr_mod_section.setEnabled(enabled)
         self.setup_section.setEnabled(enabled)
+        self.envimet_import_section.setEnabled(enabled)
         
         if not enabled:
             self.progress_section.set_status("⚠ Operazione in corso... Attendere", is_busy=True)
@@ -203,7 +234,10 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
             self.iface.messageBar().pushMessage("Errore Imprevisto", "Controlla il pannello Log dei Messaggi", level=Qgis.Warning)
             self.set_dashboard_enabled(True)
 
-
+    def _on_extent_captured(self, extent, crs):
+        """Reset stale sub-area state in RAM whenever a new extent is captured."""
+        if hasattr(self, 'sub_area_mod_section') and self.sub_area_mod_section:
+            self.sub_area_mod_section.sub_area_state = None
 
     def run_envimet_prep(self):
         """Execute the ENVI-met data preparation task."""
@@ -218,7 +252,6 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
             self.progress_section.set_progress(0)
             
             # Collect custom mappings from UI
-            from .tasks import ENVImetTask
             mapping = self.envimet_section.get_landuse_mapping()
             r_widths, r_materials = self.envimet_section.get_road_settings()
             p_mapping = self.envimet_section.get_plant_mapping()
@@ -226,6 +259,47 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
             b_settings = self.envimet_section.get_building_settings()
             do_lev = self.envimet_section.is_leveling_enabled()
             sub_geom = self.sub_area_mod_section.get_sub_area_geometry()
+            if sub_geom and not sub_geom.isEmpty():
+                if not extent.intersects(sub_geom.boundingBox()):
+                    QgsMessageLog.logMessage(
+                        "Avviso: Geometria Sub-Area in memoria fuori dall'AOI corrente. Reset della Sub-Area all'AOI corrente.",
+                        "EnviProtocol", Qgis.Warning
+                    )
+                    sub_geom = None
+                    if hasattr(self.sub_area_mod_section, 'sub_area_state'):
+                        self.sub_area_mod_section.sub_area_state = None
+            sub_name = self.sub_area_mod_section.get_active_sub_area_name()
+            sub_params = self.sub_area_mod_section.get_active_sub_area_params()
+            
+            # Prepare the sub-area synchronously in the main thread to avoid background thread locks and crashes.
+            project_path = QgsProject.instance().fileName()
+            if project_path:
+                project_dir = os.path.dirname(project_path)
+                data_dir_name = self.data_manager.get_data_dir_name()
+                root_data_dir = os.path.join(project_dir, data_dir_name)
+                from ..core.constants import FolderNames
+                export_dir = os.path.join(root_data_dir, FolderNames.ENVIMET)
+                if not os.path.exists(export_dir):
+                    os.makedirs(export_dir)
+                file_name = "sub_area.gpkg" if sub_name == "default" else f"sub_area_{sub_name}.gpkg"
+                subarea_path = os.path.join(export_dir, file_name)
+                
+                from ..core.envimet_manager import ENVImetManager
+                em_manager = ENVImetManager(self.iface)
+                margin, suggested_z, max_h, max_z = em_manager.get_model_constraints(root_data_dir)
+                crs_id = crs if isinstance(crs, str) else crs.authid()
+                
+                w = sub_params.get("width", 0.0) if sub_params else 0.0
+                h = sub_params.get("height", 0.0) if sub_params else 0.0
+                rot = sub_params.get("rotation", 0.0) if sub_params else 0.0
+                gs = sub_params.get("grid_size", 0.0) if sub_params else 0.0
+                
+                ok, msg = em_manager.prepare_sub_area(
+                    extent, crs_id, subarea_path, margin=margin, geometry=sub_geom,
+                    name=sub_name, width=w, height=h, rotation=rot, grid_size=gs
+                )
+                if not ok:
+                    QgsMessageLog.logMessage(f"Avviso preparazione sub-area nel thread principale: {msg}", "EnviProtocol", Qgis.Warning)
             
             task = ENVImetTask(
                 self.data_manager, extent, crs, 
@@ -236,14 +310,32 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
                 tree_settings=t_settings,
                 building_settings=b_settings,
                 do_leveling=do_lev,
-                sub_area_geometry=sub_geom
+                sub_area_geometry=sub_geom,
+                sub_area_name=sub_name,
+                sub_area_params=sub_params
             )
             
+            def on_progress_changed(percent):
+                self.progress_section.set_progress(int(percent))
+                # Set dynamic text description based on percentage
+                if percent < 20: desc = "Analisi vincoli..."
+                elif percent < 40: desc = "Preparazione Sub Area..."
+                elif percent < 60: desc = "Vettorializzazione Land Use..."
+                elif percent < 80: desc = "Elaborazione Edifici..."
+                elif percent < 90: desc = "Elaborazione DTM..."
+                elif percent < 95: desc = "Elaborazione Vegetazione 3D..."
+                elif percent < 100: desc = "Elaborazione Piante Semplici..."
+                else: desc = "Salvataggio..."
+                self.progress_section.set_status(f"Preparazione dati ENVI-met: {desc} ({int(percent)}%)")
+
             def on_finished(success):
                 self.set_dashboard_enabled(True)
                 if success:
                     self.progress_section.set_status("✓ Dati ENVI-met pronti (cartella envimet_export).")
                     self.iface.messageBar().pushMessage("EnviProtocol", "Dati pronti per ENVI-met!", level=Qgis.Success)
+                    # Automatically load/refresh layers on completion
+                    self.envimet_section._load_prepared_layers()
+                    self.sub_area_mod_section.load_sub_areas_from_disk()
                 else:
                     msg = getattr(task, 'message', 'Errore sconosciuto')
                     self.progress_section.set_status(f"✗ Errore: {msg}", is_error=True)
@@ -251,6 +343,7 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
             
             task.taskCompleted.connect(lambda: on_finished(True))
             task.taskTerminated.connect(lambda: on_finished(False))
+            task.progressChanged.connect(on_progress_changed)
             
             QgsApplication.taskManager().addTask(task)
         except Exception as e:
@@ -258,3 +351,75 @@ class EnviProtocolDashboard(LayerMixin, QDockWidget):
             self.iface.messageBar().pushMessage("Errore Imprevisto", "Controlla il pannello Log dei Messaggi", level=Qgis.Warning)
             self.set_dashboard_enabled(True)
 
+    def run_project_migration(self, target_crs_auth):
+        """Execute the project CRS migration task in the background."""
+        try:
+            from ..core.envimet_manager import ENVImetManager
+            
+            self.set_dashboard_enabled(False)
+            self.progress_section.set_status("Inizio migrazione CRS progetto...")
+            self.progress_section.set_progress(0)
+            
+            manager = ENVImetManager(self.iface)
+            task = MigrationTask(manager, target_crs_auth)
+            
+            def on_progress_changed(percent):
+                self.progress_section.set_progress(int(percent))
+                self.progress_section.set_status(f"Riproiezione dati al target CRS... ({int(percent)}%)")
+                
+            def on_finished(success):
+                self.set_dashboard_enabled(True)
+                self.progress_section.set_progress(100 if success else 0)
+                if success:
+                    self.progress_section.set_status(f"✓ Migrazione CRS completata: {task.message}")
+                    self.iface.messageBar().pushMessage("EnviProtocol", f"Migrazione CRS completata! {task.message}", level=Qgis.Success)
+                    # Reload the layers to reflect the new CRS
+                    self.envimet_section._load_prepared_layers()
+                    self.sub_area_mod_section.load_sub_areas_from_disk()
+                else:
+                    self.progress_section.set_status(f"✗ Errore migrazione: {task.message}", is_error=True)
+                    self.iface.messageBar().pushMessage("Errore Migrazione", task.message, level=Qgis.Warning)
+                    
+            task.taskCompleted.connect(lambda: on_finished(True))
+            task.taskTerminated.connect(lambda: on_finished(False))
+            task.progressChanged.connect(on_progress_changed)
+            
+            QgsApplication.taskManager().addTask(task)
+        except Exception as e:
+            QgsMessageLog.logMessage(f"Eccezione imprevista in run_project_migration: {e}", "EnviProtocol", Qgis.Warning)
+            self.iface.messageBar().pushMessage("Errore Imprevisto", "Controlla il pannello Log dei Messaggi", level=Qgis.Warning)
+            self.set_dashboard_enabled(True)
+
+    def run_envimet_import(self, edt_files, variables, heights, sub_area_geom, sub_info, crs_authid, output_dir, follow_terrain, custom_palette=""):
+        """Execute the bulk ENVI-met import task."""
+        from .tasks.import_task import ENVImetImportTask
+        from qgis.core import QgsApplication
+        
+        self.set_dashboard_enabled(False)
+        self.progress_section.set_status("Avvio importazione risultati ENVI-met...")
+        self.progress_section.set_progress(0)
+        
+        task = ENVImetImportTask(edt_files, variables, heights, sub_area_geom, sub_info, crs_authid, output_dir, follow_terrain, custom_palette)
+        
+        def on_progress_update(step_name, step_num, total_steps, percent):
+            self.progress_section.set_status(f"[{step_num}/{total_steps}] {step_name}")
+            self.progress_section.set_progress(percent)
+            
+        def on_finished(success):
+            self.set_dashboard_enabled(True)
+            self.progress_section.set_progress(100 if success else 0)
+            
+            if success:
+                self.progress_section.set_status("✓ Importazione completata.")
+                if task.error_count == 0:
+                    self.iface.messageBar().pushMessage("EnviProtocol", "Importazione ENVI-met completata con successo!", level=Qgis.Success)
+                else:
+                    self.iface.messageBar().pushMessage("EnviProtocol", f"Importazione completata con {task.error_count} errori. Controlla il log.", level=Qgis.Warning)
+            else:
+                self.progress_section.set_status(f"✗ Importazione fallita: {task.message}", is_error=True)
+                
+        task.taskCompleted.connect(lambda: on_finished(True))
+        task.taskTerminated.connect(lambda: on_finished(False))
+        task.progressUpdated.connect(on_progress_update)
+        
+        QgsApplication.taskManager().addTask(task)

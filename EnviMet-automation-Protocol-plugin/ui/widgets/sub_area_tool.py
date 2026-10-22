@@ -4,7 +4,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.gui import QgsMapTool, QgsRubberBand, QgsSnapIndicator
 from qgis.core import (
     QgsPointXY, QgsGeometry, QgsRectangle, 
-    Qgis, QgsPointLocator
+    Qgis, QgsPointLocator, QgsMessageLog
 )
 import math
 
@@ -26,12 +26,13 @@ class SubAreaMapTool(QgsMapTool):
     # Signals for UI sync (center, width, height, rotation)
     geometryChanged = pyqtSignal(object, float, float, float)
     
-    def __init__(self, canvas, max_extent, crs_authid, initial_state=None):
+    def __init__(self, canvas, max_extent, crs_authid, initial_state=None, name="default", color=None):
         super().__init__(canvas)
         self.canvas = canvas
         self.max_extent = max_extent
         self.max_geom = QgsGeometry.fromRect(max_extent)
         self.crs_authid = crs_authid
+        self.name = name
         
         # State: Use provided state or default to center of extent
         if initial_state:
@@ -44,15 +45,25 @@ class SubAreaMapTool(QgsMapTool):
                 rotation=0.0
             )
         
+        # Determine color based on sub-area name or provided custom color
+        if color:
+            stroke_color = color
+        else:
+            from ...core.utils import get_color_for_sub_area
+            stroke_color = get_color_for_sub_area(name)
+            
+        fill_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 45)
+        grid_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 70)
+        
         # Rendering Items
         self.rubber_band = QgsRubberBand(self.canvas, Qgis.GeometryType.Polygon)
-        self.rubber_band.setColor(QColor(52, 152, 219, 45)) # Blue with transparency
-        self.rubber_band.setSecondaryStrokeColor(QColor(41, 128, 185))
+        self.rubber_band.setColor(fill_color)
+        self.rubber_band.setSecondaryStrokeColor(stroke_color)
         self.rubber_band.setWidth(2)
         self.rubber_band.setLineStyle(Qt.PenStyle(2)) 
         
         self.grid_band = QgsRubberBand(self.canvas, Qgis.GeometryType.Line)
-        self.grid_band.setColor(QColor(52, 152, 219, 70))
+        self.grid_band.setColor(grid_color)
         self.grid_band.setWidth(1)
         self.grid_band.setLineStyle(Qt.PenStyle(3))
         
@@ -66,6 +77,31 @@ class SubAreaMapTool(QgsMapTool):
         self.snap_indicator = QgsSnapIndicator(self.canvas)
         
         self.update_geometry()
+
+    def update_colors(self, name):
+        """Update colors of rubber bands according to the sub-area name."""
+        from ...core.utils import get_color_for_sub_area
+        self.name = name
+        stroke_color = get_color_for_sub_area(name)
+        fill_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 45)
+        grid_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 70)
+        
+        self.rubber_band.setColor(fill_color)
+        self.rubber_band.setSecondaryStrokeColor(stroke_color)
+        self.grid_band.setColor(grid_color)
+        self.update_geometry()
+
+    def update_colors_from_color(self, stroke_color):
+        """Update colors of rubber bands directly using a QColor instance."""
+        fill_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 45)
+        grid_color = QColor(stroke_color.red(), stroke_color.green(), stroke_color.blue(), 70)
+        
+        self.rubber_band.setColor(fill_color)
+        self.rubber_band.setSecondaryStrokeColor(stroke_color)
+        self.grid_band.setColor(grid_color)
+        self.update_geometry()
+
+
 
     def set_params(self, width, height, rotation, grid_size, show_grid, snap_internal=True, snap_tolerance=15):
         """Update params from UI."""
@@ -94,7 +130,14 @@ class SubAreaMapTool(QgsMapTool):
         """Verify if current state is within max_geom (with a tiny tolerance)."""
         geom = self._get_geometry()
         # Add a 10cm buffer to account for floating point precision in UI SpinBoxes
-        return self.max_geom.buffer(0.1, 5).contains(geom)
+        is_inside = self.max_geom.buffer(0.1, 5).contains(geom)
+        if not is_inside and not self.dragging:
+            QgsMessageLog.logMessage(
+                f"Avviso: La sub area '{self.name}' si trova parzialmente o totalmente fuori dal perimetro AOI.",
+                "EnviProtocol",
+                Qgis.Warning
+            )
+        return True
 
     @staticmethod
     def get_geometry_from_state(state):
@@ -255,6 +298,15 @@ class SubAreaMapTool(QgsMapTool):
     def canvasReleaseEvent(self, event):
         self.dragging = False
         self.update_geometry(force_grid=True)
+        # Log constraint warning when dragging ends
+        geom = self._get_geometry()
+        is_inside = self.max_geom.buffer(0.1, 5).contains(geom)
+        if not is_inside:
+            QgsMessageLog.logMessage(
+                f"Avviso: La sub area '{self.name}' si trova parzialmente o totalmente fuori dal perimetro AOI dopo lo spostamento.",
+                "EnviProtocol",
+                Qgis.Warning
+            )
 
     def deactivate(self):
         self.rubber_band.reset()

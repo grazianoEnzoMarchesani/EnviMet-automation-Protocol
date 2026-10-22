@@ -10,7 +10,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTableWidget, 
     QTableWidgetItem, QComboBox, QPushButton, QLabel,
-    QHeaderView, QTabWidget, QWidget, QFormLayout, QSpinBox, QDoubleSpinBox
+    QHeaderView, QTabWidget, QWidget, QFormLayout, QSpinBox, QDoubleSpinBox,
+    QCheckBox
 )
 from ...core.constants import ESA_SIMPLE_PLANT_MAPPING
 
@@ -33,7 +34,9 @@ class PlantCustomizationDialog(QDialog):
             "shape": "Random",
             "density_mode": "auto",
             "tcd_threshold": 70,
-            "density_multiplier": 1.0
+            "density_multiplier": 1.0,
+            "exclude_barren_water": True,
+            "exclude_grassland": True
         }
         
         # Load database to get all simple plant options
@@ -148,6 +151,18 @@ class PlantCustomizationDialog(QDialog):
         self.spin_mult.setValue(self.tree_settings.get("density_multiplier", 1.0))
         self.tree_form.addRow("Moltiplicatore Densità (Turbo):", self.spin_mult)
         
+        # 5. Exclude Barren & Water
+        self.chk_exclude_barren = QCheckBox("Escludi aree sterili/sabbia e acqua (ESA 60, 70, 80)")
+        self.chk_exclude_barren.setToolTip("Evita la generazione di alberi su spiagge (sabbia), roccia nuda o specchi d'acqua dovuta a falsi positivi.")
+        self.chk_exclude_barren.setChecked(self.tree_settings.get("exclude_barren_water", True))
+        self.tree_form.addRow(self.chk_exclude_barren)
+        
+        # 6. Exclude Grassland
+        self.chk_exclude_grassland = QCheckBox("Escludi aree a prato / grassland (ESA 30)")
+        self.chk_exclude_grassland.setToolTip("Evita la generazione di alberi su campi sportivi, prati e altre aree erbose aperte mappate come grassland.")
+        self.chk_exclude_grassland.setChecked(self.tree_settings.get("exclude_grassland", True))
+        self.tree_form.addRow(self.chk_exclude_grassland)
+        
         self.tree_layout.addLayout(self.tree_form)
         self.tree_layout.addStretch()
         
@@ -217,7 +232,10 @@ class PlantCustomizationDialog(QDialog):
             "type": "Deciduous Trees",
             "shape": "Random",
             "density_mode": "auto",
-            "tcd_threshold": 70
+            "tcd_threshold": 70,
+            "density_multiplier": 1.0,
+            "exclude_barren_water": True,
+            "exclude_grassland": True
         }
         self.combo_type.setCurrentText("Deciduous Trees")
         self._update_shape_options("Deciduous Trees")
@@ -225,6 +243,8 @@ class PlantCustomizationDialog(QDialog):
         self.combo_density.setCurrentIndex(0)
         self.spin_tcd.setValue(70)
         self.spin_mult.setValue(1.0)
+        self.chk_exclude_barren.setChecked(True)
+        self.chk_exclude_grassland.setChecked(True)
         self._load_data()
 
     def get_settings(self):
@@ -240,6 +260,8 @@ class PlantCustomizationDialog(QDialog):
             "shape": self.combo_shape.currentText(),
             "density_mode": self.combo_density.currentData(),
             "tcd_threshold": self.spin_tcd.value(),
-            "density_multiplier": self.spin_mult.value()
+            "density_multiplier": self.spin_mult.value(),
+            "exclude_barren_water": self.chk_exclude_barren.isChecked(),
+            "exclude_grassland": self.chk_exclude_grassland.isChecked()
         }
         return new_mapping, new_tree_settings

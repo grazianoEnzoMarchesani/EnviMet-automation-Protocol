@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software in your research or project, please cite it using the metadata below."
+title: "EnviMet-automation-Protocol: Standardized Environmental Modeling Automation and QGIS Plugin"
+abstract: >-
+  A standardized protocol and QGIS 4 automation plugin for ENVI-met microclimate
+  modeling developed within the LIFE A_GreeNET project. It automates geospatial data
+  acquisition, 3D model generation, sub-area scenario analysis, and integrates with
+  EnviReader for advanced simulation data visualization and analysis.
+authors:
+  - family-names: "Marchesani"
+    given-names: "Graziano Enzo"
+    orcid: "https://orcid.org/0000-0002-4723-5099"
+    affiliation: "Università di Camerino"
+    email: "grazianoenzomarchesani@unicam.it"
+version: "2.0.0"
+date-released: "2026-10-22"
+license: "GPL-3.0-or-later"
+repository-code: "https://github.com/grazianoEnzoMarchesani/EnviMet-automation-Protocol"
+doi: "10.5281/zenodo.14548213"
+keywords:
+  - "ENVI-met"
+  - "QGIS 4"
+  - "urban microclimate"
+  - "environmental modeling"
+  - "EnviReader"
+  - "LIFE A_GreeNET"
+  - "spatial automation"
+references:
+  - type: software
+    title: "EnviReader: Advanced Environmental Data Analysis and Visualization for EDX/EDT Files"
+    authors:
+      - family-names: "Marchesani"
+        given-names: "Graziano Enzo"
+        orcid: "https://orcid.org/0000-0002-4723-5099"
+    url: "https://github.com/grazianoEnzoMarchesani/EnviReader"

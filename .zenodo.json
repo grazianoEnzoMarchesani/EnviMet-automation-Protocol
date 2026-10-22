@@ -1,0 +1,38 @@
+{
+  "title": "Envi-Met automation Protocol: Standardized Environmental Modeling Automation and QGIS Plugin",
+  "description": "<p>A standardized protocol and QGIS 4 automation plugin for ENVI-met microclimate modeling developed within the LIFE A_GreeNET project. This software streamlines environmental simulation workflows, from automated multi-source geospatial data acquisition (DEM, building heights, canopy, land cover) to 3D model generation and scenario customization. Simulation results and output datasets are analyzed and visualized using the companion tool <strong>EnviReader</strong>.</p>",
+  "access_right": "open",
+  "license": "gpl-3.0-or-later",
+  "upload_type": "software",
+  "publication_date": "2026-10-22",
+  "creators": [
+    {
+      "name": "Marchesani, Graziano Enzo",
+      "affiliation": "Università di Camerino",
+      "orcid": "0000-0002-4723-5099"
+    }
+  ],
+  "keywords": [
+    "ENVI-met",
+    "QGIS",
+    "urban microclimate",
+    "environmental modeling",
+    "EnviReader",
+    "LIFE A_GreeNET",
+    "geospatial automation"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/grazianoEnzoMarchesani/EnviReader",
+      "relation": "cites",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.14548213",
+      "relation": "isVersionOf",
+      "resource_type": "software",
+      "scheme": "doi"
+    }
+  ]
+}

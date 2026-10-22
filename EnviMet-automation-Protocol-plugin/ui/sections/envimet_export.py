@@ -15,6 +15,7 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
     
     # Signals
     conversion_requested = pyqtSignal()
+    migration_requested = pyqtSignal(str)
     
     def __init__(self, parent=None):
         super().__init__("3. Preparazione ENVI-met", parent)
@@ -211,10 +212,6 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             QMessageBox.warning(self, "Errore", "Impossibile trovare la sezione di configurazione area.")
             return
 
-        if not dashboard or not hasattr(dashboard, "setup_section"):
-            QMessageBox.warning(self, "Errore", "Impossibile trovare la sezione di configurazione area.")
-            return
-
         extent, crs = dashboard.setup_section.get_extent_and_crs()
         if not extent or not crs:
             QMessageBox.warning(self, "Errore", "Nessuna area o CRS base rilevato. Cattura l'estensione nella Sezione 1.")
@@ -232,26 +229,46 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         )
         
         if reply == QMessageBox.Yes:
-            from ...core.envimet_manager import ENVImetManager
-            manager = ENVImetManager(dashboard.iface)
-            success, msg = manager.migrate_project_to_target_crs(target_crs_auth)
-            
-            if success:
-                QMessageBox.information(self, "Successo", msg)
-            else:
-                QMessageBox.critical(self, "Errore", msg)
+            self.migration_requested.emit(target_crs_auth)
 
     def _apply_sub_area_styling(self, layer):
         """
         Apply custom styling to the sub area layer:
         - Fill: None (hollow)
-        - Stroke: Fuchsia solid line (1.2mm) for high visibility
+        - Stroke: Deterministic color based on sub-area name (1.2mm) for high visibility
+        - Centroid: Arrow pointing to the local grid North (rotated by the rotation angle)
+        - Label: Sub-area name and rotation angle (in degrees) for clear identification
         """
         from qgis.PyQt.QtGui import QColor
         from qgis.core import QgsSimpleFillSymbolLayer, QgsSymbol, QgsSingleSymbolRenderer
+        from ...core.utils import get_color_for_sub_area
         
-        # Stroke: Fuchsia (Highly recognizable and premium)
-        stroke_color = QColor(255, 0, 255) 
+        # Get sub-area name
+        filename = layer.customProperty("fetch_filename") or ""
+        sub_name = "default"
+        if filename.startswith("sub_area_") and filename.endswith(".gpkg"):
+            sub_name = filename[len("sub_area_"):-len(".gpkg")]
+        elif filename == "sub_area.gpkg":
+            sub_name = "default"
+        else:
+            # Fallback to parsing layer name
+            lname = layer.name()
+            if lname.startswith("Sub Area ") and lname.endswith(" (ENVI-met)"):
+                sub_name = lname[len("Sub Area "):-len(" (ENVI-met)")]
+                
+        stroke_color = None
+        if layer.featureCount() > 0:
+            feat = next(layer.getFeatures())
+            if layer.fields().indexFromName("color") != -1:
+                col_attr = feat.attribute("color")
+                from qgis.PyQt.QtCore import QVariant
+                if col_attr and not isinstance(col_attr, QVariant):
+                    col_str = str(col_attr).strip()
+                    if col_str:
+                        stroke_color = QColor(col_str)
+                        
+        if not stroke_color:
+            stroke_color = get_color_for_sub_area(sub_name)
         
         props = {
             'outline_color': f'{stroke_color.red()},{stroke_color.green()},{stroke_color.blue()}',
@@ -268,10 +285,93 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             symbol = QgsSymbol.defaultSymbol(layer.geometryType())
             symbol.changeSymbolLayer(0, symbol_layer)
             
+            # Create centroid fill symbol layer to place a marker at the centroid
+            from qgis.core import (
+                QgsCentroidFillSymbolLayer, QgsSimpleMarkerSymbolLayer, QgsSymbolLayer,
+                QgsProperty, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling,
+                QgsTextFormat, QgsTextBufferSettings, Qgis
+            )
+            
+            centroid_layer = QgsCentroidFillSymbolLayer()
+            centroid_layer.setPointOnAllParts(False)
+            centroid_layer.setClipPoints(False)
+            
+            # Create an arrow marker layer rotated by the "rotation" attribute
+            marker_props = {
+                'name': 'arrow',
+                'color': f'{stroke_color.name()}',
+                'outline_color': '#2c3e50',
+                'outline_width': '0.3',
+                'size': '12.0',
+                'size_unit': 'MM'
+            }
+            marker_layer = QgsSimpleMarkerSymbolLayer.create(marker_props)
+            marker_layer.setDataDefinedProperty(
+                QgsSymbolLayer.PropertyAngle,
+                QgsProperty.fromExpression("-1 * \"rotation\"")
+            )
+            
+            # Put the marker layer in a marker symbol (Point symbol)
+            marker_symbol = QgsSymbol.defaultSymbol(Qgis.GeometryType.Point)
+            marker_symbol.changeSymbolLayer(0, marker_layer)
+            
+            centroid_layer.setSubSymbol(marker_symbol)
+            symbol.appendSymbolLayer(centroid_layer)
+            
             # Apply the renderer to the layer
             renderer = QgsSingleSymbolRenderer(symbol)
             layer.setRenderer(renderer)
+            
+            # Configure and enable labeling (Name and Rotation angle)
+            settings = QgsPalLayerSettings()
+            settings.isExpression = True
+            
+            if layer.fields().indexFromName("rotation") != -1:
+                settings.fieldName = "concat(\"name\", '\\n(', format_number(\"rotation\", 1), '°)')"
+            else:
+                settings.fieldName = "\"name\""
+                
+            # Force the labeling engine to treat the polygon as a point at its centroid,
+            # which enables the Point placement offset and quadrant settings to work correctly.
+            settings.geometryGeneratorEnabled = True
+            settings.geometryGeneratorType = Qgis.GeometryType.Point
+            settings.geometryGenerator = "centroid($geometry)"
+            
+            # Place label below the centroid to avoid overlapping with the arrow
+            settings.placement = Qgis.LabelPlacement.AroundPoint
+            settings.quadOffset = QgsPalLayerSettings.QuadrantBelow
+            settings.yOffset = 8.0
+            settings.xOffset = 0.0
+            settings.offsetUnits = Qgis.RenderUnit.Millimeters
+            
+            # Style label text
+            text_format = QgsTextFormat()
+            text_format.setSize(9.0)
+            text_format.setSizeUnit(Qgis.RenderUnit.Points)
+            text_format.setColor(QColor(30, 30, 30)) # Dark Charcoal
+            
+            # Bold font
+            font = text_format.font()
+            font.setBold(True)
+            text_format.setFont(font)
+            
+            # White buffer (halo) for contrast
+            buffer = QgsTextBufferSettings()
+            buffer.setEnabled(True)
+            buffer.setSize(1.5)
+            buffer.setSizeUnit(Qgis.RenderUnit.Points)
+            buffer.setColor(QColor("white"))
+            text_format.setBuffer(buffer)
+            
+            settings.setFormat(text_format)
+            
+            # Apply labeling to the layer
+            labeling = QgsVectorLayerSimpleLabeling(settings)
+            layer.setLabeling(labeling)
+            layer.setLabelsEnabled(True)
+            
             layer.triggerRepaint()
+
 
     def _apply_surfaces_styling(self, layer):
         """Categorized renderer for soil and surface materials."""
@@ -523,7 +623,6 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         
         # Desired Order (from top to bottom of the legend)
         ordered_filenames = [
-            FileNames.EM_SUB_AREA,
             FileNames.EM_VEGETATION,
             FileNames.EM_BUILDINGS,
             FileNames.EM_SIMPLE_PLANTS,
@@ -533,20 +632,30 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
         
         # Map current nodes in group by their identification property
         nodes_map = {}
+        sub_nodes = []
         for node in group.children():
             if hasattr(node, "layer") and node.layer():
                 fname = node.layer().customProperty("fetch_filename")
                 if fname:
-                    nodes_map[fname] = node
+                    if fname.startswith("sub_area"):
+                        sub_nodes.append((fname, node))
+                    else:
+                        nodes_map[fname] = node
 
         # Re-insert children at the top in reverse order so the list order is preserved from top down
+        # 1. Non-subarea layers in reverse order: DTM -> Surfaces -> Plants -> Buildings -> Vegetation
         for fname in reversed(ordered_filenames):
             if fname in nodes_map:
                 node = nodes_map[fname]
-                # Robust move: clone to new position and remove original
                 cloned_node = node.clone()
                 group.insertChildNode(0, cloned_node)
                 group.removeChildNode(node)
+                
+        # 2. Subarea layers on top of everything
+        for fname, node in sub_nodes:
+            cloned_node = node.clone()
+            group.insertChildNode(0, cloned_node)
+            group.removeChildNode(node)
 
     def _load_prepared_layers(self, only_filename=None):
         """Scan the export directory and add/refresh layers in QGIS."""
@@ -569,9 +678,8 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             QMessageBox.information(self, "Info", "Cartella export non trovata. Esegui prima la preparazione dei dati.")
             return 0
 
-        # Define all layers we handle
+        # Define all standard layers we handle
         filenames = [
-            FileNames.EM_SUB_AREA,
             FileNames.EM_VEGETATION,
             FileNames.EM_BUILDINGS,
             FileNames.EM_SIMPLE_PLANTS,
@@ -579,9 +687,21 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             FileNames.DTM
         ]
         
+        # Scan for subareas dynamically
+        subarea_filenames = []
+        if os.path.exists(export_dir):
+            for filename in os.listdir(export_dir):
+                if filename.startswith("sub_area") and filename.endswith(".gpkg"):
+                    subarea_filenames.append(filename)
+                    
         if only_filename:
-            if only_filename not in filenames: return 0
-            filenames = [only_filename]
+            if only_filename in filenames or only_filename in subarea_filenames:
+                filenames = [only_filename]
+            else:
+                return 0
+        else:
+            # Prepend subareas to the list so they load first
+            filenames = subarea_filenames + filenames
 
         # Ensure the group exists at the top
         group = self._get_envimet_group()
@@ -611,7 +731,7 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
                     node.parent().removeChildNode(node)
 
                 # Update style
-                if filename == FileNames.EM_SUB_AREA:
+                if filename.startswith("sub_area"):
                     self._apply_sub_area_styling(existing_layer)
                 elif filename == FileNames.EM_SURFACES:
                     self._apply_surfaces_styling(existing_layer)
@@ -629,7 +749,12 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
             else:
                 # Handle new layer creation
                 name = filename.replace("_", " ").title() + " (ENVI-met)"
-                if filename == FileNames.EM_SUB_AREA: name = "Sub Area (ENVI-met)"
+                if filename.startswith("sub_area"):
+                    if filename == FileNames.EM_SUB_AREA:
+                        name = "Sub Area (ENVI-met)"
+                    else:
+                        sub_name = filename[len("sub_area_"):-len(".gpkg")]
+                        name = f"Sub Area {sub_name} (ENVI-met)"
                 elif filename == FileNames.EM_VEGETATION: name = "Vegetazione 3D (ENVI-met)"
                 elif filename == FileNames.EM_BUILDINGS: name = "Edifici Preparati (ENVI-met)"
                 elif filename == FileNames.EM_SIMPLE_PLANTS: name = "Piante Semplici (ENVI-met)"
@@ -649,7 +774,7 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
                     group.addLayer(new_layer)
 
                     # Apply Styling
-                    if filename == FileNames.EM_SUB_AREA:
+                    if filename.startswith("sub_area"):
                         self._apply_sub_area_styling(new_layer)
                     elif filename == FileNames.EM_SURFACES:
                         self._apply_surfaces_styling(new_layer)
@@ -664,6 +789,10 @@ class ENVImetExportSection(QgsCollapsibleGroupBox, HelpMixin):
 
         # Finalize grouping and order
         self._reorder_envimet_layers(group)
+        
+        dashboard = self._get_dashboard()
+        if dashboard and hasattr(dashboard, "sub_area_mod_section"):
+            dashboard.sub_area_mod_section.load_sub_areas_from_disk()
         
         if count > 0:
             QMessageBox.information(self, "Successo", f"Processati {count} layer nel gruppo 'Modello ENVI-met'.")

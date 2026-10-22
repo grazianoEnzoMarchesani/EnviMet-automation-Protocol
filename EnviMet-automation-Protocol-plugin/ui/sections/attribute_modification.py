@@ -42,8 +42,8 @@ class AttributeModificationSection(QgsCollapsibleGroupBox, HelpMixin):
         self._setup_ui()
 
         # Connect QGIS signals for automatic refresh whenever the project layers change
-        QgsProject.instance().layersAdded.connect(lambda layers: self._refresh_layers())
-        QgsProject.instance().layersRemoved.connect(lambda ids: self._refresh_layers())
+        QgsProject.instance().layersAdded.connect(self._refresh_layers)
+        QgsProject.instance().layersRemoved.connect(self._refresh_layers)
         
     def _load_db(self):
         """Load envimet_db.json."""
@@ -295,7 +295,15 @@ class AttributeModificationSection(QgsCollapsibleGroupBox, HelpMixin):
         self._refresh_layers()
         super().showEvent(event)
 
-    def _refresh_layers(self):
+    def _refresh_layers(self, *args):
+        try:
+            if not hasattr(self, 'combo_layer') or self.combo_layer is None:
+                return
+            # Trigger RuntimeError if the underlying C++ object was deleted
+            _ = self.combo_layer.parent()
+        except RuntimeError:
+            return
+
         current_text = self.combo_layer.currentText()
         self.combo_layer.blockSignals(True)
         self.combo_layer.clear()

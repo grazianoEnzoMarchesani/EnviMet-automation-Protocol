@@ -54,7 +54,10 @@ class OSMDownloader:
         # 3. Request data
         try:
             log("Richiesta dati a Overpass API (timeout 90s)...")
-            response = requests.post(self.overpass_url, data={'data': query}, timeout=90)
+            headers = {
+                'User-Agent': 'EnviProtocolPlugin/1.0 (QGIS Plugin; contact: graziano)'
+            }
+            response = requests.post(self.overpass_url, data={'data': query}, headers=headers, timeout=90)
             response.raise_for_status()
             osm_data = response.json()
             

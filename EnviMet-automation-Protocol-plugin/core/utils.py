@@ -138,14 +138,18 @@ def get_target_crs_for_extent(extent, crs_auth_id):
         # Default for Italy (Zone 32N) if all fails
         return "EPSG:32632"
 
-def download_file_generic(url, local_path, auth=None):
-    """Generic file downloader used by various modules with robust SSL error handling."""
+def download_file_generic(url, local_path, auth=None, progress_callback=None, cancel_check=None):
+    """Generic file downloader used by various modules with robust SSL error handling, progress logging, and cancellation."""
     import requests
     from qgis.core import QgsMessageLog, Qgis
 
+    headers = {
+        'User-Agent': 'EnviProtocolPlugin/1.0 (QGIS; contact: graziano)'
+    }
+
     try:
         # Try with SSL verification first
-        response = requests.get(url, stream=True, auth=auth, timeout=300)
+        response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=300)
         response.raise_for_status()
     except Exception as e:
         error_msg = str(e)
@@ -157,7 +161,7 @@ def download_file_generic(url, local_path, auth=None):
             try:
                 import urllib3
                 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-                response = requests.get(url, stream=True, auth=auth, timeout=300, verify=False)
+                response = requests.get(url, stream=True, auth=auth, headers=headers, timeout=300, verify=False)
                 response.raise_for_status()
             except Exception as e2:
                 return False, f"Second-attempt failure: {str(e2)}"
@@ -165,11 +169,90 @@ def download_file_generic(url, local_path, auth=None):
             return False, error_msg
 
     try:
+        total_length = response.headers.get('content-length')
+        filename = os.path.basename(local_path)
+        chunk_size = 1024 * 1024  # 1 MB chunk size
+        
         with open(local_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk: f.write(chunk)
+            if total_length is None:
+                dl = 0
+                last_logged_mb = 0
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    if cancel_check and cancel_check():
+                        f.close()
+                        if os.path.exists(local_path):
+                            try:
+                                os.remove(local_path)
+                            except:
+                                pass
+                        return False, "Canceled"
+                    if chunk:
+                        f.write(chunk)
+                        dl += len(chunk)
+                        mb = dl // (1024 * 1024)
+                        if mb >= last_logged_mb + 10:
+                            last_logged_mb = mb
+                            QgsMessageLog.logMessage(f"Download {filename}: {mb} MB scaricati", "EnviProtocol", Qgis.Info)
+                        if progress_callback:
+                            progress_callback(dl, -1)
+            else:
+                total_length = int(total_length)
+                dl = 0
+                last_percent = -1
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    if cancel_check and cancel_check():
+                        f.close()
+                        if os.path.exists(local_path):
+                            try:
+                                os.remove(local_path)
+                            except:
+                                pass
+                        return False, "Canceled"
+                    if chunk:
+                        f.write(chunk)
+                        dl += len(chunk)
+                        percent = int((dl / total_length) * 100)
+                        if percent // 10 > last_percent // 10:
+                            last_percent = percent
+                            QgsMessageLog.logMessage(f"Download {filename}: {percent}% ({dl // (1024*1024)} MB / {total_length // (1024*1024)} MB)", "EnviProtocol", Qgis.Info)
+                        if progress_callback:
+                            progress_callback(dl, total_length)
+                            
         return True, "Success"
     except Exception as e:
         return False, str(e)
+
+
+def get_color_for_sub_area(name):
+    """
+    Returns a deterministic premium color for a sub-area name to make sure
+    each sub-area is visually distinguished by a different color.
+    """
+    from qgis.PyQt.QtGui import QColor
+    import hashlib
+    
+    if not name or name == "default":
+        # Keep default sub-area Fuchsia (highly visible and recognizable)
+        return QColor(255, 0, 255)
+        
+    # Predefined harmonious premium colors (vibrant, modern, good for light and dark modes)
+    colors = [
+        QColor(0, 180, 216),    # Cyan/Azure
+        QColor(46, 204, 113),   # Emerald Green
+        QColor(230, 126, 34),   # Orange
+        QColor(155, 89, 182),   # Amethyst Purple
+        QColor(241, 196, 15),   # Golden Yellow
+        QColor(26, 188, 156),   # Teal
+        QColor(231, 76, 60),    # Crimson Red
+        QColor(233, 30, 99),    # Premium Pink
+        QColor(63, 81, 181),    # Indigo
+        QColor(139, 195, 74)    # Light Green / Lime
+    ]
+    
+    # Hash the name to get a consistent color index
+    hash_val = int(hashlib.md5(name.encode('utf-8')).hexdigest(), 16)
+    return colors[hash_val % len(colors)]
+
+
 
 

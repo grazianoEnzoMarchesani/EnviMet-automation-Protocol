@@ -51,7 +51,7 @@ class TinitalyDownloader(BaseDownloader):
                 tiles.append(tile_name)
         return tiles
 
-    def download_tile(self, tile_name):
+    def download_tile(self, tile_name, progress_callback=None, cancel_check=None):
         self.log(f"Avvio elaborazione quadrante Tinitaly: {tile_name}")
         download_dir = self.get_download_dir("tinitaly_tiles")
         if not download_dir: return False, "Project not saved"
@@ -68,7 +68,7 @@ class TinitalyDownloader(BaseDownloader):
             self.log(f"ZIP {filename} già presente, avvio estrazione...")
             success, msg = True, "Gia' presente"
         else:
-            success, msg = self._download_file(url, save_path)
+            success, msg = self._download_file(url, save_path, progress_callback=progress_callback, cancel_check=cancel_check)
             
         if success:
             try:

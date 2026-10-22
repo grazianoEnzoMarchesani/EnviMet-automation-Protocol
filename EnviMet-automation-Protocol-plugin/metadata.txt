@@ -1,5 +1,6 @@
 [general]
 name=EnviProtocol
+icon=icon.png
 description=EnviProtocol: A new description
 version=2.0.0
 qgisMinimumVersion=4.0

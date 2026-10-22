@@ -38,7 +38,7 @@ class ESADownloader(BaseDownloader):
                 tiles.append(tile_name)
         return tiles
 
-    def fetch_worldcover(self, extent, crs_auth_id):
+    def fetch_worldcover(self, extent, crs_auth_id, progress_callback=None, cancel_check=None):
         self.log("Avvio acquisizione ESA WorldCover (Land Use)...")
         download_dir = self.get_download_dir("esa_worldcover")
         if not download_dir: return []
@@ -53,7 +53,7 @@ class ESADownloader(BaseDownloader):
                 continue
 
             url = f"{self.base_url}{tile_name}"
-            success, msg = self._download_file(url, save_path)
+            success, msg = self._download_file(url, save_path, progress_callback=progress_callback, cancel_check=cancel_check)
             results.append((tile_name, success, msg))
             
             if success:
